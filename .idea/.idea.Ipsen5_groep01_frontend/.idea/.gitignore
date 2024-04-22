@@ -1,12 +1,4 @@
-﻿.vs/
-bin/
-obj/
-*.user
-artifacts/
-.vscode/
-.dotnet/
-*.binlog
-
+﻿# Default ignored files
 /shelf/
 /workspace.xml
 # Rider ignored files
