@@ -1,20 +1,20 @@
 .navbar {
     width: 100%;
-    height: auto; /* Adjusted height to be auto for responsiveness */
+    height: auto;
     display: flex;
     align-items: center;
     padding: 0;
 }
 
 .staffingnow_logo {
-    width: 100%; /* Adjusted width to be 100% for responsiveness */
-    max-width: 330px; /* Added max-width for larger screens */
-    margin-left: 5%; /* Adjusted margin for responsiveness */
+    width: 100%;
+    max-width: 330px;
+    margin-left: 5%;
 }
 
 .profile_pic {
     height: 130px;
-    max-width: 100%; /* Added max-width for responsiveness */
+    max-width: 100%;
 }
 
 .admin-buttons, .home-buttons {
@@ -24,32 +24,38 @@
     align-items: center;
     justify-content: center;
     flex-direction: row;
-    gap: 3%; /* Adjusted column-gap to gap for better responsiveness */
+    gap: 3%;
 }
+
+.home-buttons{
+   justify-content: right;
+   margin-right: 15%;
+}
+
 
 .button {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-width: 150px; /* Adjusted min-width for smaller screens */
+    min-width: 200px;
     height: 50px;
 }
 
-/* Media Query for smaller screens */
+
 @media screen and (max-width: 768px) {
     .navbar {
-        flex-wrap: wrap; /* Allow flex items to wrap */
+        flex-wrap: wrap;
     }
 
     .staffingnow_logo {
-        margin-left: 5%; /* Adjusted margin for smaller screens */
+        margin-left: 5%;
     }
 
     .profile_pic {
-        height: 100px; /* Reduced height for smaller screens */
+        height: 100px;
     }
 
     .button {
-        min-width: 120px; /* Adjusted min-width for smaller screens */
+        min-width: 120px;
     }
 }
