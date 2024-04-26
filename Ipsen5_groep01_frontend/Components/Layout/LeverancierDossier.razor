@@ -18,7 +18,7 @@
 
     <table class="table" style="width: 80%; border-collapse: separate; border-spacing: 0 50px;">
         <thead>
-            <tr style="height: 115px;">
+            <tr class="table-row table-header">
                 <th>Opdracht</th>
                 <th style="padding-left: 2.5%;">Status</th>
                 <th></th>
@@ -26,15 +26,16 @@
         </thead>
         <tbody>
             @foreach (Dossier dossier in dossiers)
-            {
-                <tr>
-                    <td>@dossier.KandidaatId</td>
+            { 
+                <tr class="table-row data-row">
+                    <td style="font-weight: bold">@dossier.KandidaatId</td>
                     <td style="padding-left: 1%;">@dossier.Status</td>
                     <td>&#10095;</td>
                 </tr>
             }
         </tbody>
     </table>
+
 
 </div>
 
