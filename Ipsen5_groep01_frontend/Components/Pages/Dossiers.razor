@@ -1,0 +1,19 @@
+﻿@page "/dossiers"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+
+<PageTitle>Dossiers</PageTitle>
+
+<h1>Dossiers</h1>
+
+<button class="btn btn-primary" @onclick="dossierAanmaken">Dossier aanmaken</button>
+
+@code {
+
+    private void dossierAanmaken()
+    { 
+        NavigationManager.NavigateTo("/dossier-aanmaken");
+    }
+
+}
