@@ -1,0 +1,56 @@
+﻿@page "/documentbeheer"
+@attribute [StreamRendering]
+
+<PageTitle>Documentbeheer</PageTitle>
+
+<div class="documenten-container">
+    <div class="header">
+        <h1>Documenten</h1>
+    </div>
+
+    <div class="documenten">
+        <h2>Document</h2>
+        <ul class="documenten-list">
+            @foreach (var document in documenten)
+            {
+                <li class="document">
+                    <span class="naam">@document.Naam</span>
+                    <input type="checkbox" @bind="document.Verplicht" /> 
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div class="verplicht">
+        <h2>Verplicht</h2>
+        <ul>
+            @foreach (var document in documenten.Where(d => d.Verplicht))
+            {
+                <li>@document.Naam</li>
+            }
+        </ul>
+    </div>
+
+    <button @onclick="Toevoegen">Nieuw document toevoegen</button>
+</div>
+
+@code {
+    private List<Document> documenten = new List<Document>
+    {
+        new Document { Naam = "Document 1", Verplicht = true },
+        new Document { Naam = "Document 2", Verplicht = false },
+        new Document { Naam = "Document 3", Verplicht = true }
+    };
+
+    void Toevoegen()
+    {
+        // Logica voor het toevoegen van een nieuw document
+    }
+
+    public class Document
+    {
+        public string Naam { get; set; }
+        public bool Verplicht { get; set; }
+    }
+
+}

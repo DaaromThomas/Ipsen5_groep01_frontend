@@ -1,0 +1,66 @@
+/* Documenten.css */
+
+.documenten-container {
+    padding: 20px;
+}
+
+.header {
+    background-color: white;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+    .header h1 {
+        color: black;
+    }
+
+.documenten, .verplicht {
+    margin-bottom: 20px;
+}
+
+    .documenten h2, .verplicht h2 {
+        color: white;
+        background-color: #007bff;
+        padding: 10px;
+    }
+
+.documenten-list {
+    list-style: none;
+    padding: 0;
+}
+
+.document {
+    background-color: #f4f4f4;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .document .naam {
+        margin-right: 20px;
+    }
+
+    .document input[type="checkbox"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #007bff;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+        .document input[type="checkbox"]:checked {
+            background-color: #007bff;
+        }
+
+            .document input[type="checkbox"]:checked::after {
+                content: "\2714";
+                color: white;
+                font-size: 14px;
+                line-height: 20px;
+                text-align: center;
+            }
