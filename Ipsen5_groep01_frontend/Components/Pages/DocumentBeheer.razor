@@ -1,6 +1,6 @@
 ﻿@page "/documentbeheer"
 @attribute [StreamRendering]
-
+<div class="decorative-bar" style="width:100%; height: 70px; background: linear-gradient(0.25turn, #FF6700 0%, #1A222D 53%, #183749 70%, #10ADE5 100%); margin-bottom: 30px;"></div>
 <PageTitle>Documentbeheer</PageTitle>
 
 <div class="documenten-container">
@@ -16,7 +16,7 @@
             {
                 <li class="document">
                     <span class="naam">@document.Naam</span>
-                    <input type="checkbox" @bind="document.Verplicht" /> 
+                    <input class="document-checkbox" type="checkbox" @bind="document.Verplicht" /> 
                 </li>
             }
         </ul>
