@@ -4,12 +4,13 @@
 <PageTitle>Documentbeheer</PageTitle>
 
 <div class="documenten-container">
+    <button @onclick="Toevoegen" class="add-button">Nieuw document toevoegen</button>
     <div class="header">
         <h1>Documenten</h1>
+        <h2>Verplicht</h2>
     </div>
 
     <div class="documenten">
-        <h2>Document</h2>
         <ul class="documenten-list">
             @foreach (var document in documenten)
             {
@@ -20,18 +21,6 @@
             }
         </ul>
     </div>
-
-    <div class="verplicht">
-        <h2>Verplicht</h2>
-        <ul>
-            @foreach (var document in documenten.Where(d => d.Verplicht))
-            {
-                <li>@document.Naam</li>
-            }
-        </ul>
-    </div>
-
-    <button @onclick="Toevoegen">Nieuw document toevoegen</button>
 </div>
 
 @code {

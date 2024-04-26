@@ -2,27 +2,41 @@
 
 .documenten-container {
     padding: 20px;
+    display: flex;
+    flex-direction: column; /* Plaats de knop bovenaan */
 }
+
+.add-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px; /* Afstand tussen de knop en de header */
+    align-self: flex-end; /* Plaats de knop aan de rechterkant van de container */
+}
+
+    .add-button:hover {
+        background-color: #0056b3;
+    }
 
 .header {
     background-color: white;
     padding: 10px;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-    .header h1 {
-        color: black;
+    .header h1, .header h2 {
+        margin: 0;
     }
 
-.documenten, .verplicht {
+.documenten {
     margin-bottom: 20px;
 }
-
-    .documenten h2, .verplicht h2 {
-        color: white;
-        background-color: #007bff;
-        padding: 10px;
-    }
 
 .documenten-list {
     list-style: none;
@@ -41,26 +55,3 @@
     .document .naam {
         margin-right: 20px;
     }
-
-    .document input[type="checkbox"] {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        border: 2px solid #007bff;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-        .document input[type="checkbox"]:checked {
-            background-color: #007bff;
-        }
-
-            .document input[type="checkbox"]:checked::after {
-                content: "\2714";
-                color: white;
-                font-size: 14px;
-                line-height: 20px;
-                text-align: center;
-            }
