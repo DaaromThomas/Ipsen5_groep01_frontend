@@ -3,35 +3,61 @@
 .documenten-container {
     padding: 20px;
     display: flex;
-    flex-direction: column; /* Plaats de knop bovenaan */
+    flex-direction: column;
 }
 
 .add-button {
-    background-color: #007bff;
-    color: white;
+    background-color: #10ADE5;
+    color: #F5F5F5;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 22px;
+    font-family: 'Ubuntu', sans-serif;
+    letter-spacing: 0.16px;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    margin-bottom: 10px; /* Afstand tussen de knop en de header */
-    align-self: flex-end; /* Plaats de knop aan de rechterkant van de container */
+    margin-bottom: 10px;
+    align-self: flex-end;
+    box-shadow: 0 6px 4px rgba(0, 0, 0, 0.1);
 }
-
-    .add-button:hover {
-        background-color: #0056b3;
-    }
 
 .header {
     background-color: white;
-    padding: 10px;
+    padding: 35px;
     margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    border-radius: 10px;
+    border: 1px solid black;
 }
+
+    .header::before,
+    .header::after {
+        content: "";
+        flex-grow: 1;
+    }
 
     .header h1, .header h2 {
         margin: 0;
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-weight: bold;
+    }
+
+    .header h1 {
+        left: 10%;
+        transform: translateX(-50%) translateY(-50%);
+    }
+
+    .header h2 {
+        right: 50%;
+        transform: translateX(50%) translateY(-50%);
     }
 
 .documenten {
@@ -44,14 +70,16 @@
 }
 
 .document {
-    background-color: #f4f4f4;
+    background-color: white;
     padding: 10px;
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+  
 }
 
     .document .naam {
         margin-right: 20px;
+        
     }
