@@ -14,7 +14,7 @@ main {
 
 .top-row {
     border-bottom: 1px solid #d6d5d5;
-    height: 130px;
+    min-height: 130px;
     display: flex;
     align-items: center;
 }
