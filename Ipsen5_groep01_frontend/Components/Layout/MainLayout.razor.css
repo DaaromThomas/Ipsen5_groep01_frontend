@@ -19,3 +19,8 @@ main {
     align-items: center;
 }
 
+article{
+    margin: 0;
+    padding: 0;
+}
+

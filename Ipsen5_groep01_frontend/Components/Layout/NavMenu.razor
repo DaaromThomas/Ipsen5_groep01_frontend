@@ -5,7 +5,7 @@
     <!-- Buttons when logged in as admin -->
     <div class="admin-buttons" hidden="@(!loggedIn || !isAdmin)">
         <div class="button">
-            <NavLink href="" Match="NavLinkMatch.All"
+            <NavLink href="Name" Match="NavLinkMatch.All"
                      style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                 <span class="" aria-hidden="true"></span> PROFESSIONALS
             </NavLink>
@@ -33,7 +33,7 @@
     <!-- Buttons when logged in as Leverancier -->
     <div class="home-buttons" hidden="@(loggedIn)">
         <div class="button" style="background-color: #10ADE5;">
-            <NavLink href="" Match="NavLinkMatch.All"
+            <NavLink href="leverancierDossierScherm" Match="NavLinkMatch.All"
                      style="color: #F5F5F5; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                 <span class="" aria-hidden="true"></span> INLOGGEN
             </NavLink>
@@ -56,8 +56,8 @@
 </div>
 
 @code {
-    private bool loggedIn = true;
-    private bool isAdmin = true;
+    private bool loggedIn = false;
+    private bool isAdmin = false;
 
 
 }
