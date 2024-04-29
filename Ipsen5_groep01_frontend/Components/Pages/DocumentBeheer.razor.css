@@ -6,6 +6,15 @@
     flex-direction: column;
 }
 
+.container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -20px;
+    margin-bottom: -10px;
+    transform: translateX(21.5%) translateY(0%);
+}
+
+
 .add-button {
     background-color: #10ADE5;
     color: #F5F5F5;
@@ -94,7 +103,6 @@
     }
 
     .document input[type="checkbox"] {
-        /* Maak het selectievakje groter */
         width: 20px;
         height: 20px;
         background-color: #ccc;
