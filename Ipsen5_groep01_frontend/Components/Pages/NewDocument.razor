@@ -4,4 +4,39 @@
 <PageTitle>Nieuw Document</PageTitle>
 
 
+<div class="documenten-container">
+    <div class="container">
+    <NavLink href="documentbeheer" Match="NavLinkMatch.All" class="nav-link">
+        <button @onclick="Opslaan" class="add-button">Opslaan document</button>
+    </NavLink>
+    </div>
+    <div class="header">
+        <h1>Document</h1>
+        <h2>Verplicht</h2>
+    </div>
+     <div class="input-section">
+        <input type="text" placeholder="Voer de naam in" class="document-name" />
+        <input type="checkbox" id="verplicht-checkbox" />
+    </div>
+</div>
+
+@code {
+    private List<Document> documenten = new List<Document>
+    {
+        new Document { Naam = "Document 1", Verplicht = true },
+        new Document { Naam = "Document 2", Verplicht = false },
+        new Document { Naam = "Document 3", Verplicht = true }
+    };
+
+    void Opslaan()
+    {
+        // Logica voor het toevoegen van een nieuw document
+    }
+
+    public class Document
+    {
+        public string Naam { get; set; }
+        public bool Verplicht { get; set; }
+    }
+
 }

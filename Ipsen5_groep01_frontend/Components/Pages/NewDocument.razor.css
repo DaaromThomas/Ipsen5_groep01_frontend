@@ -1,0 +1,106 @@
+/* Documenten.css */
+
+.documenten-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -20px;
+    margin-bottom: -10px;
+    transform: translateX(21.5%) translateY(0%);
+}
+
+
+.add-button {
+    background-color: #10ADE5;
+    color: #F5F5F5;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 22px;
+    font-family: 'Ubuntu', sans-serif;
+    letter-spacing: 0.16px;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: -25px;
+    margin-bottom: 25px;
+    align-self: flex-end;
+    box-shadow: 0 6px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+    background-color: white;
+    padding: 35px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    border-radius: 10px;
+    border: 1px solid black;
+}
+
+    .header::before,
+    .header::after {
+        content: "";
+        flex-grow: 1;
+    }
+
+    .header h1, .header h2 {
+        margin: 0;
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-weight: bold;
+    }
+
+    .header h1 {
+        left: 10%;
+        transform: translateX(-50%) translateY(-50%);
+    }
+
+    .header h2 {
+        right: 50%;
+        transform: translateX(50%) translateY(-50%);
+    }
+
+.input-section {
+    background-color: white;
+    padding: 35px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    border-radius: 10px;
+    border: 1px solid black;
+    font-weight: bold;
+}
+
+    .input-section input[type="text"] {
+        transform: translateX(25%) translateY(-10%);
+        border-radius: 3px;
+        border: 1px solid black;
+        padding : 5px;
+    }
+
+.input-section .document-checkbox {
+    background-color: #ccc;
+}
+
+    .input-section input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        background-color: #ccc;
+        vertical-align: middle;
+        border: none;
+        margin: 0;
+        cursor: pointer;
+        transform: translateX(-4350%) translateY(-7%);
+    }
