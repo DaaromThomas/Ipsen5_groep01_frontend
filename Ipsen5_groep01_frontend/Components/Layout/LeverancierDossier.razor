@@ -1,5 +1,8 @@
 ﻿@page "/leverancierDossierScherm"
 @layout MainLayout
+
+@inject NavigationManager NavigationManager
+
 @using Models
 
 <div class="decorative-bar"></div>
@@ -24,7 +27,7 @@
         <tbody>
             @foreach (Dossier dossier in dossiers)
             {
-                <tr class="table-row data-row">
+                <tr class="table-row data-row"  onclick="@navigate">
                     <td>@dossier.KandidaatId</td>
                     <td>@dossier.Status</td>
                     <td>&#10095;</td>
@@ -158,5 +161,10 @@
         dossiers.Add(newDossier2);
 
         return newDossier;
+    }
+
+    private void navigate()
+    {
+        this.NavigationManager.NavigateTo("/LeverancierDossierInzien");
     }
 }
