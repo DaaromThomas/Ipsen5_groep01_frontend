@@ -1,0 +1,11 @@
+﻿.login-button {
+    margin-top: 2vmin;
+    width: 15vmin;
+    height: 5vmin;
+    font-family: Ubuntu, sans-serif;
+    font-size: 1.8vmin;
+    color: white;
+    font-weight: 600;
+    background-color: #10ADE5;
+    border-width: 0;
+}

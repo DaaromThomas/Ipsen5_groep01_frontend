@@ -1,0 +1,88 @@
+﻿@page "/signIn"
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms
+@using Ipsen5_groep01_frontend.Models
+@using Ipsen5_groep01_frontend.Services
+@rendermode InteractiveAuto
+
+<PageTitle>Inloggen</PageTitle>
+
+
+<EditForm Model="SignInModel" OnValidSubmit="SignInAsync" FormName="signInForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <InputText id="email" @bind-Value="SignInModel.Email" class="form-control"></InputText>
+        <ValidationMessage For="() => SignInModel.Email"></ValidationMessage>
+    </div>
+
+    <div class="form-group">
+        <label>Password:</label>
+        <InputText id="password" @bind-Value="SignInModel.Password" type="password" class="form-control"></InputText>
+        <ValidationMessage For="() => SignInModel.Password"></ValidationMessage>
+    </div>
+    <div>
+    </div>
+
+    <button type="submit" class="login-button">Login</button>
+
+</EditForm>
+
+
+
+@code {
+    [SupplyParameterFromForm]
+    private SignInModel SignInModel { get; set; } = new();
+
+    private RequestMakerService _requestMakerService;
+
+    public SignIn()
+    {
+
+    }
+
+    protected override void OnInitialized()
+    {
+        _requestMakerService = new RequestMakerService(HttpClient);
+        base.OnInitialized();
+    }
+
+    
+    private async Task SignInAsync()
+    {
+
+        if (!string.IsNullOrEmpty(SignInModel.Email) && !string.IsNullOrEmpty(SignInModel.Password))
+        {
+            var response = await _requestMakerService.MakePostRequest("user/signIn", SignInModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                if (response.Headers.TryGetValues("Authorization", out var tokens))
+                {
+                    var jwt = tokens.FirstOrDefault().Substring(7);
+
+                    
+
+
+                    // if (jwt != null)
+                    // {
+                    //     await JsRuntime.InvokeVoidAsync("localStorage.setItem", "jwt", jwt);
+                    // }
+                }
+
+            }
+            else
+            {
+
+            }
+        }
+    }
+}
+
+
