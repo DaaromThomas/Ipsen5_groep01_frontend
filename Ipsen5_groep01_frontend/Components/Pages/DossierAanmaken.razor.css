@@ -1,0 +1,29 @@
+.wizard-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
+
+.wizard-form {
+    width: 400px; /* Adjust width as needed */
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.wizard-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.wizard-form InputText {
+    margin-bottom: 10px;
+}
+
+.edit-form  {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
