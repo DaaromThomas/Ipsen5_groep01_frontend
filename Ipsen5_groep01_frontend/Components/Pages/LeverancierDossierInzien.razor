@@ -1,11 +1,83 @@
 ﻿@page "/LeverancierDossierInzien"
+@rendermode InteractiveServer
+@using Models
 
 <div class="decorative-bar"></div>
 
-<h3>LeverancierDossierInzien</h3>
+<div class="main">
+    <table class="table">
+        <thead>
+        <tr class="table-row table-header">
+            <th>Opdracht</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (DocumentOpened documentOpened in documents)
+            {
+                <tr class="table-row data-row">
+                    <td>@documentOpened.Document.Name</td>
+                    <td>@documentOpened.Document.Status</td>
+                    @if(documentOpened.Opened){
+                        <td>&#x25B2;</td>
+                    } else{
+                        <td>&#x25BC;</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 
 @code {
-    
+    private List<DocumentOpened> documents = new List<DocumentOpened>
+    {
+        new DocumentOpened(new Document
+        {
+            Id = "1",
+            Name = "Invoice001",
+            UploadType = "Invoice",
+            DocumentPath = "/documents/invoice001.pdf",
+            Status = "Approved",
+            CreatedDate = DateTime.Now.AddDays(-10),
+            UpdatedDate = DateTime.Now.AddDays(-5),
+            CreatedBy = "John Doe"
+        }),
+        new DocumentOpened(new Document
+        {
+            Id = "2",
+            Name = "Contract002",
+            UploadType = "Contract",
+            DocumentPath = "/documents/contract002.pdf",
+            Status = "Pending",
+            CreatedDate = DateTime.Now.AddDays(-15),
+            UpdatedDate = DateTime.Now.AddDays(-10),
+            CreatedBy = "Jane Smith"
+        }),
+        new DocumentOpened(new Document
+        {
+            Id = "3",
+            Name = "Proposal003",
+            UploadType = "Proposal",
+            DocumentPath = "/documents/proposal003.pdf",
+            Status = "Rejected",
+            CreatedDate = DateTime.Now.AddDays(-20),
+            UpdatedDate = DateTime.Now.AddDays(-15),
+            CreatedBy = "Alice Johnson"
+        })
+    };
 
+    public class DocumentOpened
+    {
+        public Document Document { get; set; }
+        public bool Opened { get; set; }
 
+        public DocumentOpened(Document document)
+        {
+            Document = document;
+            Opened = false;
+        }
+    }
 }
