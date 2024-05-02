@@ -15,20 +15,38 @@
         </thead>
         <tbody>
             @foreach (DocumentOpened documentOpened in documents)
-            {
-                <tr class="table-row data-row @(documentOpened.Opened ? "opened-row" : "")" style="background-color: @(GetRowColor(documentOpened.Document.Status))" @onclick="() => documentOpened.Opened = !documentOpened.Opened">
-                    <td>@documentOpened.Document.Name</td>
-                    <td>@documentOpened.Document.Status</td>
-                    @if (documentOpened.Opened)
-                    {
-                        <td>&#x25B2;</td>
-                    }
-                    else
-                    {
-                        <td>&#x25BC;</td>
-                    }
-                </tr>
-            }
+                {
+                    <tr class="table-row data-row @(documentOpened.Opened ? "opened-row" : "closed-row")" style="background-color: @(GetRowColor(documentOpened.Document.Status))" @onclick="() => documentOpened.Opened = !documentOpened.Opened">
+                        <td style="position: relative;">
+                            <div class="name-container">
+                                <p>@documentOpened.Document.Name</p>
+                                @if(documentOpened.Opened){
+                                    <div class="input-container">
+                                        <input class="document-input" type="file" placeholder="">
+                                    </div>
+                                }
+                            </div>
+                        </td>
+                        <td style="position: relative;">
+                            <div class="name-container">
+                                <p>@documentOpened.Document.Status</p>
+                            </div> 
+                        </td>
+                        <td style="position: relative;">
+                            <div class="name-container">
+                                @if (documentOpened.Opened)
+                                {
+                                    <p>&#x25B2;</p>
+                                }
+                                else
+                                {
+                                    <p>&#x25BC;</p>
+                                }
+                            </div> 
+                        </td>
+                        
+                    </tr>
+                }
         </tbody>
     </table>
 </div>
