@@ -1,6 +1,6 @@
 ﻿@page "/leverancierDossierScherm"
 @layout MainLayout
-
+@rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 
 @using Models
@@ -18,19 +18,19 @@
 
     <table class="table">
         <thead>
-            <tr class="table-row table-header">
-                <th>Opdracht</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
+        <tr class="table-row table-header">
+            <th>Opdracht</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
         </thead>
         <tbody>
             @foreach (Dossier dossier in dossiers)
             {
-                <tr class="table-row data-row"  onclick="@navigate">
+                <tr class="table-row data-row" @onclick="()=>navigate()">
                     <td>@dossier.KandidaatId</td>
                     <td>@dossier.Status</td>
-                    <td>&#10095;</td>
+                    <td @onclick="()=>navigate()">&#10095;</td>
                 </tr>
             }
         </tbody>
@@ -163,8 +163,9 @@
         return newDossier;
     }
 
-    private void navigate()
+    public void navigate()
     {
+        Console.WriteLine("Navigate()");
         this.NavigationManager.NavigateTo("/LeverancierDossierInzien");
     }
 }
