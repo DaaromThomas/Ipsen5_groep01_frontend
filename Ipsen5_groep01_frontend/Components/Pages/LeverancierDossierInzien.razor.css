@@ -4,3 +4,59 @@
     background: linear-gradient(0.25turn, #FF6700 0%, #1A222D 53%, #183749 70%, #10ADE5 100%);
     margin-bottom: 30px;
 }
+
+.main {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    background-color: #F5F5F5;
+}
+
+.table {
+    width: 80%;
+    border-collapse: separate;
+    border-spacing: 0 20px;
+}
+
+.table-row:hover td{
+    cursor: pointer;
+}
+
+.table-header th {
+    height: 58px;
+    background-color: #FFFFFF;
+}
+
+.data-row {
+    height: 100px;
+    background-color: #FFFFFF;
+}
+
+.table-row td, th {
+    vertical-align: middle;
+}
+
+.table-row td:first-child,
+.table-row th:first-child {
+    border-radius: 10px 0 0 10px;
+    border-left: 1px solid black;
+}
+
+.table-row td:last-child,
+.table-row th:last-child {
+    border-radius: 0 10px 10px 0;
+    border-right: 1px solid black;
+}
+
+.table-row td,
+.table-row th {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.opened-row {
+    height: 239px;
+}
