@@ -9,7 +9,7 @@ namespace Ipsen5_groep01_frontend.Components.Services
         {
             new Document { Naam = "Rijbewijs", Verplicht = true, Extensie = ".pdf" },
             new Document { Naam = "Taxipas", Verplicht = true, Extensie = ".docx"},
-            new Document { Naam = "PO", Verplicht = true, Extensie = ".pdf" }
+            new Document { Naam = "PO nummer", Verplicht = true, Extensie = ".pdf" }
         };
 
         public Task<List<Document>> GetDocumentenAsync()

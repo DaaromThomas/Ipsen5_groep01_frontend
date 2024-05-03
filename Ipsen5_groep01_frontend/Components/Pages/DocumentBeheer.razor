@@ -15,6 +15,7 @@
     <div class="header">
         <h1>Documenten</h1>
         <h2>Verplicht</h2>
+        <h3>Extensie</h3>
     </div>
 
     <div class="documenten">
@@ -24,8 +25,13 @@
                 @foreach (var document in documenten)
                 {
                     <li class="document">
-                        <span class="naam">@document.Naam</span>
-                        <input class="document-checkbox" type="checkbox" @bind="document.Verplicht" />
+                        <div class="document-content">
+                            <span class="naam">@document.Naam</span>
+                            <span class="document-checkbox">
+                                <input type="checkbox" @bind="document.Verplicht" />
+                            </span>
+                            <span class="extensie">@document.Extensie</span>
+                        </div>
                         <span class="prullenbak" @onclick="@(() => VerwijderDocument(document))">🗑️</span>
                     </li>
                 }
