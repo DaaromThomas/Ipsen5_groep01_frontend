@@ -10,7 +10,7 @@
 
 <div class="documenten-container">
     <div class="container">
-      <button @onclick="@(async () => await Opslaan())" class="add-button">Opslaan document</button>
+      <button @onclick="Opslaan" class="add-button">Opslaan document</button>
     </div>
     <div class="header">
         <h1>Document</h1>
@@ -32,9 +32,9 @@
     private string documentNaam;
     private bool verplicht;
 
-    async Task Opslaan()
+   public void Opslaan()
     {
-        this.NavigationManager.NavigateTo("/documentbeheer");
+       NavigationManager.NavigateTo("/documentbeheer");
     }
 
 }
