@@ -9,7 +9,7 @@
 
 <div class="main">
     <div class="filter-and-button">
-        <input type="text" placeholder="Zoeken" />
+        <input type="text" placeholder="Zoeken" @bind="searchTerm" @oninput="HandleInput"/>
         <p>Selecteer een opdracht</p>
         <div class="button-holder">
             <div>Opslaan</div>
@@ -25,7 +25,7 @@
         </tr>
         </thead>
         <tbody>
-            @foreach (Dossier dossier in dossiers)
+            @foreach (Dossier dossier in filteredDossiers)
             {
                 <tr class="table-row data-row" @onclick="()=>navigate(dossier.KandidaatId)">
                     <td>@dossier.KandidaatId</td>
@@ -40,10 +40,33 @@
 @code {
     private List<Dossier> dossiers = new List<Dossier>();
 
+        private List<Dossier> filteredDossiers = new List<Dossier>();
+    private string searchTerm = "";
+
     protected override void OnInitialized()
     {
         createDossiers();
+        FilterDossiers();
     }
+
+    private void HandleInput(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString().ToUpper();
+        FilterDossiers();
+    }
+
+    private void FilterDossiers()
+    {
+        if (searchTerm == null)
+        {
+            filteredDossiers = dossiers;
+        }
+        else
+        {
+            filteredDossiers = dossiers.Where(t => t.KandidaatId.ToUpper().Contains(searchTerm)).ToList<Dossier>();
+        }
+    }
+
 
 
     private List<Document> documents = new List<Document>{
