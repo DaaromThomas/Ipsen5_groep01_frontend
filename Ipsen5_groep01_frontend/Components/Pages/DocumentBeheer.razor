@@ -8,9 +8,9 @@
 
 <div class="documenten-container">
     <div class="container">
-    <NavLink href="NewDocument" Match="NavLinkMatch.All" class="nav-link">
-        <button @onclick="Toevoegen" class="add-button">Nieuw document</button>
-    </NavLink>
+        <NavLink href="NewDocument" Match="NavLinkMatch.All" class="nav-link">
+            <button class="add-button">Nieuw document</button>
+        </NavLink>
     </div>
     <div class="header">
         <h1>Documenten</h1>
@@ -19,12 +19,19 @@
 
     <div class="documenten">
         <ul class="documenten-list">
-            @foreach (var document in documenten)
+            @if (documenten != null)
             {
-                <li class="document">
-                    <span class="naam">@document.Naam</span>
-                    <input class="document-checkbox" type="checkbox" @bind="document.Verplicht" /> 
-                </li>
+                @foreach (var document in documenten)
+                {
+                    <li class="document">
+                        <span class="naam">@document.Naam</span>
+                        <input class="document-checkbox" type="checkbox" @bind="document.Verplicht" />
+                    </li>
+                }
+            }
+            else
+            {
+                <li>Geen documenten gevonden</li>
             }
         </ul>
     </div>
@@ -33,13 +40,9 @@
 @code {
     private List<Document> documenten;
 
-    protected override void OnInitialized()
-    {
-        documenten = DocumentenService.GetDocumenten();
-    }
-
-    void Toevoegen()
-    {
-      
-    }
+    protected override async Task OnInitializedAsync()
+{
+    documenten = await DocumentenService.GetDocumentenAsync();
+    StateHasChanged(); // Make sure to force the component to re-render after data is loaded.
+}
 }

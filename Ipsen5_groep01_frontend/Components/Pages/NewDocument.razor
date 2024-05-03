@@ -1,48 +1,40 @@
 @page "/NewDocument"
 @attribute [StreamRendering]
+@using Ipsen5_groep01_frontend.Components.Services
+@inject Ipsen5_groep01_frontend.Components.Services.DocumentenService DocumentenService
+@inject NavigationManager NavigationManager
+
+
 <div class="decorative-bar" style="width:100%; height: 70px; background: linear-gradient(0.25turn, #FF6700 0%, #1A222D 53%, #183749 70%, #10ADE5 100%); margin-bottom: 30px;"></div>
 <PageTitle>Nieuw Document</PageTitle>
 
-
 <div class="documenten-container">
     <div class="container">
-    <NavLink href="documentbeheer" Match="NavLinkMatch.All" class="nav-link">
-        <button @onclick="Opslaan" class="add-button">Opslaan document</button>
-    </NavLink>
+      <button @onclick="@(async () => await Opslaan())" class="add-button">Opslaan document</button>
     </div>
     <div class="header">
         <h1>Document</h1>
         <h2>Verplicht</h2>
         <h2 class="extensies">Extensies</h2>
     </div>
-     <div class="input-section">
-        <input type="text" placeholder="Voer de naam in" class="document-name" />
-        <input class="document-checkbox" type="checkbox" />
+    <div class="input-section">
+        <input @bind="documentNaam" type="text" placeholder="Voer de naam in" class="document-name" />
+        <input @bind="verplicht" class="document-checkbox" type="checkbox" />
         <select class="document-extensie">
-        <option value=".pdf">.pdf</option>
-        <option value=".docx">.docx</option>
-        <option value=".txt">.txt</option>
-    </select>
+            <option value=".pdf">.pdf</option>
+            <option value=".docx">.docx</option>
+            <option value=".txt">.txt</option>
+        </select>
     </div>
 </div>
 
 @code {
-    private List<Document> documenten = new List<Document>
-    {
-        new Document { Naam = "Document 1", Verplicht = true },
-        new Document { Naam = "Document 2", Verplicht = false },
-        new Document { Naam = "Document 3", Verplicht = true }
-    };
+    private string documentNaam;
+    private bool verplicht;
 
-    void Opslaan()
+    async Task Opslaan()
     {
-        // Logica voor het toevoegen van een nieuw document
-    }
-
-    public class Document
-    {
-        public string Naam { get; set; }
-        public bool Verplicht { get; set; }
+        this.NavigationManager.NavigateTo("/documentbeheer");
     }
 
 }

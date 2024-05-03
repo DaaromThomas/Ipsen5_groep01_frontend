@@ -4,14 +4,14 @@ using Ipsen5_groep01_frontend.Components.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<DocumentenService>();
+
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddSingleton<DocumentenService>();
 
 
- 
 
 var app = builder.Build();
 
