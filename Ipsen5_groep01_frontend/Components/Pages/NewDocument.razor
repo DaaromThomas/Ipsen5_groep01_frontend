@@ -20,7 +20,7 @@
     <div class="input-section">
         <input @bind="documentNaam" type="text" placeholder="Voer de naam in" class="document-name" />
         <input @bind="verplicht" class="document-checkbox" type="checkbox" />
-        <select class="document-extensie">
+        <select @bind="extensie" class="document-extensie">
             <option value=".pdf">.pdf</option>
             <option value=".docx">.docx</option>
             <option value=".txt">.txt</option>
@@ -31,9 +31,17 @@
 @code {
     private string documentNaam;
     private bool verplicht;
+    private string extensie;
 
    public void Opslaan()
     {
+        var nieuwDocument = new Document
+    {
+        Naam = documentNaam,
+        Verplicht = verplicht,
+        Extensie = extensie
+    };
+       DocumentenService.ToevoegenDocument(nieuwDocument);
        NavigationManager.NavigateTo("/documentbeheer");
     }
 

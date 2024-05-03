@@ -26,6 +26,7 @@
                     <li class="document">
                         <span class="naam">@document.Naam</span>
                         <input class="document-checkbox" type="checkbox" @bind="document.Verplicht" />
+                        <span class="prullenbak" @onclick="@(() => VerwijderDocument(document))">🗑️</span>
                     </li>
                 }
             }
@@ -41,8 +42,16 @@
     private List<Document> documenten;
 
     protected override async Task OnInitializedAsync()
-{
-    documenten = await DocumentenService.GetDocumentenAsync();
-    StateHasChanged(); // Make sure to force the component to re-render after data is loaded.
-}
+    {
+        documenten = await DocumentenService.GetDocumentenAsync();
+        StateHasChanged(); // Make sure to force the component to re-render after data is loaded.
+    }
+
+    private async Task VerwijderDocument(Document document)
+    {
+        documenten.Remove(document);
+        // Call your service method to delete the document from the backend
+        // For example: await DocumentenService.VerwijderDocumentAsync(document);
+        StateHasChanged(); // Update the UI to reflect the removal of the document
+    }
 }

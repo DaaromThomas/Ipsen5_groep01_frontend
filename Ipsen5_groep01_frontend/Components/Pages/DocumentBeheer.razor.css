@@ -94,11 +94,11 @@
 
     .document .naam {
         font-size: 18px;
-        transform: translateX(32%) translateY(-7%);
+        transform: translateX(102%) translateY(-7%);
     }
 
     .document .document-checkbox {
-        transform: translateX(-4350%) translateY(-7%);
+        transform: translateX(-75%) translateY(-7%);
         background-color: #ccc;
     }
 
