@@ -1,10 +1,17 @@
 using Ipsen5_groep01_frontend.Components;
+using Ipsen5_groep01_frontend.Components.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<DocumentenService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+
+ 
 
 var app = builder.Build();
 
