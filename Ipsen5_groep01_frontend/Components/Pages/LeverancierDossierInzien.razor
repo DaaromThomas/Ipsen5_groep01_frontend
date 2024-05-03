@@ -1,10 +1,13 @@
 ﻿@page "/LeverancierDossierInzien/{kandidaatId}"
 @rendermode InteractiveServer
 @using Models
+@inject NavigationManager NavigationManager
+
 
 <div class="decorative-bar"></div>
 
 <div class="main">
+    <button @onclick="()=>navigate()">Back</button>
     <table class="table">
         <thead>
             <tr class="table-row table-header">
@@ -86,6 +89,11 @@
             default:
                 return "white";
         }
+    }
+
+    public void navigate()
+    {
+        this.NavigationManager.NavigateTo($"/LeverancierDossierScherm");
     }
 
     public class DocumentOpened

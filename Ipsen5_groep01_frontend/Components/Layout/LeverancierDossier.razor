@@ -119,7 +119,6 @@
 
     private void createDossiers()
     {
-        // First Dossier
         Dossier newDossier = new Dossier(
             id: "12345",
             kandidaatId: "ABCDE",
@@ -134,13 +133,10 @@
             interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
         );
 
-        // Add the first document to the new dossier
         newDossier.Documents.Add(documents[0]);
 
-        // Add the new dossier to the dossiers list
         dossiers.Add(newDossier);
 
-        // Second Dossier
         Dossier newDossier2 = new Dossier(
             id: "123456789",
             kandidaatId: "ABCDEFGHIJ",
@@ -155,13 +151,10 @@
             interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
         );
 
-        // Add the second document to the new dossier
         newDossier2.Documents.Add(documents[1]);
 
-        // Add the new dossier to the dossiers list
         dossiers.Add(newDossier2);
 
-        // Third Dossier
         Dossier newDossier3 = new Dossier(
             id: "67890",
             kandidaatId: "FGHIJK",
@@ -176,13 +169,10 @@
             interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 3"
         );
 
-        // Add the third document to the new dossier
         newDossier3.Documents.Add(documents[2]);
 
-        // Add the new dossier to the dossiers list
         dossiers.Add(newDossier3);
 
-        // Fourth Dossier
         Dossier newDossier4 = new Dossier(
             id: "13579",
             kandidaatId: "LMNOP",
@@ -197,18 +187,13 @@
             interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 4"
         );
 
-        // Add the third document to the new dossier
         newDossier4.Documents.Add(documents[3]);
 
-        // Add the new dossier to the dossiers list
         dossiers.Add(newDossier4);
-
-        // Continue adding more dossiers with different combinations of documents...
     }
 
     public void navigate(string kandidaatId)
     {
-        Console.WriteLine("Navigate()");
         this.NavigationManager.NavigateTo($"/LeverancierDossierInzien/{kandidaatId}");
     }
 }
