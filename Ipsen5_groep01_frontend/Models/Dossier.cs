@@ -70,6 +70,12 @@ namespace Ipsen5_groep01_frontend.Models
             get { return interneMedewerkerNotitie; }
             set { interneMedewerkerNotitie = value; }
         }
+        private List<Document> documents;
+        public List<Document> Documents
+        {
+            get {return this.documents;}
+            set { documents = value;}
+        }
 
         public Dossier(string id, string kandidaatId, string status, DateTime date, double inkoopTarief, double verkoopTarief, DateTime betalingstermijn, string feepartij, string functieOmschrijving, string leverancierNotitie, string interneMedewerkerNotitie)
         {
@@ -84,6 +90,7 @@ namespace Ipsen5_groep01_frontend.Models
             this.functieOmschrijving = functieOmschrijving; 
             this.leverancierNotitie = leverancierNotitie;   
             this.interneMedewerkerNotitie = leverancierNotitie;
+            this.documents = new List<Document>();
         }
 
     }

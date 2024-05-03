@@ -27,10 +27,10 @@
         <tbody>
             @foreach (Dossier dossier in dossiers)
             {
-                <tr class="table-row data-row" @onclick="()=>navigate()">
+                <tr class="table-row data-row" @onclick="()=>navigate(dossier.KandidaatId)">
                     <td>@dossier.KandidaatId</td>
                     <td>@dossier.Status</td>
-                    <td @onclick="()=>navigate()">&#10095;</td>
+                    <td>&#10095;</td>
                 </tr>
             }
         </tbody>
@@ -42,12 +42,61 @@
 
     protected override void OnInitialized()
     {
-        Dossier newDossier = createDossier();
+        createDossiers();
     }
 
-    private Dossier createDossier()
+
+    private List<Document> documents = new List<Document>{
+      new Document
+        {
+            Id = "1",
+            Name = "Invoice001",
+            UploadType = "Invoice",
+            DocumentPath = "/documents/invoice001.pdf",
+            Status = "Goedgekeurd",
+            CreatedDate = DateTime.Now.AddDays(-10),
+            UpdatedDate = DateTime.Now.AddDays(-5),
+            CreatedBy = "John Doe"
+        },
+        new Document
+        {
+            Id = "2",
+            Name = "Contract002",
+            UploadType = "Contract",
+            DocumentPath = "/documents/contract002.pdf",
+            Status = "Wachten op beoordeling",
+            CreatedDate = DateTime.Now.AddDays(-15),
+            UpdatedDate = DateTime.Now.AddDays(-10),
+            CreatedBy = "Jane Smith"
+        },
+        new Document
+        {
+            Id = "3",
+            Name = "Proposal003",
+            UploadType = "Proposal",
+            DocumentPath = "/documents/proposal003.pdf",
+            Status = "Afgekeurd",
+            CreatedDate = DateTime.Now.AddDays(-20),
+            UpdatedDate = DateTime.Now.AddDays(-15),
+            CreatedBy = "Alice Johnson"
+        },
+        new Document
+        {
+            Id = "4",
+            Name = "Delivery004",
+            UploadType = "Delivery",
+            DocumentPath = "/documents/delivery004.pdf",
+            Status = "Nog op te leveren",
+            CreatedDate = DateTime.Now.AddDays(-25),
+            UpdatedDate = DateTime.Now.AddDays(-20),
+            CreatedBy = "Bob Williams"
+        }  
+        
+    };
+
+    private void createDossiers()
     {
-        // Creating a new Dossier instance and providing the required data
+        // First Dossier
         Dossier newDossier = new Dossier(
             id: "12345",
             kandidaatId: "ABCDE",
@@ -62,8 +111,13 @@
             interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
         );
 
+        // Add the first document to the new dossier
+        newDossier.Documents.Add(documents[0]);
+
+        // Add the new dossier to the dossiers list
         dossiers.Add(newDossier);
 
+        // Second Dossier
         Dossier newDossier2 = new Dossier(
             id: "123456789",
             kandidaatId: "ABCDEFGHIJ",
@@ -78,94 +132,60 @@
             interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
         );
 
+        // Add the second document to the new dossier
+        newDossier2.Documents.Add(documents[1]);
+
+        // Add the new dossier to the dossiers list
         dossiers.Add(newDossier2);
 
-        newDossier2 = new Dossier(
-            id: "123456789",
-            kandidaatId: "ABCDEFGHIJ",
-            status: "Afgerond",
+        // Third Dossier
+        Dossier newDossier3 = new Dossier(
+            id: "67890",
+            kandidaatId: "FGHIJK",
+            status: "In behandeling",
             date: DateTime.Now,
-            inkoopTarief: 2000.0,
-            verkoopTarief: 2500.0,
-            betalingstermijn: DateTime.Now.AddDays(35),
-            feepartij: "Voorbeeld Fee Partij met een spin",
-            functieOmschrijving: "Nog een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
+            inkoopTarief: 1500.0,
+            verkoopTarief: 2000.0,
+            betalingstermijn: DateTime.Now.AddDays(45),
+            feepartij: "Voorbeeld Fee Partij 3",
+            functieOmschrijving: "Nog een andere mooie functieonmschrijving",
+            leverancierNotitie: "Voorbeeld leverancier notitie 3",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 3"
         );
 
-        dossiers.Add(newDossier2);
+        // Add the third document to the new dossier
+        newDossier3.Documents.Add(documents[2]);
 
-        newDossier2 = new Dossier(
-            id: "123456789",
-            kandidaatId: "ABCDEFGHIJ",
+        // Add the new dossier to the dossiers list
+        dossiers.Add(newDossier3);
+
+        // Fourth Dossier
+        Dossier newDossier4 = new Dossier(
+            id: "13579",
+            kandidaatId: "LMNOP",
             status: "Afgerond",
             date: DateTime.Now,
-            inkoopTarief: 2000.0,
-            verkoopTarief: 2500.0,
-            betalingstermijn: DateTime.Now.AddDays(35),
-            feepartij: "Voorbeeld Fee Partij met een spin",
-            functieOmschrijving: "Nog een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
+            inkoopTarief: 1800.0,
+            verkoopTarief: 2300.0,
+            betalingstermijn: DateTime.Now.AddDays(25),
+            feepartij: "Voorbeeld Fee Partij 4",
+            functieOmschrijving: "Nog een andere mooie functieonmschrijving 4",
+            leverancierNotitie: "Voorbeeld leverancier notitie 4",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 4"
         );
 
-        dossiers.Add(newDossier2);
+        // Add the third document to the new dossier
+        newDossier4.Documents.Add(documents[3]);
 
-        newDossier2 = new Dossier(
-            id: "123456789",
-            kandidaatId: "ABCDEFGHIJ",
-            status: "Afgerond",
-            date: DateTime.Now,
-            inkoopTarief: 2000.0,
-            verkoopTarief: 2500.0,
-            betalingstermijn: DateTime.Now.AddDays(35),
-            feepartij: "Voorbeeld Fee Partij met een spin",
-            functieOmschrijving: "Nog een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-        );
+        // Add the new dossier to the dossiers list
+        dossiers.Add(newDossier4);
 
-        dossiers.Add(newDossier2);
-
-        newDossier2 = new Dossier(
-            id: "123456789",
-            kandidaatId: "ABCDEFGHIJ",
-            status: "Afgerond",
-            date: DateTime.Now,
-            inkoopTarief: 2000.0,
-            verkoopTarief: 2500.0,
-            betalingstermijn: DateTime.Now.AddDays(35),
-            feepartij: "Voorbeeld Fee Partij met een spin",
-            functieOmschrijving: "Nog een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-        );
-
-        dossiers.Add(newDossier2);
-
-        newDossier2 = new Dossier(
-            id: "123456789",
-            kandidaatId: "ABCDEFGHIJ",
-            status: "Afgerond",
-            date: DateTime.Now,
-            inkoopTarief: 2000.0,
-            verkoopTarief: 2500.0,
-            betalingstermijn: DateTime.Now.AddDays(35),
-            feepartij: "Voorbeeld Fee Partij met een spin",
-            functieOmschrijving: "Nog een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-        );
-
-        dossiers.Add(newDossier2);
-
-        return newDossier;
+        // Continue adding more dossiers with different combinations of documents...
     }
 
-    public void navigate()
+    public void navigate(string kandidaatId)
     {
         Console.WriteLine("Navigate()");
-        this.NavigationManager.NavigateTo("/LeverancierDossierInzien");
+        this.NavigationManager.NavigateTo($"/LeverancierDossierInzien/{kandidaatId}");
     }
 }
