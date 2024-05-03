@@ -101,7 +101,6 @@
     }
 
     // Test Data
-
     private void CreateDossiers()
     {
         Dossier newDossier = new Dossier(
@@ -119,6 +118,8 @@
         );
 
         // Add the first document to the new dossier
+        newDossier.Documents.Add(documents[0].Document);
+        newDossier.Documents.Add(documents[3].Document);
         newDossier.Documents.Add(documents[0].Document);
 
         // Add the new dossier to the dossiers list
@@ -141,6 +142,9 @@
 
         // Add the second document to the new dossier
         newDossier2.Documents.Add(documents[1].Document);
+        newDossier2.Documents.Add(documents[0].Document);
+        newDossier2.Documents.Add(documents[2].Document);
+        newDossier2.Documents.Add(documents[3].Document);
 
         // Add the new dossier to the dossiers list
         dossiers.Add(newDossier2);
@@ -162,6 +166,8 @@
 
         // Add the third document to the new dossier
         newDossier3.Documents.Add(documents[2].Document);
+        newDossier3.Documents.Add(documents[3].Document);
+        newDossier3.Documents.Add(documents[0].Document);
 
         // Add the new dossier to the dossiers list
         dossiers.Add(newDossier3);
@@ -183,6 +189,7 @@
 
         // Add the third document to the new dossier
         newDossier4.Documents.Add(documents[3].Document);
+        newDossier4.Documents.Add(documents[0].Document);
 
         // Add the new dossier to the dossiers list
         dossiers.Add(newDossier4);
