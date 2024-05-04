@@ -1,16 +1,25 @@
-.wizard-container {
+.wizard-layout {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50vh;
+    /*grid-template-columns: 1fr 2fr; */
+    gap: 75px;
+    margin-left: 15em; /* Adjust left margin to move it slightly towards the center */
+
+}
+
+.wizard-design {
+    height: 50%;
+    margin-top: 1em;
+    /*align-self: center;*/
+}
+
+.wizard-progress h1 {
+    margin-top: 1em; 
+    /*text-align: center; */
 }
 
 .wizard-form {
-    width: 400px; /* Adjust width as needed */
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    margin-top: 3em;
 }
 
 .wizard-form label {
@@ -23,7 +32,43 @@
 }
 
 .edit-form  {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.edit-form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.button-container {
+    display: flex;
     gap: 10px;
+    justify-content: flex-end; /* Align buttons to the right */
+    /*position: absolute; !* Position the buttons relative to their containing wizard form *!*/
+    bottom: 20px; /* Adjust the distance from the bottom */
+    right: 20px; /* Adjust the distance from the right */
+}
+
+.btn {
+    background-color: #10ade5;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0a8ab9;
+}
+
+.btn-secondary {
+    background-color: #b4b4b4;
+}
+
+.btn-secondary:hover {
+    background-color: #a7a7a7;
 }

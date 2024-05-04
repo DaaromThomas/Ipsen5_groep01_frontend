@@ -1,93 +1,158 @@
 ﻿@page "/dossier-aanmaken"
 @rendermode InteractiveServer
+@inject NavigationManager NavigationManager
 @using Ipsen5_groep01_frontend.Components.Data
 
 <PageTitle>Dossier Aanmaken</PageTitle>
 
+<div class="wizard-layout">
+    <div class="wizard-progress">
+        <h1>Dossier aanmaken</h1>
+        <img class="wizard-design" src="images/wizard-design-1.png">
+    </div>
 
-
-<div class="wizard-container">
     <div class="wizard-form">
-        <h1>Dossier aanmaken</h1>   
+         
         @if (currentScreen == 1)
         {
             <EditForm Model="@_basisGegevens" OnSubmit="HandleFormSubmission" class="edit-form">
+                <h2>Basis Gegevens</h2>
                 <div class="edit-form">
-                    <label for="opdrachtgeverNaam">Naam van Opdrachtgever: </label>
-                    <InputText id="opdrachtgeverNaam" @bind-Value="@_basisGegevens.opdrachtgeverNaam"></InputText>
-                    <label for="contactPersoon">Contact Persoon: </label>
-                    <InputText id="contactPersoon" @bind-Value="@_basisGegevens.contactPersoon"></InputText>
-                    <label for="email">Email: </label>
-                    <InputText  id="email" type="email" @bind-Value="@_basisGegevens.email" placeholder="example@gmail.com"></InputText>
-                    <label for="telefoonnummer">Telefoonnummer: </label>
-                    <InputText id="telefoonnummer" @bind-Value="@_basisGegevens.telefoonnummer" placeholder="(06)12345678"></InputText>
-                    <label for="adres">Adres: </label>
-                    <InputText  id="adres" @bind-Value="@_basisGegevens.adres"></InputText>
-                    <button type="submit" class="btn btn-primary">Volgende</button>
+                    <div class="edit-form-field">
+                        <label for="opdrachtgeverNaam">Opdrachtgever </label>
+                        <InputText id="opdrachtgeverNaam" @bind-Value="@_basisGegevens.opdrachtgeverNaam"></InputText>
+                    </div>
+                    <div class="edit-form-field">
+                        <label for="contactPersoon">Contact Persoon </label>
+                        <InputText id="contactPersoon" @bind-Value="@_basisGegevens.contactPersoon"></InputText>
+                    </div>
+                    <div class="edit-form-field">
+                        <label for="email">Email </label>
+                        <InputText id="email" type="email" @bind-Value="@_basisGegevens.email" placeholder="example@gmail.com"></InputText>
+                    </div>
+                    <div class="edit-form-field">
+                        <label for="telefoonnummer">Telefoonnummer </label>
+                        <InputText id="telefoonnummer" @bind-Value="@_basisGegevens.telefoonnummer" placeholder="(06)12345678"></InputText>
+                    </div>
+                    <div class="edit-form-field">
+                        <label for="adres">Adres </label>
+                        <InputText id="adres" @bind-Value="@_basisGegevens.adres"></InputText>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-secondary" @onclick="leaveDossierAdd">Verlaten</button>
+                        <button type="submit" class="btn btn-primary">Volgende</button>
+                    </div>
                 </div>
             </EditForm>
         }
         else if (currentScreen == 2)
         {
             <EditForm Model="@_duurOvereenkomst" OnSubmit="HandleFormSubmission">
+                <h2>Duur overeenkomst</h2>
                 <div class="edit-form">
-                    <label for="startDatum">Start Datum: </label>
-                    <InputDate id="startDatum" @bind-Value="@_duurOvereenkomst.startDatum"></InputDate>
-                    <label for="eindDatum">Eind Datum: </label>
-                    <InputDate id="eindDatum" @bind-Value="@_duurOvereenkomst.eindDatum"></InputDate>
-                    <button type="submit" class="btn btn-primary">Volgende</button>
+                    <div class="edit-form-field">
+                        <label for="startDatum">Start Datum </label>
+                        <InputDate id="startDatum" @bind-Value="@_duurOvereenkomst.startDatum"></InputDate>                    
+                    </div>                    
+                    <div class="edit-form-field">                    
+                        <label for="eindDatum">Eind Datum </label>
+                        <InputDate id="eindDatum" @bind-Value="@_duurOvereenkomst.eindDatum"></InputDate>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-secondary" @onclick="GoToPreviousScreen">Vorige</button>
+                        <button type="submit" class="btn btn-primary">Volgende</button>
+                    </div>
                 </div>
             </EditForm>
         }
         else if (currentScreen == 3)
         {
             <EditForm Model="@_werkuren" OnSubmit="HandleFormSubmission">
+                <h2>Werkuren</h2>
                 <div class="edit-form">
-                    <label for="uren">Uren: </label>
-                    <InputText id="uren" @bind-Value="@_werkuren.uren"></InputText>
-                    <button type="submit" class="btn btn-primary">Volgende</button>
+                    <div class="edit-form-field">
+                        <label for="uren">Uren </label>
+                        <InputText id="uren" @bind-Value="@_werkuren.uren"></InputText>                    
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-secondary" @onclick="GoToPreviousScreen">Vorige</button>
+                        <button type="submit" class="btn btn-primary">Volgende</button>
+                    </div>
                 </div>
             </EditForm>
         }
         else if (currentScreen == 4)
         {
             <EditForm Model="@_professional" OnSubmit="HandleFormSubmission">
+                <h2>Professional</h2>
                 <div class="edit-form">
-                    <label for="professional">Professional: </label>
-                    <InputText id="professional" @bind-Value="@_professional.professional"></InputText>
-                    <label for="functieOmschrijving">Functie Omschrijving: </label>
-                    <InputText id="functieOmschrijving" @bind-Value="@_professional.functieOmschrijving"></InputText>
-                    <button type="submit" class="btn btn-primary">Volgende</button>
+                    <div class="edit-form-field">
+                        <label for="professional">Professional </label>
+                        <InputText id="professional" @bind-Value="@_professional.professional"></InputText>
+                    </div>
+                    <div class="edit-form-field">
+                        <label for="functieOmschrijving">Functie Omschrijving </label>
+                        <InputText id="functieOmschrijving" @bind-Value="@_professional.functieOmschrijving"></InputText>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-secondary" @onclick="GoToPreviousScreen">Vorige</button>
+                        <button type="submit" class="btn btn-primary">Volgende</button>
+                    </div>
                 </div>
             </EditForm>
         }
         else if (currentScreen == 5)
         {
             <EditForm Model="@_tarieven" OnSubmit="HandleFormSubmission">
+                <h2>Tarieven</h2>
                 <div class="edit-form">
-                    <label for="inkoopTarief">Inkoop Tarief: </label>
-                    <InputText id="inkoopTarief" @bind-Value="@_tarieven.inkoopTarief"></InputText>
-                    <label for="verkoopTarief">Verkoop Tarief: </label>
-                    <InputText id="verkoopTarief" @bind-Value="@_tarieven.verkoopTarief"></InputText>
-                    <label for="betalingsTermijn">Betalings Termijn: </label>
-                    <InputText id="betalingsTermijn" @bind-Value="@_tarieven.betalingsTermijn"></InputText>
-                    <label for="feePartij">Fee Partij: </label>
-                    <InputText id="feePartij" @bind-Value="@_tarieven.feePartij"></InputText>
-                    <button type="submit" class="btn btn-primary">Volgende</button>
+                    <div class="edit-form-field">
+                        <label for="inkoopTarief">Inkoop Tarief </label>
+                        <InputText id="inkoopTarief" @bind-Value="@_tarieven.inkoopTarief"></InputText>
+                    </div>
+                    <div class="edit-form-field">
+                        <label for="verkoopTarief">Verkoop Tarief </label>
+                        <InputText id="verkoopTarief" @bind-Value="@_tarieven.verkoopTarief"></InputText>
+                    </div>
+                    <div class="edit-form-field">
+                        <label for="betalingsTermijn">Betalings Termijn </label>
+                        <InputText id="betalingsTermijn" @bind-Value="@_tarieven.betalingsTermijn"></InputText>
+                    </div>
+                    <div class="edit-form-field">
+                        <label for="feePartij">Fee Partij </label>
+                        <InputText id="feePartij" @bind-Value="@_tarieven.feePartij"></InputText>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-secondary" @onclick="GoToPreviousScreen">Vorige</button>
+                        <button type="submit" class="btn btn-primary">Volgende</button>
+                    </div>
                 </div>
             </EditForm>
         }
         else if (currentScreen == 6)
         {
-            <EditForm Model="@_werkuren" OnSubmit="HandleFormSubmission">
+            <EditForm Model="@_benodigdeDocumenten" OnSubmit="HandleFormSubmission">
+                <h2>Benodigde documenten</h2>
                 <div class="edit-form">
+                    <div class="edit-form-field">
+                        <label for="uren">Documenten </label>
+                        <InputText id="uren" @bind-Value="@_benodigdeDocumenten.documenten"></InputText>                    
+                    </div>
+                    <div class="button-container">
+                        <button type="submit" class="btn btn-secondary" @onclick="GoToPreviousScreen">Vorige</button>
+                        <button type="submit" class="btn btn-primary">Indienen</button>
+                    </div>
                 </div>
-                <label for="uren">Benodigde Documenten </label>
-                <button type="submit" class="btn btn-primary">Indienen</button>
             </EditForm>
+        }
+        else if (currentScreen == 7)
+        {
+            <h1>Het dossier is aangemaakt.</h1>
         }
     </div>
 </div>
+
+
 
 @code {
     private int currentScreen = 1;
@@ -97,17 +162,31 @@
     Werkuren _werkuren = new();
     Professional _professional = new();
     Tarieven _tarieven = new();
+    BenodigdeDocumenten _benodigdeDocumenten = new();
     
     private void GoToNextScreen()
     {
-        if (currentScreen < 6)
+        if (currentScreen <= 7)
         {
             currentScreen++;
+        }
+    }
+    
+    private void GoToPreviousScreen()
+    {
+        if (currentScreen > 1)
+        {
+            currentScreen--;
         }
     }
 
     public void HandleFormSubmission(EditContext context)
     {
         GoToNextScreen();
+    }
+    
+    private void leaveDossierAdd()
+    { 
+        NavigationManager.NavigateTo("/dossiers");
     }
 }
