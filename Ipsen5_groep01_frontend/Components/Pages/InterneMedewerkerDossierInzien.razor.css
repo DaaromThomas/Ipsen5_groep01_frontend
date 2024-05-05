@@ -12,5 +12,85 @@
     background-color: #FFFFFF;
     border: black 1px solid;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.dossier-name{
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.basis-gegevens{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+.persoons-gegevens {
+    width: 100%;
+    min-height: 80px;
+    background-color: #DBDBDB;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: min-height 0.3s;
+}
+
+.title {
+    margin: 0;
+    margin-top: 28px;
+    margin-left: 10px;
+}
+
+.info{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 10px;
+    column-gap: 30px;
+    row-gap: 10px;
+    margin-top: 10px;
+}
+
+.info .informatie-vak{
+    margin: 0;
+    background-color: #FFFFFF;
+    height: 45px;
+    border-radius: 8px;
+    border: black solid 1px;
+    padding: 0 10px;
+    line-height: 42px;
+    min-width: 200px;
+}
+
+.passpoort{
+    width: 453px;
+}
+
+.organogram{
+    width: 393px;
+}
+
+.button{
+    margin-top: 10px;
+    height: 25px;
+    border-radius: 45px;
+    border: none;
+}
+
+.ok-button{
+    background-color: #3DBD00;
+    padding-top: 1px;
+}
+
+.no-button{
+    background-color: #FF4545;
+    padding-top: 2px;
+    margin-left: -20px;
+}
+
+.opened{
+    background-color: #DBDBDB !important;
+    height: 180px !important;
 }

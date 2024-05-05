@@ -1,11 +1,43 @@
 @page "/InterneMedewerkerDossierInzien/{DossierCode}"
+@rendermode InteractiveServer
 @using Models
 
 <div class="container">
     <div class="blocks">
-        <p>@DossierCode</p>
-        <div class="basis-gegevens">
-
+        <p class="dossier-name">@DossierCode</p>
+        <div class="basis-gegevens" >
+            Basis Gegevens
+            <div class="persoons-gegevens @((showPersoonsGegevens) ? "opened" : "")" @onclick="TogglePersoonsGegevens">
+                <p class="title">persoons gegevens</p>
+                @if (showPersoonsGegevens){
+                    <div class="info">
+                        <p class="informatie-vak">Voornaam: Max</p>
+                        <p class="informatie-vak">Achternaam: Haijes</p>
+                        <p class="informatie-vak">Geboortedatum: 12-12-2012</p>
+                        <p class="informatie-vak">BSN: 111222333</p>
+                        <a class="informatie-vak passpoort" href="">Paspoort</a>
+                        <button class="button ok-button" @onclick:stopPropagation>✔</button>
+                        <button class="button no-button" @onclick:stopPropagation>X</button>
+                    </div> 
+                }
+                
+            </div>
+            <div class="persoons-gegevens @((showBedrijfsGegevens) ? "opened" : "")" @onclick="ToggleBedrijfsGegevens">
+                <p class="title">Bedrijfs gegevens</p>
+                @if (showBedrijfsGegevens){
+                    <div class="info">
+                        <p class="informatie-vak">Naam: Pornhub</p>
+                        <p class="informatie-vak">KVK-nummer: </p>
+                        <p class="informatie-vak">Adress: Jouw telefoon</p>
+                        <p class="informatie-vak">Oprichtingsdatum: 12-12-1212</p>
+                        <a class="informatie-vak organogram">organogram</a>
+                        <button class="button ok-button" @onclick:stopPropagation>✔</button>
+                        <button class="button no-button" @onclick:stopPropagation>X</button>
+                    </div> 
+                }
+                
+            </div>
+            
         </div>
         <div class="overige-gegevens">
 
@@ -13,142 +45,19 @@
     </div>
 </div>
 
-
-
-@code{
+@code {
     [Parameter]
-    public string DossierCode {get; set;}
-    private List<Dossier> dossiers = new List<Dossier>();
+    public string DossierCode { get; set; }
+    private bool showPersoonsGegevens = false;
+    private bool showBedrijfsGegevens = false;
 
-    protected override void OnInitialized()
+    private void TogglePersoonsGegevens()
     {
-        createDossiers();
+        showPersoonsGegevens = !showPersoonsGegevens;
     }
 
-
-
-
-    private List<Document> documents = new List<Document>{
-        new Document
-            {
-                Id = "1",
-                Name = "Invoice001",
-                UploadType = "Invoice",
-                DocumentPath = "/documents/invoice001.pdf",
-                Status = "Goedgekeurd",
-                CreatedDate = DateTime.Now.AddDays(-10),
-                UpdatedDate = DateTime.Now.AddDays(-5),
-                CreatedBy = "John Doe"
-            },
-            new Document
-            {
-                Id = "2",
-                Name = "Contract002",
-                UploadType = "Contract",
-                DocumentPath = "/documents/contract002.pdf",
-                Status = "Wachten op beoordeling",
-                CreatedDate = DateTime.Now.AddDays(-15),
-                UpdatedDate = DateTime.Now.AddDays(-10),
-                CreatedBy = "Jane Smith"
-            },
-            new Document
-            {
-                Id = "3",
-                Name = "Proposal003",
-                UploadType = "Proposal",
-                DocumentPath = "/documents/proposal003.pdf",
-                Status = "Afgekeurd",
-                CreatedDate = DateTime.Now.AddDays(-20),
-                UpdatedDate = DateTime.Now.AddDays(-15),
-                CreatedBy = "Alice Johnson"
-            },
-            new Document
-            {
-                Id = "4",
-                Name = "Delivery004",
-                UploadType = "Delivery",
-                DocumentPath = "/documents/delivery004.pdf",
-                Status = "Nog op te leveren",
-                CreatedDate = DateTime.Now.AddDays(-25),
-                UpdatedDate = DateTime.Now.AddDays(-20),
-                CreatedBy = "Bob Williams"
-            }  
-            
-        };
-        private void createDossiers()
-        {
-            Dossier newDossier = new Dossier(
-                id: "12345",
-                kandidaatId: "ABCDE",
-                status: "In behandeling",
-                date: DateTime.Now,
-                inkoopTarief: 1000.0,
-                verkoopTarief: 1500.0,
-                betalingstermijn: DateTime.Now.AddDays(30),
-                feepartij: "Voorbeeld Fee Partij",
-                functieOmschrijving: "Een mooie functieonmschrijving",
-                leverancierNotitie: "Voorbeeld leverancier notitie",
-                interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-            );
-
-            newDossier.Documents.Add(documents[0]);
-
-            dossiers.Add(newDossier);
-
-            Dossier newDossier2 = new Dossier(
-                id: "123456789",
-                kandidaatId: "ABCDEFGHIJ",
-                status: "Afgerond",
-                date: DateTime.Now,
-                inkoopTarief: 2000.0,
-                verkoopTarief: 2500.0,
-                betalingstermijn: DateTime.Now.AddDays(35),
-                feepartij: "Voorbeeld Fee Partij met een spin",
-                functieOmschrijving: "Nog een mooie functieonmschrijving",
-                leverancierNotitie: "Voorbeeld leverancier notitie",
-                interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-            );
-
-            newDossier2.Documents.Add(documents[1]);
-
-            dossiers.Add(newDossier2);
-
-            Dossier newDossier3 = new Dossier(
-                id: "67890",
-                kandidaatId: "FGHIJK",
-                status: "In behandeling",
-                date: DateTime.Now,
-                inkoopTarief: 1500.0,
-                verkoopTarief: 2000.0,
-                betalingstermijn: DateTime.Now.AddDays(45),
-                feepartij: "Voorbeeld Fee Partij 3",
-                functieOmschrijving: "Nog een andere mooie functieonmschrijving",
-                leverancierNotitie: "Voorbeeld leverancier notitie 3",
-                interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 3"
-            );
-
-            newDossier3.Documents.Add(documents[2]);
-
-            dossiers.Add(newDossier3);
-
-            Dossier newDossier4 = new Dossier(
-                id: "13579",
-                kandidaatId: "LMNOP",
-                status: "Afgerond",
-                date: DateTime.Now,
-                inkoopTarief: 1800.0,
-                verkoopTarief: 2300.0,
-                betalingstermijn: DateTime.Now.AddDays(25),
-                feepartij: "Voorbeeld Fee Partij 4",
-                functieOmschrijving: "Nog een andere mooie functieonmschrijving 4",
-                leverancierNotitie: "Voorbeeld leverancier notitie 4",
-                interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 4"
-            );
-
-            newDossier4.Documents.Add(documents[3]);
-
-            dossiers.Add(newDossier4);
-        }
-
+    private void ToggleBedrijfsGegevens()
+    {
+        showBedrijfsGegevens = !showBedrijfsGegevens;
+    }
 }
-
