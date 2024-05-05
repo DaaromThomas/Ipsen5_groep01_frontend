@@ -1,126 +1,23 @@
-@page "/InterneMedewerkerDossierScherm"
-@rendermode InteractiveServer
-@inject NavigationManager NavigationManager
-
+@page "/InterneMedewerkerDossierInzien/{DossierCode}"
 @using Models
 
-<div class="decorative-bar"></div>
+<h1>Dossier inzien werkt!</h1>
+<p>@DossierCode</p>
 
-<div class="main">
-    <div class="filter-and-button">
-        <div class="filters">
-            <input type="text" placeholder="Zoeken" @bind="searchTerm" @oninput="HandleInput"/>
-            <select name="Status" id="select_status">
-                <option value="" disabled selected>Status</option>
-                <option value="Aangemaakt" >Aangemaakt</option>
-                <option value="Incompleet">Incompleet</option>
-                <option value="Wachten PO">Wachten PO</option>
-                <option value="Compleet">Compleet</option>
-                <option value="Beëndigd">Beëndigd</option>
-            </select>
-            <input type="date" placeholder="Datum" @oninput="HandleInput"/>
-        </div>
-        <div class="button-holder">
-            <div>Nieuw Dossier</div>
-        </div>
-    </div>
-
-    <table class="table">
-        <thead>
-        <tr class="table-row table-header">
-            <th>Opdracht</th>
-            <th>Status</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-            @foreach (Dossier dossier in filteredDossiers)
-            {
-                <tr class="table-row data-row" @onclick="()=>navigate(dossier.KandidaatId)">
-                    <td>@dossier.KandidaatId</td>
-                    @{
-                        string status = GenerateStatus();
-                        string color = GetRowColor(status);
-                    }
-                    <td class="table-status" style="color: @color">@status</td>
-                    <td>&#10095;</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-@code {
+@code{
+    [Parameter]
+    public string DossierCode {get; set;}
     private List<Dossier> dossiers = new List<Dossier>();
-    private List<Dossier> filteredDossiers = new List<Dossier>();
-    private string searchTerm = "";
 
     protected override void OnInitialized()
     {
         createDossiers();
-        FilterDossiers();
-    }
-
-    private string GetRowColor(string status)
-    {
-        switch (status)
-        {
-            case "Aangemaakt":
-                return "#006BFF"; // Blue
-            case "Incompleet":
-                return "#FBD300"; // Yellow
-            case "Wachten PO":
-                return "#000580"; // Dark Blue
-            case "Compleet":
-                return "#00800D"; // Green
-            case "Beëndigd":
-                return "#C80000"; // Red
-            default:
-                return "white";
-        }
-    }
-
-    //TODO: Change GenerateStatus to GetStatus (Now it is hardcoded)
-    private string GenerateStatus(){
-        Random rnd = new Random();
-        int number   = rnd.Next(5);
-        switch(number){
-            case 0:
-                return "Aangemaakt";
-            case 1:
-                return "Incompleet";
-            case 2:
-                return "Wachten PO";
-            case 3:
-                return "Compleet";
-            case 4:
-                return "Beëndigd";
-            default:
-                return "Aangemaakt";
-        }
-    }
-
-    private void HandleInput(ChangeEventArgs e)
-    {
-        searchTerm = e.Value.ToString().ToUpper();
-        FilterDossiers();
-    }
-
-    private void FilterDossiers()
-    {
-        if (searchTerm == null)
-        {
-            filteredDossiers = dossiers;
-        }
-        else
-        {
-            filteredDossiers = dossiers.Where(t => t.KandidaatId.ToUpper().Contains(searchTerm)).ToList<Dossier>();
-        }
     }
 
 
 
-    private List<Document> documents = new List<Document>{
+
+private List<Document> documents = new List<Document>{
       new Document
         {
             Id = "1",
@@ -167,7 +64,6 @@
         }  
         
     };
-
     private void createDossiers()
     {
         Dossier newDossier = new Dossier(
@@ -243,8 +139,5 @@
         dossiers.Add(newDossier4);
     }
 
-    public void navigate(string kandidaatId)
-    {
-        this.NavigationManager.NavigateTo($"/InterneMedewerkerDossierInzien/{kandidaatId}");
-    }
 }
+
