@@ -23,18 +23,26 @@
             @if (documenten != null)
             {
                 @foreach (var document in documenten)
-                {
-                    <li class="document">
-                        <div class="document-content">
-                            <span class="naam">@document.Naam</span>
-                            <span class="document-checkbox">
-                                <input type="checkbox" @bind="document.Verplicht" />
-                            </span>
-                            <span class="extensie">@document.Extensie</span>
-                        </div>
-                        <span class="prullenbak" @onclick="@(() => VerwijderDocument(document))">🗑️</span>
-                    </li>
-                }
+{
+    <li class="document">
+        <div class="document-content">
+            <span class="naam">
+                <input type="text" @bind="document.Naam" class="editable-name" />
+            </span>
+            <span class="document-checkbox">
+                <input type="checkbox" @bind="document.Verplicht" />
+            </span>
+            <span class="extensie">
+            <select @bind="document.Extensie" class="editable-extension">
+                <option value=".pdf">.pdf</option>
+                <option value=".docx">.docx</option>
+                <option value=".txt">.txt</option>
+            </select>
+        </span>
+        </div>
+        <span class="prullenbak" @onclick="@(() => VerwijderDocument(document))">🗑️</span>
+    </li>
+}
             }
             else
             {
@@ -50,14 +58,11 @@
     protected override async Task OnInitializedAsync()
     {
         documenten = await DocumentenService.GetDocumentenAsync();
-        StateHasChanged(); // Make sure to force the component to re-render after data is loaded.
+        StateHasChanged();
     }
 
     private async Task VerwijderDocument(Document document)
     {
         documenten.Remove(document);
-        // Call your service method to delete the document from the backend
-        // For example: await DocumentenService.VerwijderDocumentAsync(document);
-        StateHasChanged(); // Update the UI to reflect the removal of the document
     }
 }

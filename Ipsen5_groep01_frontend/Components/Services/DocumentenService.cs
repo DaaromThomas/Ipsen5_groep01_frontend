@@ -14,7 +14,6 @@ namespace Ipsen5_groep01_frontend.Components.Services
 
         public Task<List<Document>> GetDocumentenAsync()
         {
-            // Return a completed task with the list of documents
             return Task.FromResult(documenten);
         }
 
