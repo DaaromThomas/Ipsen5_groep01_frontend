@@ -4,11 +4,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 150px;
 }
 
 .blocks{
     width: 80%;
-    height: 80%;
+    min-height: 80%;
+    height: fit-content;
+    padding-bottom: 50px;
+    margin-bottom: 50px;
     background-color: #FFFFFF;
     border: black 1px solid;
     display: flex;
@@ -64,6 +68,13 @@
     row-gap: 20px;
 }
 
+.overige-gegevens{
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
 .gegevens {
     width: 100%;
     min-height: 80px;
@@ -91,8 +102,13 @@
     row-gap: 10px;
     margin-top: 10px;
 }
+.notitie{
+    margin-left: 20px;
+    margin-top: 10px;
+    margin-right: 20px;
+}
 
-.info .informatie-vak{
+.informatie-vak{
     margin: 0;
     background-color: #FFFFFF;
     height: 45px;
@@ -101,6 +117,25 @@
     padding: 0 10px;
     line-height: 42px;
     min-width: 200px;
+}
+
+.document-container{
+    display: flex;
+    flex-direction: row;
+    column-gap: 30px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.document-vak{
+    margin: 0;
+    background-color: #FFFFFF;
+    height: 40px;
+    border-radius: 8px;
+    border: black solid 1px;
+    padding: 0 10px;
+    line-height: 42px;
+    width: 200px;
 }
 
 .passpoort{
@@ -131,5 +166,6 @@
 
 .opened{
     background-color: #DBDBDB !important;
-    height: 180px !important;
+    height: auto;
+    padding-bottom: 10px !important;
 }
