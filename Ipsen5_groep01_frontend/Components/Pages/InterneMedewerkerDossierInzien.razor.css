@@ -16,6 +16,42 @@
     flex-direction: column;
 }
 
+.bolletjes{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 40px;
+    column-gap: 30px;
+}
+
+.bolletje-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: bold;
+
+}
+
+.bolletje{
+    height: 62px;
+    width: 62px;
+    border-radius: 62px;
+    background-color: #FFFFFF;
+    border: solid 1px #FF6700;
+    color: #FF7600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.line {
+    width: 100%;
+    height: 2px;
+    background-color: #000;
+    margin: 0;
+    margin-top: -13px;
+
+}
+
 .dossier-name{
     margin-top: 10px;
     font-weight: bold;
@@ -28,7 +64,7 @@
     row-gap: 20px;
 }
 
-.persoons-gegevens {
+.gegevens {
     width: 100%;
     min-height: 80px;
     background-color: #DBDBDB;
@@ -40,7 +76,10 @@
 .title {
     margin: 0;
     margin-top: 28px;
-    margin-left: 10px;
+    margin-left: 20px;
+    display: flex;
+    justify-content: space-between;
+    margin-right: 20px;
 }
 
 .info{

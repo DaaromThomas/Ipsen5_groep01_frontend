@@ -5,43 +5,85 @@
 <div class="container">
     <div class="blocks">
         <p class="dossier-name">@DossierCode</p>
-        <div class="basis-gegevens" >
-            Basis Gegevens
-            <div class="persoons-gegevens @((showPersoonsGegevens) ? "opened" : "")" @onclick="TogglePersoonsGegevens">
-                <p class="title">persoons gegevens</p>
-                @if (showPersoonsGegevens){
-                    <div class="info">
-                        <p class="informatie-vak">Voornaam: Max</p>
-                        <p class="informatie-vak">Achternaam: Haijes</p>
-                        <p class="informatie-vak">Geboortedatum: 12-12-2012</p>
-                        <p class="informatie-vak">BSN: 111222333</p>
-                        <a class="informatie-vak passpoort" href="">Paspoort</a>
-                        <button class="button ok-button" @onclick:stopPropagation>✔</button>
-                        <button class="button no-button" @onclick:stopPropagation>X</button>
-                    </div> 
+        <div class="bolletjes">
+            <div class="basis bolletje-container " @onclick="() => SwitchToPage(1)">
+                <div class="bolletje">
+                    1
+                </div>
+                <p>Basis</p>
+                @if(page == 1){
+                    <div class="line"></div>
                 }
                 
             </div>
-            <div class="persoons-gegevens @((showBedrijfsGegevens) ? "opened" : "")" @onclick="ToggleBedrijfsGegevens">
-                <p class="title">Bedrijfs gegevens</p>
-                @if (showBedrijfsGegevens){
-                    <div class="info">
-                        <p class="informatie-vak">Naam: Pornhub</p>
-                        <p class="informatie-vak">KVK-nummer: </p>
-                        <p class="informatie-vak">Adress: Jouw telefoon</p>
-                        <p class="informatie-vak">Oprichtingsdatum: 12-12-1212</p>
-                        <a class="informatie-vak organogram">organogram</a>
-                        <button class="button ok-button" @onclick:stopPropagation>✔</button>
-                        <button class="button no-button" @onclick:stopPropagation>X</button>
-                    </div> 
+            <div class="overig bolletje-container" @onclick="() => SwitchToPage(2)">
+                <div class="bolletje">
+                    2
+                </div>
+                <p>Overig</p>
+                @if(page == 2){
+                    <p class="line"></p>
                 }
                 
             </div>
-            
         </div>
-        <div class="overige-gegevens">
+        @if(page == 1){
+                 <div class="basis-gegevens" >
+                    <div class="gegevens @((showPersoonsGegevens) ? "opened" : "")" @onclick="TogglePersoonsGegevens">
+                        <p class="title">
+                            Persoons gegevens
+                            @if (showPersoonsGegevens)
+                            {
+                                <span>&#x25B2;</span>
+                            }
+                            else
+                            {
+                                <span>&#x25BC;</span>
+                            }
+                        </p>
+                        @if (showPersoonsGegevens){
+                            <div class="info">
+                                <p class="informatie-vak">Voornaam: Max</p>
+                                <p class="informatie-vak">Achternaam: Haijes</p>
+                                <p class="informatie-vak">Geboortedatum: 12-12-2012</p>
+                                <p class="informatie-vak">BSN: 111222333</p>
+                                <a class="informatie-vak passpoort" href="">Paspoort</a>
+                                <button class="button ok-button" @onclick:stopPropagation>✔</button>
+                                <button class="button no-button" @onclick:stopPropagation>X</button>
+                            </div> 
+                        }
+                        
+                    </div>
+                    <div class="gegevens @((showBedrijfsGegevens) ? "opened" : "")" @onclick="ToggleBedrijfsGegevens">
+                        <p class="title">
+                            Bedrijfs gegevens
+                            @if (showPersoonsGegevens)
+                            {
+                                <span>&#x25B2;</span>
+                            }
+                            else
+                            {
+                                <span>&#x25BC;</span>
+                            }
+                        </p>
+                        @if (showBedrijfsGegevens){
+                            <div class="info">
+                                <p class="informatie-vak">Naam: Pornhub</p>
+                                <p class="informatie-vak">KVK-nummer: 5684 6846</p>
+                                <p class="informatie-vak">Adress: Jouw telefoon</p>
+                                <p class="informatie-vak">Oprichtingsdatum: 12-12-1212</p>
+                                <a class="informatie-vak organogram">organogram</a>
+                                <button class="button ok-button" @onclick:stopPropagation>✔</button>
+                                <button class="button no-button" @onclick:stopPropagation>X</button>
+                            </div> 
+                        }
+                    </div>
+                </div>
+            } else if(page == 2){
+                <div class="overige-gegevens">
 
-        </div>
+                </div>
+            }
     </div>
 </div>
 
@@ -50,6 +92,7 @@
     public string DossierCode { get; set; }
     private bool showPersoonsGegevens = false;
     private bool showBedrijfsGegevens = false;
+    private int page = 1;
 
     private void TogglePersoonsGegevens()
     {
@@ -59,5 +102,10 @@
     private void ToggleBedrijfsGegevens()
     {
         showBedrijfsGegevens = !showBedrijfsGegevens;
+    }
+
+    private void SwitchToPage(int pageNumber)
+    {
+        page = pageNumber;
     }
 }
