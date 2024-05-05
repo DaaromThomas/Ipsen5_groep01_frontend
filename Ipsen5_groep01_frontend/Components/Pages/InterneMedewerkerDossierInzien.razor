@@ -1,8 +1,19 @@
 @page "/InterneMedewerkerDossierInzien/{DossierCode}"
 @using Models
 
-<h1>Dossier inzien werkt!</h1>
-<p>@DossierCode</p>
+<div class="container">
+    <div class="blocks">
+        <p>@DossierCode</p>
+        <div class="basis-gegevens">
+
+        </div>
+        <div class="overige-gegevens">
+
+        </div>
+    </div>
+</div>
+
+
 
 @code{
     [Parameter]
@@ -17,127 +28,127 @@
 
 
 
-private List<Document> documents = new List<Document>{
-      new Document
-        {
-            Id = "1",
-            Name = "Invoice001",
-            UploadType = "Invoice",
-            DocumentPath = "/documents/invoice001.pdf",
-            Status = "Goedgekeurd",
-            CreatedDate = DateTime.Now.AddDays(-10),
-            UpdatedDate = DateTime.Now.AddDays(-5),
-            CreatedBy = "John Doe"
-        },
+    private List<Document> documents = new List<Document>{
         new Document
+            {
+                Id = "1",
+                Name = "Invoice001",
+                UploadType = "Invoice",
+                DocumentPath = "/documents/invoice001.pdf",
+                Status = "Goedgekeurd",
+                CreatedDate = DateTime.Now.AddDays(-10),
+                UpdatedDate = DateTime.Now.AddDays(-5),
+                CreatedBy = "John Doe"
+            },
+            new Document
+            {
+                Id = "2",
+                Name = "Contract002",
+                UploadType = "Contract",
+                DocumentPath = "/documents/contract002.pdf",
+                Status = "Wachten op beoordeling",
+                CreatedDate = DateTime.Now.AddDays(-15),
+                UpdatedDate = DateTime.Now.AddDays(-10),
+                CreatedBy = "Jane Smith"
+            },
+            new Document
+            {
+                Id = "3",
+                Name = "Proposal003",
+                UploadType = "Proposal",
+                DocumentPath = "/documents/proposal003.pdf",
+                Status = "Afgekeurd",
+                CreatedDate = DateTime.Now.AddDays(-20),
+                UpdatedDate = DateTime.Now.AddDays(-15),
+                CreatedBy = "Alice Johnson"
+            },
+            new Document
+            {
+                Id = "4",
+                Name = "Delivery004",
+                UploadType = "Delivery",
+                DocumentPath = "/documents/delivery004.pdf",
+                Status = "Nog op te leveren",
+                CreatedDate = DateTime.Now.AddDays(-25),
+                UpdatedDate = DateTime.Now.AddDays(-20),
+                CreatedBy = "Bob Williams"
+            }  
+            
+        };
+        private void createDossiers()
         {
-            Id = "2",
-            Name = "Contract002",
-            UploadType = "Contract",
-            DocumentPath = "/documents/contract002.pdf",
-            Status = "Wachten op beoordeling",
-            CreatedDate = DateTime.Now.AddDays(-15),
-            UpdatedDate = DateTime.Now.AddDays(-10),
-            CreatedBy = "Jane Smith"
-        },
-        new Document
-        {
-            Id = "3",
-            Name = "Proposal003",
-            UploadType = "Proposal",
-            DocumentPath = "/documents/proposal003.pdf",
-            Status = "Afgekeurd",
-            CreatedDate = DateTime.Now.AddDays(-20),
-            UpdatedDate = DateTime.Now.AddDays(-15),
-            CreatedBy = "Alice Johnson"
-        },
-        new Document
-        {
-            Id = "4",
-            Name = "Delivery004",
-            UploadType = "Delivery",
-            DocumentPath = "/documents/delivery004.pdf",
-            Status = "Nog op te leveren",
-            CreatedDate = DateTime.Now.AddDays(-25),
-            UpdatedDate = DateTime.Now.AddDays(-20),
-            CreatedBy = "Bob Williams"
-        }  
-        
-    };
-    private void createDossiers()
-    {
-        Dossier newDossier = new Dossier(
-            id: "12345",
-            kandidaatId: "ABCDE",
-            status: "In behandeling",
-            date: DateTime.Now,
-            inkoopTarief: 1000.0,
-            verkoopTarief: 1500.0,
-            betalingstermijn: DateTime.Now.AddDays(30),
-            feepartij: "Voorbeeld Fee Partij",
-            functieOmschrijving: "Een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-        );
+            Dossier newDossier = new Dossier(
+                id: "12345",
+                kandidaatId: "ABCDE",
+                status: "In behandeling",
+                date: DateTime.Now,
+                inkoopTarief: 1000.0,
+                verkoopTarief: 1500.0,
+                betalingstermijn: DateTime.Now.AddDays(30),
+                feepartij: "Voorbeeld Fee Partij",
+                functieOmschrijving: "Een mooie functieonmschrijving",
+                leverancierNotitie: "Voorbeeld leverancier notitie",
+                interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
+            );
 
-        newDossier.Documents.Add(documents[0]);
+            newDossier.Documents.Add(documents[0]);
 
-        dossiers.Add(newDossier);
+            dossiers.Add(newDossier);
 
-        Dossier newDossier2 = new Dossier(
-            id: "123456789",
-            kandidaatId: "ABCDEFGHIJ",
-            status: "Afgerond",
-            date: DateTime.Now,
-            inkoopTarief: 2000.0,
-            verkoopTarief: 2500.0,
-            betalingstermijn: DateTime.Now.AddDays(35),
-            feepartij: "Voorbeeld Fee Partij met een spin",
-            functieOmschrijving: "Nog een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-        );
+            Dossier newDossier2 = new Dossier(
+                id: "123456789",
+                kandidaatId: "ABCDEFGHIJ",
+                status: "Afgerond",
+                date: DateTime.Now,
+                inkoopTarief: 2000.0,
+                verkoopTarief: 2500.0,
+                betalingstermijn: DateTime.Now.AddDays(35),
+                feepartij: "Voorbeeld Fee Partij met een spin",
+                functieOmschrijving: "Nog een mooie functieonmschrijving",
+                leverancierNotitie: "Voorbeeld leverancier notitie",
+                interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
+            );
 
-        newDossier2.Documents.Add(documents[1]);
+            newDossier2.Documents.Add(documents[1]);
 
-        dossiers.Add(newDossier2);
+            dossiers.Add(newDossier2);
 
-        Dossier newDossier3 = new Dossier(
-            id: "67890",
-            kandidaatId: "FGHIJK",
-            status: "In behandeling",
-            date: DateTime.Now,
-            inkoopTarief: 1500.0,
-            verkoopTarief: 2000.0,
-            betalingstermijn: DateTime.Now.AddDays(45),
-            feepartij: "Voorbeeld Fee Partij 3",
-            functieOmschrijving: "Nog een andere mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie 3",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 3"
-        );
+            Dossier newDossier3 = new Dossier(
+                id: "67890",
+                kandidaatId: "FGHIJK",
+                status: "In behandeling",
+                date: DateTime.Now,
+                inkoopTarief: 1500.0,
+                verkoopTarief: 2000.0,
+                betalingstermijn: DateTime.Now.AddDays(45),
+                feepartij: "Voorbeeld Fee Partij 3",
+                functieOmschrijving: "Nog een andere mooie functieonmschrijving",
+                leverancierNotitie: "Voorbeeld leverancier notitie 3",
+                interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 3"
+            );
 
-        newDossier3.Documents.Add(documents[2]);
+            newDossier3.Documents.Add(documents[2]);
 
-        dossiers.Add(newDossier3);
+            dossiers.Add(newDossier3);
 
-        Dossier newDossier4 = new Dossier(
-            id: "13579",
-            kandidaatId: "LMNOP",
-            status: "Afgerond",
-            date: DateTime.Now,
-            inkoopTarief: 1800.0,
-            verkoopTarief: 2300.0,
-            betalingstermijn: DateTime.Now.AddDays(25),
-            feepartij: "Voorbeeld Fee Partij 4",
-            functieOmschrijving: "Nog een andere mooie functieonmschrijving 4",
-            leverancierNotitie: "Voorbeeld leverancier notitie 4",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 4"
-        );
+            Dossier newDossier4 = new Dossier(
+                id: "13579",
+                kandidaatId: "LMNOP",
+                status: "Afgerond",
+                date: DateTime.Now,
+                inkoopTarief: 1800.0,
+                verkoopTarief: 2300.0,
+                betalingstermijn: DateTime.Now.AddDays(25),
+                feepartij: "Voorbeeld Fee Partij 4",
+                functieOmschrijving: "Nog een andere mooie functieonmschrijving 4",
+                leverancierNotitie: "Voorbeeld leverancier notitie 4",
+                interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 4"
+            );
 
-        newDossier4.Documents.Add(documents[3]);
+            newDossier4.Documents.Add(documents[3]);
 
-        dossiers.Add(newDossier4);
-    }
+            dossiers.Add(newDossier4);
+        }
 
 }
 

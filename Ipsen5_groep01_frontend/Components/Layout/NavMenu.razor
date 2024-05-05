@@ -41,7 +41,7 @@
             </NavLink>
         </div>
         <div class="button" style="background-color: #FF6700;">
-            <NavLink href="" Match="NavLinkMatch.All"
+            <NavLink @onclick="() => login(false)" href="leverancierDossierScherm" Match="NavLinkMatch.All"
                      style="color: #F5F5F5; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                 <span class="" aria-hidden="true"></span> REGISTREREN
             </NavLink>
@@ -59,7 +59,7 @@
 
 @code {
     private bool loggedIn = false;
-    private bool isAdmin = true;
+    private bool isAdmin = false;
 
     private void login(bool isAdmin){
         this.loggedIn = true;
