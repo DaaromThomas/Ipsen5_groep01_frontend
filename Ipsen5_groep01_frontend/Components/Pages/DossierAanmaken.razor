@@ -8,12 +8,13 @@
 <div class="wizard-layout">
     <div class="wizard-progress">
         <h1>Dossier aanmaken</h1>
-        <img class="wizard-design" src="images/wizard-design-1.png">
+        <p>Maak een dossier van een opdrachtgever en werknemer.</p>
+        <img class="wizard-design" src="@GetWizardImagePath(currentScreen)">
     </div>
-
+    <div class="vertical-divider"></div> <!-- Add this line for the vertical divider -->
     <div class="wizard-form">
          
-        @if (currentScreen == 1)
+        @if (currentScreen == 0)
         {
             <EditForm Model="@_basisGegevens" OnSubmit="HandleFormSubmission" class="edit-form">
                 <h2>Basis Gegevens</h2>
@@ -39,13 +40,13 @@
                         <InputText id="adres" @bind-Value="@_basisGegevens.adres"></InputText>
                     </div>
                     <div class="button-container">
-                        <button type="submit" class="btn btn-secondary" @onclick="leaveDossierAdd">Verlaten</button>
+                        <button type="submit" class="btn btn-secondary" @onclick="LeaveAddDossier">Verlaten</button>
                         <button type="submit" class="btn btn-primary">Volgende</button>
                     </div>
                 </div>
             </EditForm>
         }
-        else if (currentScreen == 2)
+        else if (currentScreen == 1)
         {
             <EditForm Model="@_duurOvereenkomst" OnSubmit="HandleFormSubmission">
                 <h2>Duur overeenkomst</h2>
@@ -65,7 +66,7 @@
                 </div>
             </EditForm>
         }
-        else if (currentScreen == 3)
+        else if (currentScreen == 2)
         {
             <EditForm Model="@_werkuren" OnSubmit="HandleFormSubmission">
                 <h2>Werkuren</h2>
@@ -81,7 +82,7 @@
                 </div>
             </EditForm>
         }
-        else if (currentScreen == 4)
+        else if (currentScreen == 3)
         {
             <EditForm Model="@_professional" OnSubmit="HandleFormSubmission">
                 <h2>Professional</h2>
@@ -101,7 +102,7 @@
                 </div>
             </EditForm>
         }
-        else if (currentScreen == 5)
+        else if (currentScreen == 4)
         {
             <EditForm Model="@_tarieven" OnSubmit="HandleFormSubmission">
                 <h2>Tarieven</h2>
@@ -129,7 +130,7 @@
                 </div>
             </EditForm>
         }
-        else if (currentScreen == 6)
+        else if (currentScreen == 5)
         {
             <EditForm Model="@_benodigdeDocumenten" OnSubmit="HandleFormSubmission">
                 <h2>Benodigde documenten</h2>
@@ -145,9 +146,10 @@
                 </div>
             </EditForm>
         }
-        else if (currentScreen == 7)
+        else if (currentScreen == 6)
         {
             <h1>Het dossier is aangemaakt.</h1>
+            <button type="submit" class="btn btn-primary" @onclick="LeaveAddDossier">Verlaten</button>
         }
     </div>
 </div>
@@ -155,7 +157,7 @@
 
 
 @code {
-    private int currentScreen = 1;
+    private int currentScreen = 0;
     
     BasisGegevens _basisGegevens = new();
     DuurOvereenkomst _duurOvereenkomst = new();
@@ -166,7 +168,7 @@
     
     private void GoToNextScreen()
     {
-        if (currentScreen <= 7)
+        if (currentScreen <= 6)
         {
             currentScreen++;
         }
@@ -174,7 +176,7 @@
     
     private void GoToPreviousScreen()
     {
-        if (currentScreen > 1)
+        if (currentScreen > 0)
         {
             currentScreen--;
         }
@@ -185,8 +187,15 @@
         GoToNextScreen();
     }
     
-    private void leaveDossierAdd()
+    private void LeaveAddDossier()
     { 
         NavigationManager.NavigateTo("/dossiers");
     }
+
+    private object GetWizardImagePath(int screen)
+    {
+        string imageName = "wizard-design-" + screen + ".png";
+        return "images/wizard-design/" + imageName;
+    }
+
 }
