@@ -40,7 +40,6 @@
 
                 <EditForm Model="SignInModel" OnValidSubmit="SignInAsync" FormName="signInForm">
                     <DataAnnotationsValidator />
-                    <ValidationSummary />
 
 
                     <div class="text-fieldcontrainer">
@@ -120,14 +119,6 @@
                 if (response.Headers.TryGetValues("Authorization", out var tokens))
                 {
                     var jwt = tokens.FirstOrDefault().Substring(7);
-
-
-
-
-                    // if (jwt != null)
-                    // {
-                    //     await JsRuntime.InvokeVoidAsync("localStorage.setItem", "jwt", jwt);
-                    // }
                 }
 
             }
