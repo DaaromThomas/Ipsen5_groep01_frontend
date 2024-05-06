@@ -1,0 +1,48 @@
+@page "/NewDocument"
+@attribute [StreamRendering]
+@using Ipsen5_groep01_frontend.Components.Services
+@inject Ipsen5_groep01_frontend.Components.Services.DocumentenService DocumentenService
+@inject NavigationManager NavigationManager
+
+
+<div class="decorative-bar" style="width:100%; height: 70px; background: linear-gradient(0.25turn, #FF6700 0%, #1A222D 53%, #183749 70%, #10ADE5 100%); margin-bottom: 30px;"></div>
+<PageTitle>Nieuw Document</PageTitle>
+
+<div class="documenten-container">
+    <div class="container">
+      <button @onclick="Opslaan" class="add-button">Opslaan document</button>
+    </div>
+    <div class="header">
+        <h1>Document</h1>
+        <h2>Verplicht</h2>
+        <h2 class="extensies">Extensie</h2>
+    </div>
+    <div class="input-section">
+        <input @bind="documentNaam" type="text" placeholder="Voer de naam in" class="document-name" />
+        <input @bind="verplicht" class="document-checkbox" type="checkbox" />
+        <select @bind="extensie" class="document-extensie">
+            <option value=".pdf">.pdf</option>
+            <option value=".docx">.docx</option>
+            <option value=".txt">.txt</option>
+        </select>
+    </div>
+</div>
+
+@code {
+    private string documentNaam;
+    private bool verplicht;
+    private string extensie;
+
+   public void Opslaan()
+    {
+        var nieuwDocument = new Document
+    {
+        Naam = documentNaam,
+        Verplicht = verplicht,
+        Extensie = extensie
+    };
+       DocumentenService.ToevoegenDocument(nieuwDocument);
+       NavigationManager.NavigateTo("/documentbeheer");
+    }
+
+}
