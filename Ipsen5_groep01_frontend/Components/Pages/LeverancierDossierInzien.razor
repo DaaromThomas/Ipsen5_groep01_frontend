@@ -1,0 +1,255 @@
+﻿@page "/LeverancierDossierInzien/{kandidaatId}"
+@rendermode InteractiveServer
+@using Models
+@inject NavigationManager NavigationManager
+
+
+<div class="decorative-bar"></div>
+
+<div class="main">
+    <div class="button-container">
+        <button class="navigate-button" @onclick="()=>navigate()">Back</button>
+    </div>
+    <table class="table">
+        <thead>
+            <tr class="table-row table-header">
+                <th>Name</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DocumentOpened documentOpened in chosenDocuments)
+            {
+                <tr class="table-row data-row @(documentOpened.Opened ? "opened-row" : "closed-row")" style="background-color: @(GetRowColor(documentOpened.Document.Status))" @onclick="() => documentOpened.Opened = !documentOpened.Opened">
+                    <td style="position: relative;">
+                        <div class="name-container">
+                            <p>@documentOpened.Document.Name</p>
+                            @if(documentOpened.Opened){
+                                <div class="input-container">
+                                    <input class="document-input" type="file" placeholder="">
+                                </div>
+                            }
+                        </div>
+                    </td>
+                    <td style="position: relative;">
+                        <div class="name-container">
+                            <p>@documentOpened.Document.Status</p>
+                        </div>
+                    </td>
+                    <td style="position: relative;">
+                        <div class="name-container">
+                            @if (documentOpened.Opened)
+                            {
+                                <p>&#x25B2;</p>
+                            }
+                            else
+                            {
+                                <p>&#x25BC;</p>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter]
+    public string kandidaatId { get; set; }
+    private List<DocumentOpened> chosenDocuments = new List<DocumentOpened>();
+    private List<Dossier> dossiers = new List<Dossier>();
+
+    protected override void OnInitialized()
+    {
+        CreateDossiers();
+        Dossier chosenDossier = dossiers.Find(d => d.KandidaatId == kandidaatId);
+        foreach (var dossierDocument in chosenDossier.Documents)
+        {
+            DocumentOpened documentOpened = new DocumentOpened(dossierDocument);
+            if (documentOpened != null)
+            {
+                chosenDocuments.Add(documentOpened);
+            }
+        }
+    }
+
+    private string GetRowColor(string status)
+    {
+        switch (status)
+        {
+            case "Wachten op beoordeling":
+                return "#C3E6FF"; // Light blue
+            case "Afgekeurd":
+                return "#FFB8B8"; // Light red
+            case "Nog op te leveren":
+                return "#DBDBDB"; // Light gray
+            case "Goedgekeurd":
+                return "#92DD8c"; // Green
+            default:
+                return "white";
+        }
+    }
+
+    public void navigate()
+    {
+        this.NavigationManager.NavigateTo($"/LeverancierDossierScherm");
+    }
+
+    public class DocumentOpened
+    {
+        public Document Document { get; set; }
+        public bool Opened { get; set; }
+
+        public DocumentOpened(Document document)
+        {
+            Document = document;
+            Opened = false;
+        }
+    }
+
+    // Test Data
+    private void CreateDossiers()
+    {
+        Dossier newDossier = new Dossier(
+            id: "12345",
+            kandidaatId: "ABCDE",
+            status: "In behandeling",
+            date: DateTime.Now,
+            inkoopTarief: 1000.0,
+            verkoopTarief: 1500.0,
+            betalingstermijn: DateTime.Now.AddDays(30),
+            feepartij: "Voorbeeld Fee Partij",
+            functieOmschrijving: "Een mooie functieonmschrijving",
+            leverancierNotitie: "Voorbeeld leverancier notitie",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
+        );
+
+        // Add the first document to the new dossier
+        newDossier.Documents.Add(documents[0].Document);
+        newDossier.Documents.Add(documents[3].Document);
+        newDossier.Documents.Add(documents[0].Document);
+
+        // Add the new dossier to the dossiers list
+        dossiers.Add(newDossier);
+
+        // Second Dossier
+        Dossier newDossier2 = new Dossier(
+            id: "123456789",
+            kandidaatId: "ABCDEFGHIJ",
+            status: "Afgerond",
+            date: DateTime.Now,
+            inkoopTarief: 2000.0,
+            verkoopTarief: 2500.0,
+            betalingstermijn: DateTime.Now.AddDays(35),
+            feepartij: "Voorbeeld Fee Partij met een spin",
+            functieOmschrijving: "Nog een mooie functieonmschrijving",
+            leverancierNotitie: "Voorbeeld leverancier notitie",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
+        );
+
+        // Add the second document to the new dossier
+        newDossier2.Documents.Add(documents[1].Document);
+        newDossier2.Documents.Add(documents[0].Document);
+        newDossier2.Documents.Add(documents[2].Document);
+        newDossier2.Documents.Add(documents[3].Document);
+
+        // Add the new dossier to the dossiers list
+        dossiers.Add(newDossier2);
+
+        // Third Dossier
+        Dossier newDossier3 = new Dossier(
+            id: "67890",
+            kandidaatId: "FGHIJK",
+            status: "In behandeling",
+            date: DateTime.Now,
+            inkoopTarief: 1500.0,
+            verkoopTarief: 2000.0,
+            betalingstermijn: DateTime.Now.AddDays(45),
+            feepartij: "Voorbeeld Fee Partij 3",
+            functieOmschrijving: "Nog een andere mooie functieonmschrijving",
+            leverancierNotitie: "Voorbeeld leverancier notitie 3",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 3"
+        );
+
+        // Add the third document to the new dossier
+        newDossier3.Documents.Add(documents[2].Document);
+        newDossier3.Documents.Add(documents[3].Document);
+        newDossier3.Documents.Add(documents[0].Document);
+
+        // Add the new dossier to the dossiers list
+        dossiers.Add(newDossier3);
+
+        // Fourth Dossier
+        Dossier newDossier4 = new Dossier(
+            id: "13579",
+            kandidaatId: "LMNOP",
+            status: "Afgerond",
+            date: DateTime.Now,
+            inkoopTarief: 1800.0,
+            verkoopTarief: 2300.0,
+            betalingstermijn: DateTime.Now.AddDays(25),
+            feepartij: "Voorbeeld Fee Partij 4",
+            functieOmschrijving: "Nog een andere mooie functieonmschrijving 4",
+            leverancierNotitie: "Voorbeeld leverancier notitie 4",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 4"
+        );
+
+        // Add the third document to the new dossier
+        newDossier4.Documents.Add(documents[3].Document);
+        newDossier4.Documents.Add(documents[0].Document);
+
+        // Add the new dossier to the dossiers list
+        dossiers.Add(newDossier4);
+
+        // Continue adding more dossiers with different combinations of documents...
+    }
+    private List<DocumentOpened> documents = new List<DocumentOpened>
+    {
+        new DocumentOpened(new Document
+        {
+            Id = "1",
+            Name = "Invoice001",
+            UploadType = "Invoice",
+            DocumentPath = "/documents/invoice001.pdf",
+            Status = "Goedgekeurd",
+            CreatedDate = DateTime.Now.AddDays(-10),
+            UpdatedDate = DateTime.Now.AddDays(-5),
+            CreatedBy = "John Doe"
+        }),
+        new DocumentOpened(new Document
+        {
+            Id = "2",
+            Name = "Contract002",
+            UploadType = "Contract",
+            DocumentPath = "/documents/contract002.pdf",
+            Status = "Wachten op beoordeling",
+            CreatedDate = DateTime.Now.AddDays(-15),
+            UpdatedDate = DateTime.Now.AddDays(-10),
+            CreatedBy = "Jane Smith"
+        }),
+        new DocumentOpened(new Document
+        {
+            Id = "3",
+            Name = "Proposal003",
+            UploadType = "Proposal",
+            DocumentPath = "/documents/proposal003.pdf",
+            Status = "Afgekeurd",
+            CreatedDate = DateTime.Now.AddDays(-20),
+            UpdatedDate = DateTime.Now.AddDays(-15),
+            CreatedBy = "Alice Johnson"
+        }),
+        new DocumentOpened(new Document
+        {
+            Id = "4",
+            Name = "Delivery004",
+            UploadType = "Delivery",
+            DocumentPath = "/documents/delivery004.pdf",
+            Status = "Nog op te leveren",
+            CreatedDate = DateTime.Now.AddDays(-25),
+            UpdatedDate = DateTime.Now.AddDays(-20),
+            CreatedBy = "Bob Williams"
+        })
+    };
+}
