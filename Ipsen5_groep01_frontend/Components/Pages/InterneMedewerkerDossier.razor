@@ -20,7 +20,7 @@
             </select>
             <input type="date" placeholder="Datum" @oninput="HandleInput"/>
         </div>
-        <div class="button-holder">
+        <div @onclick="() => navigateToNewDossier()" class="button-holder">
             <div>Nieuw Dossier</div>
         </div>
     </div>
@@ -116,6 +116,10 @@
         {
             filteredDossiers = dossiers.Where(t => t.KandidaatId.ToUpper().Contains(searchTerm)).ToList<Dossier>();
         }
+    }
+
+    private void navigateToNewDossier(){
+        NavigationManager.NavigateTo("/dossier-aanmaken");
     }
 
 
