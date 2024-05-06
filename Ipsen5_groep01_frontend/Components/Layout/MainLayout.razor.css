@@ -2,15 +2,14 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    min-height: 100vh;
+    height: fit-content;
     background-color: #F5F5F5;
 }
 
 main {
     flex: 1;
 }
-
-
 
 .top-row {
     border-bottom: 1px solid #d6d5d5;
