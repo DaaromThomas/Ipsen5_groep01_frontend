@@ -1,23 +1,25 @@
-﻿<div class="navbar">
+﻿@rendermode InteractiveServer
+
+<div class="navbar">
     <!-- StaffingNow Logo -->
     <img class="staffingnow_logo" src="images/staffingnow_logo.png" alt="logo" />
 
     <!-- Buttons when logged in as admin -->
     <div class="admin-buttons" hidden="@(!loggedIn || !isAdmin)">
         <div class="button">
-            <NavLink href="" Match="NavLinkMatch.All"
+            <NavLink href="Name" Match="NavLinkMatch.All"
                      style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                 <span class="" aria-hidden="true"></span> PROFESSIONALS
             </NavLink>
         </div>
         <div class="button">
-            <NavLink href="dossiers" Match="NavLinkMatch.All"
+            <NavLink href="InterneMedewerkerDossierScherm" Match="NavLinkMatch.All"
                      style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                 <span class="" aria-hidden="true"></span> DOSSIERS
             </NavLink>
         </div>
         <div class="button">
-            <NavLink href="" Match="NavLinkMatch.All"
+            <NavLink href="documentbeheer" Match="NavLinkMatch.All"
                      style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                 <span class="" aria-hidden="true"></span> DOCUMENT BEHEER
             </NavLink>
@@ -56,8 +58,7 @@
 </div>
 
 @code {
-    private bool loggedIn = true;
-    private bool isAdmin = true;
-
+    private bool loggedIn = false;
+    private bool isAdmin = false;
 
 }
