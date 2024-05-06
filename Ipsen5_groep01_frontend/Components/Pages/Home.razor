@@ -1,7 +1,57 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
-<PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<PageTitle>StaffingNow</PageTitle>
 
-Welcome to your new app.
+<div class="page">
+    <div class="header">
+
+        <div class="logo-container">
+            <img class="logo" src="images/staffingnow-logo.png" alt="staffingnow logo" />
+
+        </div>
+        <div class="sign-container">
+            <div class="sign-in">
+                <button class="sign-in-button" @onclick="NavigateToSignIn">INLOGGEN</button>
+            </div>
+            <div class="sign-up">
+                <button class="sign-up-button">REGISTREREN</button>
+            </div>
+        </div>
+
+    </div>
+    <div class="linear-gradient-Container">
+
+        <div class="text-container">
+            <div class="company-name-container">
+                <div class="company-name">
+                    StaffingNow
+                </div>
+            </div>
+            <div class="company-description">
+                Gespecialiseerd in de bemiddeling van IT professionals voor interim opdrachten in de Benelux
+            </div>
+        </div>
+
+    </div>
+    <div></div>
+    <div class="footer">
+        <div class="footer-text-container">
+            <div class="footer-text">
+                © 2024 StaffingNow. All rights reserved
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code{
+    public void NavigateToSignIn()
+    {
+        NavigationManager.NavigateTo("/signIn");
+    }
+}
+
+

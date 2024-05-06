@@ -1,0 +1,188 @@
+﻿@page "/signIn"
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
+
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.IdentityModel.Tokens;
+@using System.IdentityModel.Tokens.Jwt;
+@using System.Net;
+@using System.Runtime.InteropServices;
+@using System.Security.Claims;
+@using System.Text;
+@using static System.Runtime.InteropServices.JavaScript.JSType;
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms
+@using Ipsen5_groep01_frontend.Models
+@using Ipsen5_groep01_frontend.Services
+@rendermode InteractiveAuto
+
+<PageTitle>Inloggen</PageTitle>
+
+
+
+<div class="page">
+    <div class="header">
+
+        <div class="logo-container">
+            <img class="logo" src="images/staffingnow-logo.png" alt="staffingnow logo" />
+
+        </div>
+        <div class="sign-container">
+            <div class="sign-in">
+                <button class="sign-in-button">INLOGGEN</button>
+            </div>
+            <div class="sign-up">
+                <button class="sign-up-button">REGISTREREN</button>
+            </div>
+        </div>
+
+    </div>
+    <div class="linear-gradient-Container">
+
+        <div class="login-container">
+            <div class="title-login">
+                INLOGGEN
+            </div>
+            <div class="login">
+
+                <EditForm Model="SignInModel" OnValidSubmit="SignInAsync" FormName="signInForm">
+                    <DataAnnotationsValidator />
+
+
+                    <div class="text-fieldcontrainer">
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <InputText id="email" @bind-Value="SignInModel.Email" class="form-control"></InputText>
+                            <ValidationMessage For="() => SignInModel.Email"></ValidationMessage>
+                        </div>
+
+
+
+
+                        <div class="form-group">
+                            <label>Password:</label>
+                            <InputText id="password" @bind-Value="SignInModel.Password" type="password" class="form-control"></InputText>
+                            <ValidationMessage For="() => SignInModel.Password"></ValidationMessage>
+                        </div>
+                    </div>
+                    <div>
+                        <button type="submit" class="login-button">INLOGGEN</button>
+                    </div>
+
+
+                </EditForm>
+            </div>
+            <div class="back-button-container">
+                <button class="back-button" @onclick="NavigateToHome">TERUG</button>
+            </div>
+        </div>
+
+    </div>
+    <div></div>
+    <div class="footer">
+        <div class="footer-text-container">
+            <div class="footer-text">
+                © 2024 StaffingNow. All rights reserved
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    [SupplyParameterFromForm]
+    private SignInModel SignInModel { get; set; } = new();
+
+    private RequestMakerService _requestMakerService;
+    private readonly IConfiguration _configuration;
+    private string role { get; set; }
+
+    public SignIn()
+    {
+
+    }
+
+    public SignIn(IConfiguration configuration)
+    {
+        _configuration = configuration;
+    }
+
+    public void NavigateToHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+    protected override void OnInitialized()
+    {
+        _requestMakerService = new RequestMakerService(HttpClient);
+        base.OnInitialized();
+    }
+
+
+
+    private async Task SignInAsync()
+    {
+
+        if (!string.IsNullOrEmpty(SignInModel.Email) && !string.IsNullOrEmpty(SignInModel.Password))
+        {
+            var response = await _requestMakerService.MakePostRequest("user/signIn", SignInModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                if (response.Headers.TryGetValues("Authorization", out var tokens))
+                {
+                    var Token = tokens.FirstOrDefault().Substring(7);
+
+                    var handler = new JwtSecurityTokenHandler();
+                    var secret = "ThisIsMySecre6546rgfg5464fddzffg546fgtKey123456778";
+                    var key = Encoding.ASCII.GetBytes(secret);
+
+                    var tokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+
+                    SecurityToken validatedToken;
+                    ClaimsPrincipal principal;
+
+                    principal = handler.ValidateToken(Token, tokenValidationParameters, out validatedToken);
+
+
+                    var roleClaim = principal.FindFirst(ClaimTypes.Role);
+
+                    if (roleClaim != null)
+                    {
+                        role = roleClaim.Value;
+                        if (role == "Admin")
+                        {
+                            NavigationManager.NavigateTo("/");
+                        }
+                        else if (role == "Employee")
+                        {
+                            NavigationManager.NavigateTo("/");
+                        }
+                        else if (role == "User")
+                        {
+                            NavigationManager.NavigateTo("/LeverancierDossierScherm");
+                        }
+                    }
+
+                }
+
+            }
+            else
+            {
+
+            }
+        }
+    }
+}
+
+
