@@ -16,8 +16,9 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Components.Forms
 @using Ipsen5_groep01_frontend.Models
-@using Ipsen5_groep01_frontend.Components.Layout
+
 @using Ipsen5_groep01_frontend.Services
+@using Ipsen5_groep01_frontend.Components.Layout
 @rendermode InteractiveAuto
 
 <PageTitle>Inloggen</PageTitle>
@@ -162,7 +163,7 @@
                         SignInModel.Role = role;
 
                         new NavMenu(SignInModel);
-
+                        
                         identity.AddClaim(new Claim(ClaimTypes.Role, SignInModel.Role));
 
                         
@@ -171,15 +172,15 @@
                             new Claim(ClaimTypes.Role, role) 
                         }, "User Role Identity");
 
-                        if (SignInModel.Role == "Admin")
+                        if (SignInModel.Role.Equals("Admin"))
                         {
                             NavigationManager.NavigateTo("/proffesionals");
                         }
-                        else if (SignInModel.Role == "Employee")
+                        else if (SignInModel.Role.Equals("Employee"))
                         {
                             NavigationManager.NavigateTo("/proffesionals");
                         }
-                        else if (SignInModel.Role == "User")
+                        else if (SignInModel.Role.Equals("User"))
                         {
                             NavigationManager.NavigateTo("/LeverancierDossierScherm");
                         }

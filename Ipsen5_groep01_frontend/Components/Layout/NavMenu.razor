@@ -5,35 +5,40 @@
     <!-- StaffingNow Logo -->
     <img class="staffingnow_logo" src="images/staffingnow_logo.png" alt="logo" />
 
-    <!-- Buttons when logged in as admin -->
-    <div class="admin-buttons" hidden="@(loggedIn || isAdmin)">
-        <div class="button">
-            <NavLink href="proffesionals" Match="NavLinkMatch.All"
-                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.9vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
-                <span class="" aria-hidden="true"></span> PROFESSIONALS
-            </NavLink>
+    @if (isAdmin == false)
+    {
+        <div class="admin-buttons">
+            <div class="button">
+                <NavLink href="proffesionals" Match="NavLinkMatch.All"
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.9vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                    <span class="" aria-hidden="true"></span> PROFESSIONALS
+                </NavLink>
+            </div>
+            <div class="button">
+                <NavLink href="InterneMedewerkerDossierScherm" Match="NavLinkMatch.All"
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.9vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                    <span class="" aria-hidden="true"></span> DOSSIERS
+                </NavLink>
+            </div>
+            <div class="button">
+                <NavLink href="documentbeheer" Match="NavLinkMatch.All"
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.9vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                    <span class="" aria-hidden="true"></span> DOCUMENT BEHEER
+                </NavLink>
+            </div>
+            <div class="button">
+                <NavLink href="account" Match="NavLinkMatch.All"
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.9vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                    <span class="" aria-hidden="true"></span> ACCOUNT BEHEER
+                </NavLink>
+            </div>
         </div>
-        <div class="button">
-            <NavLink href="InterneMedewerkerDossierScherm" Match="NavLinkMatch.All"
-                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.9vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
-                <span class="" aria-hidden="true"></span> DOSSIERS
-            </NavLink>
-        </div>
-        <div class="button">
-            <NavLink href="documentbeheer" Match="NavLinkMatch.All"
-                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.9vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
-                <span class="" aria-hidden="true"></span> DOCUMENT BEHEER
-            </NavLink>
-        </div>
-        <div class="button">
-            <NavLink href="account" Match="NavLinkMatch.All"
-                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.9vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
-                <span class="" aria-hidden="true"></span> ACCOUNT BEHEER
-            </NavLink>
-        </div>
-    </div>
-    
+    }
+
+   
     <!-- Buttons when logged in as Leverancier -->
+@* 
+    @if()
     <div class="home-buttons" hidden="@(!loggedIn)">
         <div class="button" style="background-color: #10ADE5;">
             <NavLink href="" Match="NavLinkMatch.All"
@@ -47,7 +52,7 @@
                 <span class="" aria-hidden="true"></span> REGISTREREN
             </NavLink>
         </div>
-    </div>
+    </div> *@
 
     <!-- Profile picture -->
     <div class="profile_pic"
@@ -59,10 +64,12 @@
 </div>
 
 @code {
-    private bool loggedIn = false;
-    private bool isAdmin = false;
+    private bool? loggedIn;
+    private bool? isAdmin;
+    private bool? isUser;
 
     private SignInModel _signInModel;
+    private string Role;
 
     public NavMenu()
     {
@@ -71,16 +78,16 @@
 
     public NavMenu(SignInModel signInModel)
     {
+        Role = signInModel.Role;
         _signInModel = signInModel;
-    }
 
-    protected override async Task OnInitializedAsync()
-    {
         if (_signInModel != null)
         {
             GetRoles();
         }
     }
+
+   
 
     private void GetRoles()
     {
@@ -92,17 +99,22 @@
             {
                 isAdmin = true;
                 loggedIn = true;
+                isUser = null;
+            }
+            else if (role.Equals("User", StringComparison.InvariantCultureIgnoreCase))
+            {
+                isUser = true;
+                loggedIn = true;
+                isAdmin = null;
+
             }
             else
             {
-                isAdmin = false;
+                isAdmin = null;
                 loggedIn = false;
+                isUser = null;
             }
         }
     }
-
-
-    
-
 }
 
