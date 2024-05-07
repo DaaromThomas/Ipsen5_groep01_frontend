@@ -6,15 +6,19 @@
     var currentPage = NavigationManager.Uri;
     var hideNavMenu = false;
 
-    void checkMenu()
+    void CheckMenu()
     {
-        if (currentPage.Equals("https://localhost:7021/signIn") || currentPage.Equals("https://localhost:7021/signin") || currentPage.Equals("https://localhost:7021/signIn") || currentPage.Equals("https://localhost:7021/"))
+        var uri = new Uri(currentPage);
+        var currentPagePath = uri.AbsolutePath;
+
+        if (currentPagePath.Equals("/signIn", StringComparison.OrdinalIgnoreCase) ||
+            currentPagePath.Equals("/", StringComparison.OrdinalIgnoreCase))
         {
             hideNavMenu = true;
         }
     }
 
-    checkMenu();
+    CheckMenu();
 }
 
 <div class="page">
