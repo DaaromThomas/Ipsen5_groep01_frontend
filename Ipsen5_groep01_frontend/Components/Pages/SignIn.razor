@@ -1,9 +1,12 @@
 ﻿@page "/signIn"
+
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
 @inject HttpClient HttpClient
+@inject LoginService LoginService
 
 
+@using Services
 @using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Identity;
 @using Microsoft.IdentityModel.Tokens;
@@ -24,22 +27,6 @@
 
 
 <div class="page">
-    <div class="header">
-
-        <div class="logo-container">
-            <img class="logo" src="images/staffingnow-logo.png" alt="staffingnow logo" />
-
-        </div>
-        <div class="sign-container">
-            <div class="sign-in">
-                <button class="sign-in-button">INLOGGEN</button>
-            </div>
-            <div class="sign-up">
-                <button class="sign-up-button">REGISTREREN</button>
-            </div>
-        </div>
-
-    </div>
     <div class="linear-gradient-Container">
 
         <div class="login-container">
@@ -162,16 +149,25 @@
                         role = roleClaim.Value;
                         if (role == "Admin")
                         {
-                            NavigationManager.NavigateTo("/");
+                            NavigationManager.NavigateTo("/InterneMedewerkerDossierScherm");
+                            LoginService.setIsAdmin(true);
+                            LoginService.setLoggedIn(true);
                         }
                         else if (role == "Employee")
                         {
-                            NavigationManager.NavigateTo("/");
+                            NavigationManager.NavigateTo("/InterneMedewerkerDossierScherm");
+                            LoginService.setIsAdmin(true);
+                            LoginService.setLoggedIn(true);
                         }
                         else if (role == "User")
                         {
                             NavigationManager.NavigateTo("/LeverancierDossierScherm");
+                            LoginService.setIsAdmin(false);
+                            LoginService.setLoggedIn(true);
                         }
+                        
+                        Console.WriteLine("IsAdmin: " + LoginService.getIsAdmin());
+                        Console.WriteLine("LoggedIn: " + LoginService.getLoggedIn());
                     }
 
                 }
@@ -183,6 +179,7 @@
             }
         }
     }
+    
 }
 
 

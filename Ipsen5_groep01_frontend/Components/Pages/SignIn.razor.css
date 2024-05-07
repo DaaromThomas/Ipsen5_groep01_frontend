@@ -1,9 +1,9 @@
 ﻿/*@@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap');*/
 
 .page {
-    display: grid;
-    height: 100vh;
-    grid-template-rows: 1fr 7fr 1fr 1fr;
+    display: flex;
+    height: fit-content;
+    flex-direction: column;
 }
 
 .header {
@@ -70,6 +70,7 @@
     background: linear-gradient(0.22turn, #FF6700 -20%, #1A222D 40%, #183749 60%, #10ADE5 100%);
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
+    height: 600px;
 }
 
 .login-container {
@@ -144,23 +145,26 @@
 }
 
 .footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
     display: grid;
     grid-template-columns: 1fr;
     background-color: #1A222D;
+    height: 100px;
 }
 
 .footer-text-container {
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 .footer-text {
-    margin-top: 1vmin;
     font-size: 1.5vmin;
     color: white;
     font-weight: 700;
     font-family: Ubuntu, sans-serif;
-    padding-left: 5vmin;
 }
 
 
