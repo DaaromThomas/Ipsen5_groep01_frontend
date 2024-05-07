@@ -11,7 +11,7 @@ main {
     flex: 1;
 }
 
-.top-row {
+.header {
     border-bottom: 1px solid #d6d5d5;
     min-height: 130px;
     display: flex;
