@@ -7,11 +7,6 @@
         <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
     </PropertyGroup>
 
-
-    <ItemGroup>
-      <Folder Include="Components\NewFolder\" />
-    </ItemGroup>
-
     <ItemGroup>
       <None Include="wwwroot\Images\staffingnow-logo.png" />
     </ItemGroup>
