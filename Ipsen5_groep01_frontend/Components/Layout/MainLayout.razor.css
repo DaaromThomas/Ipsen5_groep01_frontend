@@ -13,10 +13,15 @@ main {
 
 .top-row {
     border-bottom: 1px solid #d6d5d5;
-    min-height: 130px;
+    /*min-height: 130px;*/
     display: flex;
     align-items: center;
 }
+
+.top-row-hidden {
+    display: none;
+}
+
 
 article{
     margin: 0;

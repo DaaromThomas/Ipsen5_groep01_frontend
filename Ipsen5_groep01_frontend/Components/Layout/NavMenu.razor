@@ -1,39 +1,40 @@
-﻿@rendermode InteractiveServer
+﻿@using Ipsen5_groep01_frontend.Models
+@rendermode InteractiveServer
 
 <div class="navbar">
     <!-- StaffingNow Logo -->
     <img class="staffingnow_logo" src="images/staffingnow_logo.png" alt="logo" />
 
     <!-- Buttons when logged in as admin -->
-    <div class="admin-buttons" hidden="@(!loggedIn || !isAdmin)">
+    <div class="admin-buttons" hidden="@(loggedIn || isAdmin)">
         <div class="button">
-            <NavLink href="Name" Match="NavLinkMatch.All"
-                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+            <NavLink href="proffesionals" Match="NavLinkMatch.All"
+                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.9vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                 <span class="" aria-hidden="true"></span> PROFESSIONALS
             </NavLink>
         </div>
         <div class="button">
             <NavLink href="InterneMedewerkerDossierScherm" Match="NavLinkMatch.All"
-                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.9vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                 <span class="" aria-hidden="true"></span> DOSSIERS
             </NavLink>
         </div>
         <div class="button">
             <NavLink href="documentbeheer" Match="NavLinkMatch.All"
-                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.9vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                 <span class="" aria-hidden="true"></span> DOCUMENT BEHEER
             </NavLink>
         </div>
         <div class="button">
-            <NavLink href="" Match="NavLinkMatch.All"
-                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+            <NavLink href="account" Match="NavLinkMatch.All"
+                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.9vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                 <span class="" aria-hidden="true"></span> ACCOUNT BEHEER
             </NavLink>
         </div>
     </div>
     
     <!-- Buttons when logged in as Leverancier -->
-    <div class="home-buttons" hidden="@(loggedIn)">
+    <div class="home-buttons" hidden="@(!loggedIn)">
         <div class="button" style="background-color: #10ADE5;">
             <NavLink href="" Match="NavLinkMatch.All"
                      style="color: #F5F5F5; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
@@ -50,7 +51,7 @@
 
     <!-- Profile picture -->
     <div class="profile_pic"
-         hidden="@(!loggedIn)">
+         hidden="@(loggedIn)">
         <img class="profile_pic" src="images/Microsoft_account-Logo.png" alt="logo" />
     </div>
 
@@ -60,6 +61,48 @@
 @code {
     private bool loggedIn = false;
     private bool isAdmin = false;
+
+    private SignInModel _signInModel;
+
+    public NavMenu()
+    {
+
+    }
+
+    public NavMenu(SignInModel signInModel)
+    {
+        _signInModel = signInModel;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (_signInModel != null)
+        {
+            GetRoles();
+        }
+    }
+
+    private void GetRoles()
+    {
+        if (!string.IsNullOrEmpty(_signInModel.Role))
+        {
+            var role = _signInModel.Role;
+
+            if (role.Equals("Admin", StringComparison.InvariantCultureIgnoreCase))
+            {
+                isAdmin = true;
+                loggedIn = true;
+            }
+            else
+            {
+                isAdmin = false;
+                loggedIn = false;
+            }
+        }
+    }
+
+
+    
 
 }
 

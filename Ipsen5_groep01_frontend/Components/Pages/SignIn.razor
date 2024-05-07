@@ -16,6 +16,7 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Components.Forms
 @using Ipsen5_groep01_frontend.Models
+@using Ipsen5_groep01_frontend.Components.Layout
 @using Ipsen5_groep01_frontend.Services
 @rendermode InteractiveAuto
 
@@ -51,16 +52,12 @@
                 <EditForm Model="SignInModel" OnValidSubmit="SignInAsync" FormName="signInForm">
                     <DataAnnotationsValidator />
 
-
                     <div class="text-fieldcontrainer">
                         <div class="form-group">
                             <label for="email">Email:</label>
                             <InputText id="email" @bind-Value="SignInModel.Email" class="form-control"></InputText>
                             <ValidationMessage For="() => SignInModel.Email"></ValidationMessage>
                         </div>
-
-
-
 
                         <div class="form-group">
                             <label>Password:</label>
@@ -99,7 +96,6 @@
 
     private RequestMakerService _requestMakerService;
     private readonly IConfiguration _configuration;
-    private string role { get; set; }
 
     public SignIn()
     {
@@ -154,21 +150,36 @@
 
                     principal = handler.ValidateToken(Token, tokenValidationParameters, out validatedToken);
 
-
                     var roleClaim = principal.FindFirst(ClaimTypes.Role);
+
 
                     if (roleClaim != null)
                     {
-                        role = roleClaim.Value;
-                        if (role == "Admin")
+                        var identity = principal.Identity as ClaimsIdentity;
+
+                        var role = roleClaim.Value;
+
+                        SignInModel.Role = role;
+
+                        new NavMenu(SignInModel);
+
+                        identity.AddClaim(new Claim(ClaimTypes.Role, SignInModel.Role));
+
+                        
+                        var claimsIdentity = new ClaimsIdentity(new[]
                         {
-                            NavigationManager.NavigateTo("/");
-                        }
-                        else if (role == "Employee")
+                            new Claim(ClaimTypes.Role, role) 
+                        }, "User Role Identity");
+
+                        if (SignInModel.Role == "Admin")
                         {
-                            NavigationManager.NavigateTo("/");
+                            NavigationManager.NavigateTo("/proffesionals");
                         }
-                        else if (role == "User")
+                        else if (SignInModel.Role == "Employee")
+                        {
+                            NavigationManager.NavigateTo("/proffesionals");
+                        }
+                        else if (SignInModel.Role == "User")
                         {
                             NavigationManager.NavigateTo("/LeverancierDossierScherm");
                         }
@@ -184,5 +195,4 @@
         }
     }
 }
-
 

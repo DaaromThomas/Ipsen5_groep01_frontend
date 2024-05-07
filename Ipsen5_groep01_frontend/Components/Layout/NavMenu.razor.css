@@ -5,17 +5,17 @@
     display: flex;
     align-items: center;
     padding: 0;
-    overflow-y: scroll;
+    /*overflow-y: scroll;*/
 }
 
 .staffingnow_logo {
     width: 100%;
-    max-width: 330px;
-    margin-left: 5%;
+    max-width: 25vmin;
+    margin-left: 5vmin;
 }
 
 .profile_pic {
-    height: 130px;
+    height: 100px;
     max-width: 100%;
 }
 

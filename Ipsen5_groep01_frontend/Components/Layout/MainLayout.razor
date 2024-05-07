@@ -1,7 +1,28 @@
 ﻿@inherits LayoutComponentBase
+
+@inject NavigationManager NavigationManager
+
+@{
+    var currentPage = NavigationManager.Uri;
+    var hideNavMenu = false;
+
+    void checkMenu()
+    {
+        if (currentPage.Equals("https://localhost:7021/signIn") || currentPage.Equals("https://localhost:7021/signin") || currentPage.Equals("https://localhost:7021/signIn") || currentPage.Equals("https://localhost:7021/"))
+        {
+            hideNavMenu = true;
+        }
+    }
+
+    checkMenu();
+}
+
 <div class="page">
-    <div class="top-row">
-        <NavMenu />
+    <div class="top-row @(!hideNavMenu ? "" : "top-row-hidden")">
+        @if (hideNavMenu == false)
+        {
+            <NavMenu />
+        }
     </div>
 
     <main>
@@ -10,3 +31,4 @@
         </article>
     </main>
 </div>
+

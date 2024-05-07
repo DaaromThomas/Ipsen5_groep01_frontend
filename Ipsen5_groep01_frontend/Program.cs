@@ -5,6 +5,9 @@ using Ipsen5_groep01_frontend.Components;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using Ipsen5_groep01_frontend.Components.Services;
+using Microsoft.AspNetCore.Components;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +21,8 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpClient();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredSessionStorage();
+
+
 
 builder.Services.AddSingleton<DocumentenService>();
 
@@ -36,6 +41,10 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+app.UseRouting();
+app.UseAntiforgery();
+app.UseAuthorization();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
