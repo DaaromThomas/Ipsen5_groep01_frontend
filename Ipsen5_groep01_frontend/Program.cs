@@ -5,6 +5,7 @@ using Ipsen5_groep01_frontend.Components;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 using Ipsen5_groep01_frontend.Components.Services;
+using Ipsen5_groep01_frontend.Components.Layout;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredSessionStorage();
 
 builder.Services.AddSingleton<DocumentenService>();
+builder.Services.AddSingleton<LoginService>();
 
 
 var app = builder.Build();

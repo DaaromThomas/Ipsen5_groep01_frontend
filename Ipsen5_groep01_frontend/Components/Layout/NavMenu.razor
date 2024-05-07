@@ -1,41 +1,48 @@
 ﻿@rendermode InteractiveServer
+@using Services
+@inject LoginService LoginService
+@inject NavigationManager NavigationManager
 
 <div class="navbar">
     <!-- StaffingNow Logo -->
     <img class="staffingnow_logo" src="images/staffingnow_logo.png" alt="logo" />
 
     <!-- Buttons when logged in as admin -->
-    <div class="admin-buttons" hidden="@(!loggedIn || !isAdmin)">
-        <div class="button">
-            <NavLink href="Name" Match="NavLinkMatch.All"
-                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
-                <span class="" aria-hidden="true"></span> PROFESSIONALS
-            </NavLink>
+    @if(loggedIn && isAdmin){
+        <div class="admin-buttons">
+            <div class="button">
+                <NavLink href="Name" Match="NavLinkMatch.All"
+                        style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                    <span class="" aria-hidden="true"></span> PROFESSIONALS
+                </NavLink>
+            </div>
+            <div class="button">
+                <NavLink href="InterneMedewerkerDossierScherm" Match="NavLinkMatch.All"
+                        style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                    <span class="" aria-hidden="true"></span> DOSSIERS
+                </NavLink>
+            </div>
+            <div class="button">
+                <NavLink href="documentbeheer" Match="NavLinkMatch.All"
+                        style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                    <span class="" aria-hidden="true"></span> DOCUMENT BEHEER
+                </NavLink>
+            </div>
+            <div class="button">
+                <NavLink href="" Match="NavLinkMatch.All"
+                        style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                    <span class="" aria-hidden="true"></span> ACCOUNT BEHEER
+                </NavLink>
+            </div>
         </div>
-        <div class="button">
-            <NavLink href="InterneMedewerkerDossierScherm" Match="NavLinkMatch.All"
-                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
-                <span class="" aria-hidden="true"></span> DOSSIERS
-            </NavLink>
-        </div>
-        <div class="button">
-            <NavLink href="documentbeheer" Match="NavLinkMatch.All"
-                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
-                <span class="" aria-hidden="true"></span> DOCUMENT BEHEER
-            </NavLink>
-        </div>
-        <div class="button">
-            <NavLink href="" Match="NavLinkMatch.All"
-                     style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
-                <span class="" aria-hidden="true"></span> ACCOUNT BEHEER
-            </NavLink>
-        </div>
-    </div>
+    }
+    
     
     <!-- Buttons when logged in as Leverancier -->
-    <div class="home-buttons" hidden="@(loggedIn)">
+    @if(!loggedIn){
+    <div class="home-buttons">
         <div class="button" style="background-color: #10ADE5;">
-            <NavLink href="" Match="NavLinkMatch.All"
+            <NavLink href="signIn" Match="NavLinkMatch.All"
                      style="color: #F5F5F5; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                 <span class="" aria-hidden="true"></span> INLOGGEN
             </NavLink>
@@ -47,12 +54,16 @@
             </NavLink>
         </div>
     </div>
+    }
+
 
     <!-- Profile picture -->
-    <div class="profile_pic"
-         hidden="@(!loggedIn)">
+    @if(loggedIn){
+    <div class="profile_pic" @onclick="() => navigateToHome()">
         <img class="profile_pic" src="images/Microsoft_account-Logo.png" alt="logo" />
     </div>
+    }
+    
 
     
 </div>
@@ -61,5 +72,37 @@
     private bool loggedIn = false;
     private bool isAdmin = false;
 
+    protected override void OnInitialized(){
+        LoginService.ResetState();
+    }
+
+    protected override void OnAfterRender(bool firstRender){
+        setLoggedIn(LoginService.getLoggedIn());
+        setIsAdmin(LoginService.getIsAdmin());
+    }
+
+    private void navigateToHome(){
+        NavigationManager.NavigateTo("/");
+        LoginService.setIsAdmin(false);
+        LoginService.setLoggedIn(false);
+    }
+
+    public void setLoggedIn(bool value){
+        this.loggedIn = value;
+        StateHasChanged();
+    }
+
+    public void setIsAdmin(bool value){
+        this.isAdmin = value;
+        StateHasChanged();
+    }
+
+    public bool getLoggedIn(){
+        return this.loggedIn;
+    }
+
+    public bool getIsAdmin(){
+        return this.isAdmin;
+    }
 }
 
