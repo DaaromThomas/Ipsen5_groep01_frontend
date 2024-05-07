@@ -2,6 +2,7 @@
 @attribute [StreamRendering]
 @using Ipsen5_groep01_frontend.Components.Services
 @inject Ipsen5_groep01_frontend.Components.Services.DocumentenService DocumentenService
+@inject LoginService LoginService
 
 <div class="decorative-bar" style="width:100%; height: 70px; background: linear-gradient(0.25turn, #FF6700 0%, #1A222D 53%, #183749 70%, #10ADE5 100%); margin-bottom: 30px;"></div>
 <PageTitle>Documentbeheer</PageTitle>
@@ -53,7 +54,7 @@
 </div>
 
 @code {
-    private List<Document> documenten;
+    private List<DocumentMarcel> documenten;
 
     protected override async Task OnInitializedAsync()
     {
@@ -61,7 +62,14 @@
         StateHasChanged();
     }
 
-    private async Task VerwijderDocument(Document document)
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(true);
+            LoginService.setLoggedIn(true);
+        }
+    }
+
+    private async Task VerwijderDocument(DocumentMarcel document)
     {
         documenten.Remove(document);
     }

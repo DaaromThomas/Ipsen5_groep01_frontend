@@ -2,6 +2,9 @@
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 
+@using Services
+@inject LoginService LoginService
+
 @using Models
 
 <div class="decorative-bar"></div>
@@ -59,6 +62,13 @@
     {
         createDossiers();
         FilterDossiers();
+    }
+
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(true);
+            LoginService.setLoggedIn(true);
+        }
     }
 
     private string GetRowColor(string status)

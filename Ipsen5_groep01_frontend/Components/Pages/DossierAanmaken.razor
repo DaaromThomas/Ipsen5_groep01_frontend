@@ -3,6 +3,9 @@
 @inject NavigationManager NavigationManager
 @using Ipsen5_groep01_frontend.Components.Data
 
+@using Services
+@inject LoginService LoginService
+
 <PageTitle>Dossier Aanmaken</PageTitle>
 
 <div class="wizard-layout">
@@ -165,6 +168,13 @@
     Professional _professional = new();
     Tarieven _tarieven = new();
     BenodigdeDocumenten _benodigdeDocumenten = new();
+
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(true);
+            LoginService.setLoggedIn(true);
+        }
+    }
     
     private void GoToNextScreen()
     {

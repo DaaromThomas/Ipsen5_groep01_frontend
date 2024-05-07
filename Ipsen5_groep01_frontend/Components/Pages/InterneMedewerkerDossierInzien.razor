@@ -2,7 +2,15 @@
 @rendermode InteractiveServer
 @using Models
 
+@inject NavigationManager NavigationManager
+
+@using Services
+@inject LoginService LoginService
+
 <div class="container">
+    <div class="button-container">
+        <button class="navigate-button" @onclick="()=>navigate()">Terug</button>
+    </div>    
     <div class="blocks">
         <p class="dossier-name">@DossierCode</p>
         <div class="bolletjes">
@@ -154,6 +162,17 @@ Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens v
         createDossiers();
         chosenDossier = dossiers.Find(d => d.KandidaatId == DossierCode);
         chosenDocuments = chosenDossier.Documents;
+    }
+
+    private void navigate(){
+        NavigationManager.NavigateTo("/InterneMedewerkerDossierScherm");
+    }
+
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(true);
+            LoginService.setLoggedIn(true);
+        }
     }
 
 

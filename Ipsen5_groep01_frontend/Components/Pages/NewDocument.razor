@@ -4,13 +4,17 @@
 @inject Ipsen5_groep01_frontend.Components.Services.DocumentenService DocumentenService
 @inject NavigationManager NavigationManager
 
+@using Services
+@inject LoginService LoginService
+
 
 <div class="decorative-bar" style="width:100%; height: 70px; background: linear-gradient(0.25turn, #FF6700 0%, #1A222D 53%, #183749 70%, #10ADE5 100%); margin-bottom: 30px;"></div>
 <PageTitle>Nieuw Document</PageTitle>
 
 <div class="documenten-container">
     <div class="container">
-      <button @onclick="Opslaan" class="add-button">Opslaan document</button>
+        <button class="navigate-button" @onclick="()=>navigate()">Terug</button>
+        <button @onclick="Opslaan" class="add-button">Opslaan document</button>
     </div>
     <div class="header">
         <h1>Document</h1>
@@ -33,16 +37,27 @@
     private bool verplicht;
     private string extensie;
 
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(true);
+            LoginService.setLoggedIn(true);
+        }
+    }
+
    public void Opslaan()
     {
-        var nieuwDocument = new Document
+        var nieuwDocument = new DocumentMarcel
     {
         Naam = documentNaam,
         Verplicht = verplicht,
         Extensie = extensie
     };
        DocumentenService.ToevoegenDocument(nieuwDocument);
-       NavigationManager.NavigateTo("/documentbeheer");
+       navigate();
+    }
+
+    private void navigate(){
+        NavigationManager.NavigateTo("/documentbeheer");
     }
 
 }

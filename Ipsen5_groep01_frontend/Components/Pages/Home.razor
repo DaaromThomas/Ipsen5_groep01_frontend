@@ -1,6 +1,9 @@
 ﻿@page "/"
 @inject NavigationManager NavigationManager
 
+@using Services
+@inject LoginService LoginService
+
 
 <PageTitle>StaffingNow</PageTitle>
 
@@ -32,6 +35,13 @@
 
 
 @code{
+
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(false);
+            LoginService.setLoggedIn(false);
+        }
+    }
     public void NavigateToSignIn()
     {
         NavigationManager.NavigateTo("/signIn");

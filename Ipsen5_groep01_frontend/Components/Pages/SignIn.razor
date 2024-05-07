@@ -109,7 +109,12 @@
         base.OnInitialized();
     }
 
-
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(false);
+            LoginService.setLoggedIn(false);
+        }
+    }
 
     private async Task SignInAsync()
     {

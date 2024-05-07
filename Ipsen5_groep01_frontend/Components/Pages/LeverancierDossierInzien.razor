@@ -3,6 +3,9 @@
 @using Models
 @inject NavigationManager NavigationManager
 
+@using Services
+@inject LoginService LoginService
+
 
 <div class="decorative-bar"></div>
 
@@ -72,6 +75,13 @@
             {
                 chosenDocuments.Add(documentOpened);
             }
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(false);
+            LoginService.setLoggedIn(true);
         }
     }
 

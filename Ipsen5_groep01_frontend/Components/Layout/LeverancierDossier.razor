@@ -3,6 +3,9 @@
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 
+@using Services
+@inject LoginService LoginService
+
 @using Models
 
 <style>.decorative-bar {
@@ -60,6 +63,7 @@
 
     .button-holder div {
         width: 225px;
+    using Ipsen5_groep01_frontend.Components.Services;
         padding: 10px;
         background-color: #10ADE5;
         color: #F5F5F5;
@@ -160,6 +164,13 @@
     {
         createDossiers();
         FilterDossiers();
+    }
+
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(false);
+            LoginService.setLoggedIn(true);
+        }
     }
 
     private void HandleInput(ChangeEventArgs e)
