@@ -7,4 +7,28 @@
         <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
     </PropertyGroup>
 
+
+    <ItemGroup>
+      <Folder Include="Components\NewFolder\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="wwwroot\Images\staffingnow-logo.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+      <PackageReference Include="Blazored.SessionStorage" Version="2.4.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\images\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.4" />
+    </ItemGroup>
+
 </Project>

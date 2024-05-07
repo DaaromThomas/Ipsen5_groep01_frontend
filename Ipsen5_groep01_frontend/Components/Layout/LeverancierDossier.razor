@@ -1,0 +1,323 @@
+﻿@page "/LeverancierDossierScherm"
+@layout MainLayout
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+
+@using Services
+@inject LoginService LoginService
+
+@using Models
+
+<style>.decorative-bar {
+    width: 100%;
+    height: 70px;
+    background: linear-gradient(0.25turn, #FF6700 0%, #1A222D 53%, #183749 70%, #10ADE5 100%);
+    margin-bottom: 30px;
+}
+
+.main {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    background-color: #F5F5F5;
+}
+
+.filter-and-button {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .filter-and-button input[type="text"] {
+        width: 379px;
+        border-radius: 8px;
+        padding-left: 40px;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%231A222D\' width=\'18px\' height=\'18px\'><path d=\'M0 0h24v24H0V0z\' fill=\'none\'/><path d=\'M15.5 14h-.79l-.28-.27a6.5 6.5 0 0 0 1.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 0 0-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 0 0 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z\'/></svg>');
+        border: black 1px groove;
+        background-repeat: no-repeat;
+        background-position: 8px center;
+    }
+
+    .filter-and-button p {
+        color: #1A222D;
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 22px;
+        font-family: 'Ubuntu', sans-serif;
+        letter-spacing: 0.16px;
+        margin: 0;
+        flex: 1;
+        text-align: center;
+    }
+
+.button-holder {
+    width: 379px;
+    display: flex;
+    justify-content: end;
+}
+
+    .button-holder div {
+        width: 225px;
+    using Ipsen5_groep01_frontend.Components.Services;
+        padding: 10px;
+        background-color: #10ADE5;
+        color: #F5F5F5;
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 22px;
+        font-family: 'Ubuntu', sans-serif;
+        letter-spacing: 0.16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50px;
+    }
+
+.table {
+    width: 80%;
+    border-collapse: separate;
+    border-spacing: 0 20px;
+}
+
+.table-row:hover td{
+    cursor: pointer;
+    background-color: #F5F5F5;
+}
+
+.table-header th {
+    height: 58px;
+    background-color: #FFFFFF;
+}
+
+.data-row {
+    height: 100px;
+    background-color: #FFFFFF;
+}
+
+.table-row td, th {
+    vertical-align: middle;
+}
+
+.table-row td:first-child,
+.table-row th:first-child {
+    border-radius: 10px 0 0 10px;
+    border-left: 1px solid black;
+}
+
+.table-row td:last-child,
+.table-row th:last-child {
+    border-radius: 0 10px 10px 0;
+    border-right: 1px solid black;
+}
+
+.table-row td,
+.table-row th {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+</style>
+
+<div class="decorative-bar"></div>
+
+<div class="main">
+    <div class="filter-and-button">
+        <input type="text" placeholder="Zoeken" @bind="searchTerm" @oninput="HandleInput"/>
+        <p>Selecteer een opdracht</p>
+        <div class="button-holder">
+            <div>Opslaan</div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr class="table-row table-header">
+            <th>Opdracht</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (Dossier dossier in filteredDossiers)
+            {
+                <tr class="table-row data-row" @onclick="()=>navigate(dossier.KandidaatId)">
+                    <td>@dossier.KandidaatId</td>
+                    <td>@dossier.Status</td>
+                    <td>&#10095;</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<Dossier> dossiers = new List<Dossier>();
+
+        private List<Dossier> filteredDossiers = new List<Dossier>();
+    private string searchTerm = "";
+
+    protected override void OnInitialized()
+    {
+        createDossiers();
+        FilterDossiers();
+    }
+
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(false);
+            LoginService.setLoggedIn(true);
+        }
+    }
+
+    private void HandleInput(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString().ToUpper();
+        FilterDossiers();
+    }
+
+    private void FilterDossiers()
+    {
+        if (searchTerm == null)
+        {
+            filteredDossiers = dossiers;
+        }
+        else
+        {
+            filteredDossiers = dossiers.Where(t => t.KandidaatId.ToUpper().Contains(searchTerm)).ToList<Dossier>();
+        }
+    }
+
+
+
+    private List<Document> documents = new List<Document>{
+      new Document
+        {
+            Id = "1",
+            Name = "Invoice001",
+            UploadType = "Invoice",
+            DocumentPath = "/documents/invoice001.pdf",
+            Status = "Goedgekeurd",
+            CreatedDate = DateTime.Now.AddDays(-10),
+            UpdatedDate = DateTime.Now.AddDays(-5),
+            CreatedBy = "John Doe"
+        },
+        new Document
+        {
+            Id = "2",
+            Name = "Contract002",
+            UploadType = "Contract",
+            DocumentPath = "/documents/contract002.pdf",
+            Status = "Wachten op beoordeling",
+            CreatedDate = DateTime.Now.AddDays(-15),
+            UpdatedDate = DateTime.Now.AddDays(-10),
+            CreatedBy = "Jane Smith"
+        },
+        new Document
+        {
+            Id = "3",
+            Name = "Proposal003",
+            UploadType = "Proposal",
+            DocumentPath = "/documents/proposal003.pdf",
+            Status = "Afgekeurd",
+            CreatedDate = DateTime.Now.AddDays(-20),
+            UpdatedDate = DateTime.Now.AddDays(-15),
+            CreatedBy = "Alice Johnson"
+        },
+        new Document
+        {
+            Id = "4",
+            Name = "Delivery004",
+            UploadType = "Delivery",
+            DocumentPath = "/documents/delivery004.pdf",
+            Status = "Nog op te leveren",
+            CreatedDate = DateTime.Now.AddDays(-25),
+            UpdatedDate = DateTime.Now.AddDays(-20),
+            CreatedBy = "Bob Williams"
+        }  
+        
+    };
+
+    private void createDossiers()
+    {
+        Dossier newDossier = new Dossier(
+            id: "12345",
+            kandidaatId: "ABCDE",
+            status: "In behandeling",
+            date: DateTime.Now,
+            inkoopTarief: 1000.0,
+            verkoopTarief: 1500.0,
+            betalingstermijn: DateTime.Now.AddDays(30),
+            feepartij: "Voorbeeld Fee Partij",
+            functieOmschrijving: "Een mooie functieonmschrijving",
+            leverancierNotitie: "Voorbeeld leverancier notitie",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
+        );
+
+        newDossier.Documents.Add(documents[0]);
+
+        dossiers.Add(newDossier);
+
+        Dossier newDossier2 = new Dossier(
+            id: "123456789",
+            kandidaatId: "ABCDEFGHIJ",
+            status: "Afgerond",
+            date: DateTime.Now,
+            inkoopTarief: 2000.0,
+            verkoopTarief: 2500.0,
+            betalingstermijn: DateTime.Now.AddDays(35),
+            feepartij: "Voorbeeld Fee Partij met een spin",
+            functieOmschrijving: "Nog een mooie functieonmschrijving",
+            leverancierNotitie: "Voorbeeld leverancier notitie",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
+        );
+
+        newDossier2.Documents.Add(documents[1]);
+
+        dossiers.Add(newDossier2);
+
+        Dossier newDossier3 = new Dossier(
+            id: "67890",
+            kandidaatId: "FGHIJK",
+            status: "In behandeling",
+            date: DateTime.Now,
+            inkoopTarief: 1500.0,
+            verkoopTarief: 2000.0,
+            betalingstermijn: DateTime.Now.AddDays(45),
+            feepartij: "Voorbeeld Fee Partij 3",
+            functieOmschrijving: "Nog een andere mooie functieonmschrijving",
+            leverancierNotitie: "Voorbeeld leverancier notitie 3",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 3"
+        );
+
+        newDossier3.Documents.Add(documents[2]);
+
+        dossiers.Add(newDossier3);
+
+        Dossier newDossier4 = new Dossier(
+            id: "13579",
+            kandidaatId: "LMNOP",
+            status: "Afgerond",
+            date: DateTime.Now,
+            inkoopTarief: 1800.0,
+            verkoopTarief: 2300.0,
+            betalingstermijn: DateTime.Now.AddDays(25),
+            feepartij: "Voorbeeld Fee Partij 4",
+            functieOmschrijving: "Nog een andere mooie functieonmschrijving 4",
+            leverancierNotitie: "Voorbeeld leverancier notitie 4",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 4"
+        );
+
+        newDossier4.Documents.Add(documents[3]);
+
+        dossiers.Add(newDossier4);
+    }
+
+    public void navigate(string kandidaatId)
+    {
+        this.NavigationManager.NavigateTo($"/LeverancierDossierInzien/{kandidaatId}");
+    }
+}

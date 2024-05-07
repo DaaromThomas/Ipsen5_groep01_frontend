@@ -1,0 +1,14 @@
+@page "/Professionals"
+@using Services
+@inject LoginService LoginService
+
+<h1>Professionals</h1>
+
+@code {
+     protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(true);
+            LoginService.setLoggedIn(true);
+        }
+    }
+}

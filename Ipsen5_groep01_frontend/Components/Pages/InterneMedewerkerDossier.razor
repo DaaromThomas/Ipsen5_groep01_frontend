@@ -1,0 +1,264 @@
+@page "/InterneMedewerkerDossierScherm"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+
+@using Services
+@inject LoginService LoginService
+
+@using Models
+
+<div class="decorative-bar"></div>
+
+<div class="main">
+    <div class="filter-and-button">
+        <div class="filters">
+            <input type="text" placeholder="Zoeken" @bind="searchTerm" @oninput="HandleInput"/>
+            <select name="Status" id="select_status">
+                <option value="" disabled selected>Status</option>
+                <option value="Aangemaakt" >Aangemaakt</option>
+                <option value="Incompleet">Incompleet</option>
+                <option value="Wachten PO">Wachten PO</option>
+                <option value="Compleet">Compleet</option>
+                <option value="Beëndigd">Beëndigd</option>
+            </select>
+            <input type="date" placeholder="Datum" @oninput="HandleInput"/>
+        </div>
+        <div @onclick="() => navigateToNewDossier()" class="button-holder">
+            <div>Nieuw Dossier</div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr class="table-row table-header">
+            <th>Opdracht</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (Dossier dossier in filteredDossiers)
+            {
+                <tr class="table-row data-row" @onclick="()=>navigate(dossier.KandidaatId)">
+                    <td>@dossier.KandidaatId</td>
+                    @{
+                        string status = GenerateStatus();
+                        string color = GetRowColor(status);
+                    }
+                    <td class="table-status" style="color: @color">@status</td>
+                    <td>&#10095;</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<Dossier> dossiers = new List<Dossier>();
+    private List<Dossier> filteredDossiers = new List<Dossier>();
+    private string searchTerm = "";
+
+    protected override void OnInitialized()
+    {
+        createDossiers();
+        FilterDossiers();
+    }
+
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(true);
+            LoginService.setLoggedIn(true);
+        }
+    }
+
+    private string GetRowColor(string status)
+    {
+        switch (status)
+        {
+            case "Aangemaakt":
+                return "#006BFF"; // Blue
+            case "Incompleet":
+                return "#FBD300"; // Yellow
+            case "Wachten PO":
+                return "#000580"; // Dark Blue
+            case "Compleet":
+                return "#00800D"; // Green
+            case "Beëndigd":
+                return "#C80000"; // Red
+            default:
+                return "white";
+        }
+    }
+
+    //TODO: Change GenerateStatus to GetStatus (Now it is hardcoded)
+    private string GenerateStatus(){
+        Random rnd = new Random();
+        int number   = rnd.Next(5);
+        switch(number){
+            case 0:
+                return "Aangemaakt";
+            case 1:
+                return "Incompleet";
+            case 2:
+                return "Wachten PO";
+            case 3:
+                return "Compleet";
+            case 4:
+                return "Beëndigd";
+            default:
+                return "Aangemaakt";
+        }
+    }
+
+    private void HandleInput(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString().ToUpper();
+        FilterDossiers();
+    }
+
+    private void FilterDossiers()
+    {
+        if (searchTerm == null)
+        {
+            filteredDossiers = dossiers;
+        }
+        else
+        {
+            filteredDossiers = dossiers.Where(t => t.KandidaatId.ToUpper().Contains(searchTerm)).ToList<Dossier>();
+        }
+    }
+
+    private void navigateToNewDossier(){
+        NavigationManager.NavigateTo("/dossier-aanmaken");
+    }
+
+
+
+    private List<Document> documents = new List<Document>{
+      new Document
+        {
+            Id = "1",
+            Name = "Invoice001",
+            UploadType = "Invoice",
+            DocumentPath = "/documents/invoice001.pdf",
+            Status = "Goedgekeurd",
+            CreatedDate = DateTime.Now.AddDays(-10),
+            UpdatedDate = DateTime.Now.AddDays(-5),
+            CreatedBy = "John Doe"
+        },
+        new Document
+        {
+            Id = "2",
+            Name = "Contract002",
+            UploadType = "Contract",
+            DocumentPath = "/documents/contract002.pdf",
+            Status = "Wachten op beoordeling",
+            CreatedDate = DateTime.Now.AddDays(-15),
+            UpdatedDate = DateTime.Now.AddDays(-10),
+            CreatedBy = "Jane Smith"
+        },
+        new Document
+        {
+            Id = "3",
+            Name = "Proposal003",
+            UploadType = "Proposal",
+            DocumentPath = "/documents/proposal003.pdf",
+            Status = "Afgekeurd",
+            CreatedDate = DateTime.Now.AddDays(-20),
+            UpdatedDate = DateTime.Now.AddDays(-15),
+            CreatedBy = "Alice Johnson"
+        },
+        new Document
+        {
+            Id = "4",
+            Name = "Delivery004",
+            UploadType = "Delivery",
+            DocumentPath = "/documents/delivery004.pdf",
+            Status = "Nog op te leveren",
+            CreatedDate = DateTime.Now.AddDays(-25),
+            UpdatedDate = DateTime.Now.AddDays(-20),
+            CreatedBy = "Bob Williams"
+        }  
+        
+    };
+
+    private void createDossiers()
+    {
+        Dossier newDossier = new Dossier(
+            id: "12345",
+            kandidaatId: "ABCDE",
+            status: "In behandeling",
+            date: DateTime.Now,
+            inkoopTarief: 1000.0,
+            verkoopTarief: 1500.0,
+            betalingstermijn: DateTime.Now.AddDays(30),
+            feepartij: "Voorbeeld Fee Partij",
+            functieOmschrijving: "Een mooie functieonmschrijving",
+            leverancierNotitie: "Voorbeeld leverancier notitie",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
+        );
+
+        newDossier.Documents.Add(documents[0]);
+
+        dossiers.Add(newDossier);
+
+        Dossier newDossier2 = new Dossier(
+            id: "123456789",
+            kandidaatId: "ABCDEFGHIJ",
+            status: "Afgerond",
+            date: DateTime.Now,
+            inkoopTarief: 2000.0,
+            verkoopTarief: 2500.0,
+            betalingstermijn: DateTime.Now.AddDays(35),
+            feepartij: "Voorbeeld Fee Partij met een spin",
+            functieOmschrijving: "Nog een mooie functieonmschrijving",
+            leverancierNotitie: "Voorbeeld leverancier notitie",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
+        );
+
+        newDossier2.Documents.Add(documents[1]);
+
+        dossiers.Add(newDossier2);
+
+        Dossier newDossier3 = new Dossier(
+            id: "67890",
+            kandidaatId: "FGHIJK",
+            status: "In behandeling",
+            date: DateTime.Now,
+            inkoopTarief: 1500.0,
+            verkoopTarief: 2000.0,
+            betalingstermijn: DateTime.Now.AddDays(45),
+            feepartij: "Voorbeeld Fee Partij 3",
+            functieOmschrijving: "Nog een andere mooie functieonmschrijving",
+            leverancierNotitie: "Voorbeeld leverancier notitie 3",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 3"
+        );
+
+        newDossier3.Documents.Add(documents[2]);
+
+        dossiers.Add(newDossier3);
+
+        Dossier newDossier4 = new Dossier(
+            id: "13579",
+            kandidaatId: "LMNOP",
+            status: "Afgerond",
+            date: DateTime.Now,
+            inkoopTarief: 1800.0,
+            verkoopTarief: 2300.0,
+            betalingstermijn: DateTime.Now.AddDays(25),
+            feepartij: "Voorbeeld Fee Partij 4",
+            functieOmschrijving: "Nog een andere mooie functieonmschrijving 4",
+            leverancierNotitie: "Voorbeeld leverancier notitie 4",
+            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 4"
+        );
+
+        newDossier4.Documents.Add(documents[3]);
+
+        dossiers.Add(newDossier4);
+    }
+
+    public void navigate(string kandidaatId)
+    {
+        this.NavigationManager.NavigateTo($"/InterneMedewerkerDossierInzien/{kandidaatId}");
+    }
+}
