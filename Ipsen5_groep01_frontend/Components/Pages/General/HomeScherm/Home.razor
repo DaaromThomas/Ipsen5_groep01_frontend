@@ -1,15 +1,15 @@
 ﻿@page "/"
-@inject NavigationManager NavigationManager
 
 @using Services
+
 @inject LoginService LoginService
+@inject NavigationManager NavigationManager
 
 
 <PageTitle>StaffingNow</PageTitle>
 
 <div class="page">
     <div class="linear-gradient-Container">
-
         <div class="text-container">
             <div class="company-name-container">
                 <div class="company-name">
@@ -32,19 +32,12 @@
     </div>
 </div>
 
-
-
 @code{
-
     protected override void OnAfterRender(bool firstRender){
         if(firstRender){
             LoginService.setIsAdmin(false);
             LoginService.setLoggedIn(false);
         }
-    }
-    public void NavigateToSignIn()
-    {
-        NavigationManager.NavigateTo("/signIn");
     }
 }
 

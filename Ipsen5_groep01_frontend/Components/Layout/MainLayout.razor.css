@@ -18,7 +18,7 @@ main {
     align-items: center;
 }
 
-article{
+.content{
     margin: 0;
     padding: 0;
 }
