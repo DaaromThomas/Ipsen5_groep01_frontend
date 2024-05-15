@@ -3,6 +3,8 @@
 @using Ipsen5_groep01_frontend.Components.Services
 @inject Ipsen5_groep01_frontend.Components.Services.DocumentenService DocumentenService
 @inject NavigationManager NavigationManager
+@inject DocumentenService DocumentenService
+@using Models
 
 @using Services
 @inject LoginService LoginService
@@ -46,11 +48,11 @@
 
    public void Opslaan()
     {
-        var nieuwDocument = new DocumentMarcel
+        var nieuwDocument = new Document
     {
-        Naam = documentNaam,
-        Verplicht = verplicht,
-        Extensie = extensie
+        Name = documentNaam,
+        Required = verplicht,
+        Extention = extensie
     };
        DocumentenService.ToevoegenDocument(nieuwDocument);
        navigate();

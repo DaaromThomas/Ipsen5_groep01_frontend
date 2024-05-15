@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using Ipsen5_groep01_frontend.Components;
 using Ipsen5_groep01_frontend.Components.Services;
+using Ipsen5_groep01_frontend.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,7 @@ builder.Services.AddSingleton<DocumentenService>();
 builder.Services.AddSingleton<LoginService>();
 builder.Services.AddSingleton<Page_links>();
 builder.Services.AddSingleton<Secret_consts>();
+builder.Services.AddSingleton<LeverancierDossierService>();
 
 
 var app = builder.Build();
