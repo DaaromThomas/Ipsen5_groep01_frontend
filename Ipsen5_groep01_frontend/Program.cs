@@ -21,7 +21,7 @@ builder.Services.AddSingleton<DocumentenService>();
 builder.Services.AddSingleton<LoginService>();
 builder.Services.AddSingleton<Page_links>();
 builder.Services.AddSingleton<Secret_consts>();
-builder.Services.AddSingleton<LeverancierDossierService>();
+builder.Services.AddSingleton<DossierService>();
 
 
 var app = builder.Build();
