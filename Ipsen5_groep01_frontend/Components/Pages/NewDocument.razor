@@ -22,20 +22,20 @@
         <h2 class="extensies">Extensie</h2>
     </div>
     <div class="input-section">
-        <input @bind="documentNaam" type="text" placeholder="Voer de naam in" class="document-name" />
-        <input @bind="verplicht" class="document-checkbox" type="checkbox" />
-        <select @bind="extensie" class="document-extensie">
-            <option value=".pdf">.pdf</option>
-            <option value=".docx">.docx</option>
-            <option value=".txt">.txt</option>
+        <input @bind="documentName" type="text" placeholder="Voer de naam in" class="document-name" />
+        <input @bind="Required" class="document-checkbox" type="checkbox" />
+        <select @bind="DocumentType" class="document-extensie">
+            <option value="Pdf">pdf</option>
+            <option value="Docx">docx</option>
+            <option value="Txt">txt</option>
         </select>
     </div>
 </div>
 
 @code {
-    private string documentNaam;
-    private bool verplicht;
-    private string extensie;
+    private string documentName;
+    private string DocumentType;
+    private bool Required;
 
     protected override void OnAfterRender(bool firstRender){
         if(firstRender){
@@ -46,11 +46,11 @@
 
    public void Opslaan()
     {
-        var nieuwDocument = new DocumentMarcel
+        var nieuwDocument = new AddDocument()
     {
-        Naam = documentNaam,
-        Verplicht = verplicht,
-        Extensie = extensie
+        UploadType = documentName,
+        DocumentType = DocumentType,
+        Required = Required
     };
        DocumentenService.ToevoegenDocument(nieuwDocument);
        navigate();

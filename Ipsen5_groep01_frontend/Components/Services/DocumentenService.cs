@@ -5,33 +5,33 @@ namespace Ipsen5_groep01_frontend.Components.Services
 {
     public class DocumentenService
     {
-        private List<DocumentMarcel> documenten = new List<DocumentMarcel>
+        private List<AddDocument> documenten = new List<AddDocument>
         {
-            new DocumentMarcel { Naam = "Rijbewijs", Verplicht = true, Extensie = ".pdf" },
-            new DocumentMarcel { Naam = "Taxipas", Verplicht = true, Extensie = ".docx"},
-            new DocumentMarcel { Naam = "PO nummer", Verplicht = true, Extensie = ".pdf" }
+            new AddDocument { UploadType = "Rijbewijs", DocumentType = "Pdf", Required = false },
+            new AddDocument { UploadType = "Taxipas", DocumentType = "Docx", Required = true},
+            new AddDocument { UploadType = "PO nummer", DocumentType = "Pdf", Required = true }
         };
 
-        public Task<List<DocumentMarcel>> GetDocumentenAsync()
+        public Task<List<AddDocument>> GetDocumentenAsync()
         {
             return Task.FromResult(documenten);
         }
 
-        public void ToevoegenDocument(DocumentMarcel document)
+        public void ToevoegenDocument(AddDocument document)
         {
             documenten.Add(document);
         }
 
-        public void VerwijderDocument(DocumentMarcel document)
+        public void VerwijderDocument(AddDocument document)
         {
             documenten.Remove(document);
         }
     }
 
-    public class DocumentMarcel
+    public class AddDocument
     {
-        public string Naam { get; set; }
-        public bool Verplicht { get; set; }
-        public string Extensie { get; set; }
+        public string UploadType { get; set; }
+        public string DocumentType { get; set; }
+        public bool Required { get; set; }
     }
 }

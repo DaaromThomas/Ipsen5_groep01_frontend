@@ -28,16 +28,16 @@
     <li class="document">
         <div class="document-content">
             <span class="naam">
-                <input type="text" @bind="document.Naam" class="editable-name" />
+                <input type="text" @bind="document.UploadType" class="editable-name" />
             </span>
             <span class="document-checkbox">
-                <input type="checkbox" @bind="document.Verplicht" />
+                <input type="checkbox" @bind="document.Required" />
             </span>
             <span class="extensie">
-            <select @bind="document.Extensie" class="editable-extension">
-                <option value=".pdf">.pdf</option>
-                <option value=".docx">.docx</option>
-                <option value=".txt">.txt</option>
+            <select @bind="document.DocumentType" class="editable-extension">
+                <option value="Pdf">pdf</option>
+                <option value="Docx">docx</option>
+                <option value="Txt">txt</option>
             </select>
         </span>
         </div>
@@ -54,7 +54,7 @@
 </div>
 
 @code {
-    private List<DocumentMarcel> documenten;
+    private List<AddDocument> documenten;
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,7 +69,7 @@
         }
     }
 
-    private async Task VerwijderDocument(DocumentMarcel document)
+    private async Task VerwijderDocument(AddDocument document)
     {
         documenten.Remove(document);
     }
