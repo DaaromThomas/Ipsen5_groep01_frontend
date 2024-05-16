@@ -1,6 +1,7 @@
 ﻿@page "/documentbeheer"
 @attribute [StreamRendering]
 @using Ipsen5_groep01_frontend.Components.Services
+@using Ipsen5_groep01_frontend.Models
 @inject Ipsen5_groep01_frontend.Components.Services.DocumentenService DocumentenService
 @inject LoginService LoginService
 
@@ -54,7 +55,7 @@
 </div>
 
 @code {
-    private List<AddDocument> documenten;
+    private List<Document> documenten;
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,7 +70,7 @@
         }
     }
 
-    private async Task VerwijderDocument(AddDocument document)
+    private async Task VerwijderDocument(Document document)
     {
         documenten.Remove(document);
     }
