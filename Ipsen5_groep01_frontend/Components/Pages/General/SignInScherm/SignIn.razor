@@ -1,10 +1,6 @@
 ﻿@page "/signIn"
 
-@inject IJSRuntime JsRuntime
-@inject NavigationManager NavigationManager
-@inject HttpClient HttpClient
-@inject LoginService LoginService
-
+@rendermode InteractiveAuto
 
 @using Services
 @using Microsoft.AspNetCore.Http;
@@ -20,7 +16,14 @@
 @using Microsoft.AspNetCore.Components.Forms
 @using Ipsen5_groep01_frontend.Models
 @using Ipsen5_groep01_frontend.Services
-@rendermode InteractiveAuto
+
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+@inject LoginService LoginService
+@inject Page_links Page_links
+@inject Secret_consts Secret_consts
+
 
 <PageTitle>Inloggen</PageTitle>
 
@@ -28,17 +31,13 @@
 
 <div class="page">
     <div class="linear-gradient-Container">
-
         <div class="login-container">
             <div class="title-login">
                 INLOGGEN
             </div>
             <div class="login">
-
                 <EditForm Model="SignInModel" OnValidSubmit="SignInAsync" FormName="signInForm">
                     <DataAnnotationsValidator />
-
-
                     <div class="text-fieldcontrainer">
                         <div class="form-group">
                             <label for="email">Email:</label>
@@ -58,12 +57,10 @@
                     <div>
                         <button type="submit" class="login-button">INLOGGEN</button>
                     </div>
-
-
                 </EditForm>
             </div>
             <div class="back-button-container">
-                <button class="back-button" @onclick="NavigateToHome">TERUG</button>
+                <button class="back-button" @onclick="() => navigate(Page_links.homeLink)">TERUG</button>
             </div>
         </div>
 
@@ -83,24 +80,13 @@
 @code {
     [SupplyParameterFromForm]
     private SignInModel SignInModel { get; set; } = new();
-
-    private RequestMakerService _requestMakerService;
-    private readonly IConfiguration _configuration;
     private string role { get; set; }
-
-    public SignIn()
-    {
-
-    }
-
+    private RequestMakerService _requestMakerService {get; set;}
+    private readonly IConfiguration _configuration;
+    
     public SignIn(IConfiguration configuration)
     {
         _configuration = configuration;
-    }
-
-    public void NavigateToHome()
-    {
-        NavigationManager.NavigateTo("/");
     }
 
     protected override void OnInitialized()
@@ -109,82 +95,84 @@
         base.OnInitialized();
     }
 
+    private void navigate(string link)
+    {
+        NavigationManager.NavigateTo(link);
+    }
+
     protected override void OnAfterRender(bool firstRender){
         if(firstRender){
-            LoginService.setIsAdmin(false);
-            LoginService.setLoggedIn(false);
+            setLoginBooleans(loggedIn: false, isAdmin: false);
         }
+    }
+
+    private void setLoginBooleans(bool loggedIn, bool isAdmin){
+        LoginService.setLoggedIn(loggedIn);
+        LoginService.setIsAdmin(isAdmin);
     }
 
     private async Task SignInAsync()
     {
-
         if (!string.IsNullOrEmpty(SignInModel.Email) && !string.IsNullOrEmpty(SignInModel.Password))
         {
-            var response = await _requestMakerService.MakePostRequest("user/signIn", SignInModel);
+            HttpResponseMessage response = await _requestMakerService.MakePostRequest("user/signIn", SignInModel);
 
             if (response.IsSuccessStatusCode)
             {
                 if (response.Headers.TryGetValues("Authorization", out var tokens))
                 {
-                    var Token = tokens.FirstOrDefault().Substring(7);
+                    string token = tokens.FirstOrDefault().Substring(7);
+                    ClaimsPrincipal principal = readAndValidateToken(token);
 
-                    var handler = new JwtSecurityTokenHandler();
-                    var secret = "ThisIsMySecre6546rgfg5464fddzffg546fgtKey123456778";
-                    var key = Encoding.ASCII.GetBytes(secret);
-
-                    var tokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
-
-                    SecurityToken validatedToken;
-                    ClaimsPrincipal principal;
-
-                    principal = handler.ValidateToken(Token, tokenValidationParameters, out validatedToken);
-
-
-                    var roleClaim = principal.FindFirst(ClaimTypes.Role);
-
-                    if (roleClaim != null)
-                    {
-                        role = roleClaim.Value;
-                        if (role == "Admin")
-                        {
-                            NavigationManager.NavigateTo("/InterneMedewerkerDossierScherm");
-                            LoginService.setIsAdmin(true);
-                            LoginService.setLoggedIn(true);
-                        }
-                        else if (role == "Employee")
-                        {
-                            NavigationManager.NavigateTo("/InterneMedewerkerDossierScherm");
-                            LoginService.setIsAdmin(true);
-                            LoginService.setLoggedIn(true);
-                        }
-                        else if (role == "User")
-                        {
-                            NavigationManager.NavigateTo("/LeverancierDossierScherm");
-                            LoginService.setIsAdmin(false);
-                            LoginService.setLoggedIn(true);
-                        }
-                        
-                        Console.WriteLine("IsAdmin: " + LoginService.getIsAdmin());
-                        Console.WriteLine("LoggedIn: " + LoginService.getLoggedIn());
-                    }
-
+                    string role = principal.FindFirst(ClaimTypes.Role).Value;
+                    checkRole(role);
                 }
-
-            }
-            else
-            {
-
             }
         }
     }
-    
+
+
+    @* gets an token and checks + validates is. The return can be used to get certain value's hidden in the token *@
+    private ClaimsPrincipal readAndValidateToken(string token){
+        byte[] key = Encoding.ASCII.GetBytes(Secret_consts.jwt_secret);
+        JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+        TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+
+        SecurityToken validatedToken;
+        return handler.ValidateToken(token, tokenValidationParameters, out validatedToken);
+    }
+
+
+    @* Gets an role with datatype string and checks what to do then *@
+    private void checkRole(string role){
+        if(role.IsNullOrEmpty()){
+            return;
+        }
+
+        switch(role){
+            case "Admin":
+                this.navigate(Page_links.interneMedewerkerDossierSchermLink);
+                this.setLoginBooleans(loggedIn: true, isAdmin: true);
+                break;
+            case "Employee":
+                this.navigate(Page_links.interneMedewerkerDossierSchermLink);
+                this.setLoginBooleans(loggedIn: true, isAdmin: true);
+                break;
+            case "User":
+                this.navigate(Page_links.leverancierDossierSchermLink);
+                this.setLoginBooleans(loggedIn: true, isAdmin: false);
+                break;
+            default:
+                break;
+        }
+        return;
+    }
 }
 
 

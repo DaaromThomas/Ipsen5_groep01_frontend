@@ -1,5 +1,8 @@
 ﻿@rendermode InteractiveServer
+
 @using Services
+
+@inject Page_links Page_links
 @inject LoginService LoginService
 @inject NavigationManager NavigationManager
 
@@ -59,10 +62,10 @@
 
     <!-- Profile picture -->
     @if(loggedIn){
-    <div class="profile_pic" @onclick="() => navigateToHome()">
+    <div class="profile_pic" @onclick="() => navigate(Page_links.homeLink)">
         <img class="profile_pic" src="images/Microsoft_account-Logo.png" alt="logo" />
     </div>
-    }
+}
     
 
     
@@ -81,10 +84,8 @@
         setIsAdmin(LoginService.getIsAdmin());
     }
 
-    private void navigateToHome(){
-        NavigationManager.NavigateTo("/");
-        LoginService.setIsAdmin(false);
-        LoginService.setLoggedIn(false);
+    private void navigate(string link){
+        NavigationManager.NavigateTo(link);
     }
 
     public void setLoggedIn(bool value){

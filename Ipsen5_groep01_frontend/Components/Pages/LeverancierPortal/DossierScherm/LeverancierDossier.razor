@@ -1,0 +1,93 @@
+﻿@page "/LeverancierDossierScherm"
+@layout MainLayout
+@rendermode InteractiveServer
+
+@using Ipsen5_groep01_frontend.Services
+@using Layout
+@using Services
+@using Models
+
+@inject NavigationManager NavigationManager
+@inject LoginService LoginService
+@inject DocumentenService DocumentenService
+@inject DossierService DossierService
+
+
+<div class="decorative-bar"></div>
+
+<div class="main">
+    <div class="filter-and-button">
+        <input type="text" placeholder="Zoeken" @bind="searchTerm" @oninput="HandleInput"/>
+        <p>Selecteer een opdracht</p>
+        <div class="button-holder">
+            <div>Opslaan</div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr class="table-row table-header">
+            <th>Opdracht</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach (Dossier dossier in filteredDossiers)
+            {
+                <tr class="table-row data-row" @onclick="()=>navigate(dossier.KandidaatId)">
+                    <td>@dossier.KandidaatId</td>
+                    <td>@dossier.Status</td>
+                    <td>&#10095;</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    private List<Dossier> dossiers = new List<Dossier>();
+
+    private List<Dossier> filteredDossiers = new List<Dossier>();
+
+    private List<Document> documents;
+
+    private string searchTerm = "";
+
+    protected override void OnInitialized()
+    {
+        documents = DocumentenService.GetDocumentenAsync();
+        dossiers = DossierService.getDossiers();
+        FilterDossiers();
+    }
+
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(false);
+            LoginService.setLoggedIn(true);
+        }
+    }
+
+    private void HandleInput(ChangeEventArgs e)
+    {
+        searchTerm = e.Value.ToString().ToUpper();
+        FilterDossiers();
+    }
+
+    private void FilterDossiers()
+    {
+        if (searchTerm == null)
+        {
+            filteredDossiers = dossiers;
+        }
+        else
+        {
+            filteredDossiers = dossiers.Where(t => t.KandidaatId.ToUpper().Contains(searchTerm)).ToList<Dossier>();
+        }
+    }
+
+    public void navigate(string kandidaatId)
+    {
+        this.NavigationManager.NavigateTo($"/LeverancierDossierInzien/{kandidaatId}");
+    }
+}
