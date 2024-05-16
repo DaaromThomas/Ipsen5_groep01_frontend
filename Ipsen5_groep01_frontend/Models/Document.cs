@@ -9,8 +9,8 @@ namespace Ipsen5_groep01_frontend.Models
             set { this.id = value; }
         } 
 
-        private string uploadType;
-        public string UploadType
+        private UploadType uploadType;
+        public UploadType UploadType
         {
             get { return this.uploadType; }
             set { this.uploadType = value; }
@@ -69,7 +69,7 @@ namespace Ipsen5_groep01_frontend.Models
             // Default constructor
         }
 
-        public Document(string id, string uploadType, string documentPath, string status, DateTime createdDate, DateTime updatedDate, string createdBy)
+        public Document(string id, UploadType uploadType, string documentPath, string status, DateTime createdDate, DateTime updatedDate, string createdBy)
         {
             this.Id = id;
             this.UploadType = uploadType;
