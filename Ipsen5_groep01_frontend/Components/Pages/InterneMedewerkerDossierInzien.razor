@@ -215,7 +215,7 @@ Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens v
       new Document
         {
             Id = "1",
-            UploadType = "Invoice",
+            UploadType = new UploadType(type: "", documentType: "", required: true),
             DocumentPath = "/documents/invoice001.pdf",
             Status = "Goedgekeurd",
             CreatedDate = DateTime.Now.AddDays(-10),
@@ -225,7 +225,7 @@ Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens v
         new Document
         {
             Id = "2",
-            UploadType = "Contract",
+            UploadType = new UploadType(type: "", documentType: "", required: true),
             DocumentPath = "/documents/contract002.pdf",
             Status = "Wachten op beoordeling",
             CreatedDate = DateTime.Now.AddDays(-15),
@@ -235,7 +235,7 @@ Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens v
         new Document
         {
             Id = "3",
-            UploadType = "Proposal",
+            UploadType = new UploadType(type: "", documentType: "", required: true),
             DocumentPath = "/documents/proposal003.pdf",
             Status = "Afgekeurd",
             CreatedDate = DateTime.Now.AddDays(-20),
@@ -245,7 +245,7 @@ Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens v
         new Document
         {
             Id = "4",
-            UploadType = "Delivery",
+            UploadType = new UploadType(type: "", documentType: "", required: true),
             DocumentPath = "/documents/delivery004.pdf",
             Status = "Nog op te leveren",
             CreatedDate = DateTime.Now.AddDays(-25),
