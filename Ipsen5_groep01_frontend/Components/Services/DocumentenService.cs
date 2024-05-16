@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Ipsen5_groep01_frontend.Models;
 
 namespace Ipsen5_groep01_frontend.Components.Services
