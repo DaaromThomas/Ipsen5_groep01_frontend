@@ -27,7 +27,7 @@
                 <tr class="table-row data-row @(documentOpened.Opened ? "opened-row" : "closed-row")" style="background-color: @(GetRowColor(documentOpened.Document.Status))" @onclick="() => documentOpened.Opened = !documentOpened.Opened">
                     <td style="position: relative;">
                         <div class="name-container">
-                            <p>@documentOpened.Document.Name</p>
+                            <p>@documentOpened.Document.UploadType</p>
                             @if(documentOpened.Opened){
                                 <div class="input-container">
                                     <input class="document-input" type="file" placeholder="">
@@ -220,7 +220,6 @@
         new DocumentOpened(new Document
         {
             Id = "1",
-            Name = "Invoice001",
             UploadType = "Invoice",
             DocumentPath = "/documents/invoice001.pdf",
             Status = "Goedgekeurd",
@@ -231,7 +230,6 @@
         new DocumentOpened(new Document
         {
             Id = "2",
-            Name = "Contract002",
             UploadType = "Contract",
             DocumentPath = "/documents/contract002.pdf",
             Status = "Wachten op beoordeling",
@@ -242,7 +240,6 @@
         new DocumentOpened(new Document
         {
             Id = "3",
-            Name = "Proposal003",
             UploadType = "Proposal",
             DocumentPath = "/documents/proposal003.pdf",
             Status = "Afgekeurd",
@@ -253,7 +250,6 @@
         new DocumentOpened(new Document
         {
             Id = "4",
-            Name = "Delivery004",
             UploadType = "Delivery",
             DocumentPath = "/documents/delivery004.pdf",
             Status = "Nog op te leveren",

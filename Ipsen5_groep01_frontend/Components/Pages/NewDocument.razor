@@ -4,6 +4,7 @@
 @inject Ipsen5_groep01_frontend.Components.Services.DocumentenService DocumentenService
 @inject NavigationManager NavigationManager
 
+@using Ipsen5_groep01_frontend.Models
 @using Services
 @inject LoginService LoginService
 
@@ -46,7 +47,7 @@
 
    public void Opslaan()
     {
-        var nieuwDocument = new AddDocument()
+        var nieuwDocument = new Document()
     {
         UploadType = documentName,
         DocumentType = DocumentType,
