@@ -1,37 +1,31 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Ipsen5_groep01_frontend.Models;
 
 namespace Ipsen5_groep01_frontend.Components.Services
 {
     public class DocumentenService
     {
-        private List<AddDocument> documenten = new List<AddDocument>
+        private List<Document> documenten = new List<Document>
         {
-            new AddDocument { UploadType = "Rijbewijs", DocumentType = "Pdf", Required = false },
-            new AddDocument { UploadType = "Taxipas", DocumentType = "Docx", Required = true},
-            new AddDocument { UploadType = "PO nummer", DocumentType = "Pdf", Required = true }
+            new Document { UploadType = "Rijbewijs", DocumentType = "Pdf", Required = false },
+            new Document { UploadType = "Taxipas", DocumentType = "Docx", Required = true},
+            new Document { UploadType = "PO nummer", DocumentType = "Pdf", Required = true }
         };
 
-        public Task<List<AddDocument>> GetDocumentenAsync()
+        public Task<List<Document>> GetDocumentenAsync()
         {
             return Task.FromResult(documenten);
         }
 
-        public void ToevoegenDocument(AddDocument document)
+        public void ToevoegenDocument(Document document)
         {
             documenten.Add(document);
         }
 
-        public void VerwijderDocument(AddDocument document)
+        public void VerwijderDocument(Document document)
         {
             documenten.Remove(document);
         }
-    }
-
-    public class AddDocument
-    {
-        public string UploadType { get; set; } //Name
-        public string DocumentType { get; set; } //Extention
-        public bool Required { get; set; }
     }
 }
