@@ -1,7 +1,7 @@
 @page "/NewDocument"
 @attribute [StreamRendering]
 @using Ipsen5_groep01_frontend.Components.Services
-@inject Ipsen5_groep01_frontend.Components.Services.DocumentenService DocumentenService
+@inject Ipsen5_groep01_frontend.Components.Services.UploadTypeService UploadTypeService
 @inject NavigationManager NavigationManager
 
 @using Ipsen5_groep01_frontend.Models
@@ -45,15 +45,16 @@
         }
     }
 
-   public void Opslaan()
+   public async Task Opslaan()
     {
-        var nieuwDocument = new Document()
+        var nieuwDocument = new UploadType()
     {
-        UploadType = documentName,
+        Type = documentName,
         DocumentType = DocumentType,
         Required = Required
     };
-       DocumentenService.ToevoegenDocument(nieuwDocument);
+       UploadTypeService.ToevoegenDocument(nieuwDocument);
+       await UploadTypeService.ToevoegenDocumentAsync(nieuwDocument);
        navigate();
     }
 
