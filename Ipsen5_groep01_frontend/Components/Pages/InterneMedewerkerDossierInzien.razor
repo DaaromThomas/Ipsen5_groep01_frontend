@@ -105,7 +105,7 @@
                             <div class="documenten">
                                 @foreach(Document document in chosenDocuments){
                                     <div class="document-container">
-                                        <p class="document-vak">@document.Name</p>
+                                        <p class="document-vak">@document.UploadType</p>
                                         <button class="button ok-button" @onclick:stopPropagation>✔</button>
                                         <button class="button no-button" @onclick:stopPropagation>X</button>  
                                     </div>
@@ -215,7 +215,6 @@ Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens v
       new Document
         {
             Id = "1",
-            Name = "Invoice001",
             UploadType = "Invoice",
             DocumentPath = "/documents/invoice001.pdf",
             Status = "Goedgekeurd",
@@ -226,7 +225,6 @@ Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens v
         new Document
         {
             Id = "2",
-            Name = "Contract002",
             UploadType = "Contract",
             DocumentPath = "/documents/contract002.pdf",
             Status = "Wachten op beoordeling",
@@ -237,7 +235,6 @@ Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens v
         new Document
         {
             Id = "3",
-            Name = "Proposal003",
             UploadType = "Proposal",
             DocumentPath = "/documents/proposal003.pdf",
             Status = "Afgekeurd",
@@ -248,7 +245,6 @@ Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens v
         new Document
         {
             Id = "4",
-            Name = "Delivery004",
             UploadType = "Delivery",
             DocumentPath = "/documents/delivery004.pdf",
             Status = "Nog op te leveren",

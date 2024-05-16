@@ -30,8 +30,8 @@ namespace Ipsen5_groep01_frontend.Components.Services
 
     public class AddDocument
     {
-        public string UploadType { get; set; }
-        public string DocumentType { get; set; }
+        public string UploadType { get; set; } //Name
+        public string DocumentType { get; set; } //Extention
         public bool Required { get; set; }
     }
 }
