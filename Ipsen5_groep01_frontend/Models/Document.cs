@@ -59,26 +59,12 @@ namespace Ipsen5_groep01_frontend.Models
             set { this.createdBy = value; }
         }  
 
-        private bool required;
-        public bool Required
-        {
-            get;
-            set;
-        }
-
-        private string extention;
-        public string Extention
-        {
-            get;
-            set;
-        } 
-
         public Document()
         {
             // Default constructor
         }
 
-        public Document(string id, string name, string uploadType, string documentPath, string status, DateTime createdDate, DateTime updatedDate, string createdBy, bool required, string extention)
+        public Document(string id, string name, string uploadType, string documentPath, string status, DateTime createdDate, DateTime updatedDate, string createdBy)
         {
             this.Id = id;
             this.Name = name;
@@ -88,8 +74,6 @@ namespace Ipsen5_groep01_frontend.Models
             this.CreatedDate = createdDate;
             this.UpdatedDate = updatedDate;
             this.CreatedBy = createdBy;
-            this.Required = required;
-            this.Extention = extention;
         }
 
     }

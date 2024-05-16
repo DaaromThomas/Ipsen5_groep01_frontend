@@ -3,7 +3,6 @@
 @using Ipsen5_groep01_frontend.Components.Services
 @inject Ipsen5_groep01_frontend.Components.Services.DocumentenService DocumentenService
 @inject LoginService LoginService
-@using Models
 
 <div class="decorative-bar" style="width:100%; height: 70px; background: linear-gradient(0.25turn, #FF6700 0%, #1A222D 53%, #183749 70%, #10ADE5 100%); margin-bottom: 30px;"></div>
 <PageTitle>Documentbeheer</PageTitle>
@@ -29,13 +28,13 @@
     <li class="document">
         <div class="document-content">
             <span class="naam">
-                <input type="text" @bind="document.Name" class="editable-name" />
+                <input type="text" @bind="document.Naam" class="editable-name" />
             </span>
             <span class="document-checkbox">
-                <input type="checkbox" @bind="document.Required" />
+                <input type="checkbox" @bind="document.Verplicht" />
             </span>
             <span class="extensie">
-            <select @bind="document.Extention" class="editable-extension">
+            <select @bind="document.Extensie" class="editable-extension">
                 <option value=".pdf">.pdf</option>
                 <option value=".docx">.docx</option>
                 <option value=".txt">.txt</option>
@@ -55,11 +54,11 @@
 </div>
 
 @code {
-    private List<Document> documenten;
+    private List<DocumentMarcel> documenten;
 
     protected override async Task OnInitializedAsync()
     {
-        documenten = DocumentenService.GetDocumentenAsync();
+        documenten = await DocumentenService.GetDocumentenAsync();
         StateHasChanged();
     }
 
@@ -70,7 +69,7 @@
         }
     }
 
-    private async Task VerwijderDocument(Document document)
+    private async Task VerwijderDocument(DocumentMarcel document)
     {
         documenten.Remove(document);
     }
