@@ -21,6 +21,7 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredSessionStorage();
 
 builder.Services.AddSingleton<DocumentenService>();
+builder.Services.AddSingleton<DossiersService>();
 builder.Services.AddSingleton<LoginService>();
 
 
