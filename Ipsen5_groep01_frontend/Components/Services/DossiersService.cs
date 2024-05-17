@@ -22,7 +22,7 @@ public class DossiersService
         new Dossier(
             id: "123456789",
             kandidaatId: "ABCDEFGHIJ",
-            status: "Afgerond",
+            status: "In behandeling",
             date: DateTime.Now,
             inkoopTarief: 2000.0,
             verkoopTarief: 2500.0,
