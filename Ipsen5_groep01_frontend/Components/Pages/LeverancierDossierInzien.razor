@@ -1,10 +1,13 @@
 ﻿@page "/LeverancierDossierInzien/{kandidaatId}"
 @rendermode InteractiveServer
+@using Microsoft.AspNetCore.Http
 @using Models
 @inject NavigationManager NavigationManager
 
 @using Services
 @inject LoginService LoginService
+@inject FileUploadService FileUploadService
+@inject IJSRuntime JSRuntime
 
 
 <div class="decorative-bar"></div>
@@ -30,7 +33,8 @@
                             <p>@documentOpened.Document.UploadType</p>
                             @if(documentOpened.Opened){
                                 <div class="input-container">
-                                    <input class="document-input" type="file" placeholder="">
+                                    <InputFile class="document-input" OnChange="@(e => file = e)" @onclick:stopPropagation/>
+                                    <button class="upload-button" @onclick="() => UploadFile(documentOpened.Document.Id, file)">Uploaden</button>
                                 </div>
                             }
                         </div>
@@ -63,6 +67,7 @@
     public string kandidaatId { get; set; }
     private List<DocumentOpened> chosenDocuments = new List<DocumentOpened>();
     private List<Dossier> dossiers = new List<Dossier>();
+    private InputFileChangeEventArgs file;
 
     protected override void OnInitialized()
     {
@@ -105,6 +110,27 @@
     public void navigate()
     {
         this.NavigationManager.NavigateTo($"/LeverancierDossierScherm");
+    }
+
+    private async Task UploadFile(string documentId, InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file == null)
+        {
+            Console.WriteLine("No file selected.");
+            return;
+        }
+
+        using (var memoryStream = new MemoryStream())
+        {
+            await file.OpenReadStream().CopyToAsync(memoryStream);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            var result = await FileUploadService.UploadFileAsync(memoryStream, file.Name);
+
+            // Handle result as needed
+            Console.WriteLine(result);
+        }
     }
 
     public class DocumentOpened
