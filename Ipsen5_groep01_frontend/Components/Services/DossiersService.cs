@@ -48,7 +48,7 @@ public class DossiersService
         new Dossier(
             id: "13579",
             kandidaatId: "LMNOP",
-            status: "Afgerond",
+            status: "In behandeling",
             date: DateTime.Now,
             inkoopTarief: 1800.0,
             verkoopTarief: 2300.0,
@@ -63,5 +63,15 @@ public class DossiersService
     public Task<List<Dossier>> GetDossiersAsync()
     {
         return Task.FromResult(dossiers);
+    }
+
+    public Task UpdateDossierStatusAsync(string kandidaatId, string newStatus)
+    {
+        var dossier = dossiers.FirstOrDefault(d => d.KandidaatId == kandidaatId);
+        if (dossier != null)
+        {
+            dossier.Status = newStatus;
+        }
+        return Task.CompletedTask;
     }
 }
