@@ -11,146 +11,146 @@
 <div class="decorative-bar"></div>
 
 <div class="main">
-    <div class="filter-and-button">
-        <div class="filters">
-            <input type="text" placeholder="Zoeken" @bind="searchTerm" @oninput="HandleInput"/>
-            <select name="Status" id="select_status">
-                <option value="" disabled selected>Status</option>
-                <option value="Aangemaakt" >Aangemaakt</option>
-                <option value="Incompleet">Incompleet</option>
-                <option value="Wachten PO">Wachten PO</option>
-                <option value="Compleet">Compleet</option>
-                <option value="Beëndigd">Beëndigd</option>
-            </select>
-            <input type="date" placeholder="Datum" @oninput="HandleInput"/>
-        </div>
-        <div @onclick="() => navigateToNewDossier()" class="button-holder">
-            <div>Nieuw Dossier</div>
-        </div>
+  <div class="filter-and-button">
+    <div class="filters">
+      <input type="text" placeholder="Zoeken" @bind="searchTerm" @oninput="HandleInput"/>
+      <select name="Status" id="select_status">
+        <option value="" disabled selected>Status</option>
+        <option value="Aangemaakt" >Aangemaakt</option>
+        <option value="Incompleet">Incompleet</option>
+        <option value="Wachten PO">Wachten PO</option>
+        <option value="Compleet">Compleet</option>
+        <option value="Beëndigd">Beëndigd</option>
+      </select>
+      <input type="date" placeholder="Datum" @oninput="HandleInput"/>
     </div>
+    <div @onclick="() => navigateToNewDossier()" class="button-holder">
+      <div>Nieuw Dossier</div>
+    </div>
+  </div>
 
-    <table class="table">
-        <thead>
-        <tr class="table-row table-header">
-            <th>Opdracht</th>
-            <th>Status</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-            @foreach (Dossier dossier in dossiers)
-            {
-                <tr class="table-row data-row" @onclick="()=>navigate(dossier.KandidaatId)">
-                    <td>@dossier.KandidaatId</td>
-                    @{
-                        string status = dossier.Status;
-                    }
-                    <td class="table-status">@dossier.Status</td>
-                    <td>&#10095;</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+  <table class="table">
+    <thead>
+    <tr class="table-row table-header">
+      <th>Opdracht</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (Dossier dossier in dossiers)
+    {
+      <tr class="table-row data-row @(dossier.Status == "Afgerond" ? "green-background" : "")" @onclick="()=>navigate(dossier.KandidaatId)">
+        <td>@dossier.KandidaatId</td>
+        @{
+          string status = dossier.Status;
+        }
+        <td class="table-status">@dossier.Status</td>
+        <td>&#10095;</td>
+      </tr>
+    }
+    </tbody>
+  </table>
 </div>
 
 @code {
-    private List<Dossier> dossiers;
-    // private List<Dossier> filteredDossiers = new();
-    private string searchTerm = "";
+  private List<Dossier> dossiers;
+  // private List<Dossier> filteredDossiers = new();
+  private string searchTerm = "";
     
-    [Inject]
-    private DossiersService DossiersService { get; set; }
+  [Inject]
+  private DossiersService DossiersService { get; set; }
     
-    protected override async Task OnInitializedAsync()
+  protected override async Task OnInitializedAsync()
+  {
+    dossiers = await DossiersService.GetDossiersAsync();
+    StateHasChanged();
+  }
+
+  protected override void OnAfterRender(bool firstRender){
+    if(firstRender){
+      LoginService.setIsAdmin(true);
+      LoginService.setLoggedIn(true);
+    }
+  }
+    
+
+  private void HandleInput(ChangeEventArgs e)
+  {
+    searchTerm = e.Value.ToString().ToUpper();
+    // FilterDossiers();
+  }
+
+  // private void FilterDossiers()
+  // {
+  //     if (searchTerm == null)
+  //     {
+  //         filteredDossiers = dossiers;
+  //     }
+  //     else
+  //     {
+  //         filteredDossiers = dossiers.Where(t => t.KandidaatId.ToUpper().Contains(searchTerm)).ToList<Dossier>();
+  //     }
+  // }
+
+  private void navigateToNewDossier(){
+    NavigationManager.NavigateTo("/dossier-aanmaken");
+  }
+
+
+
+  private List<Document> documents = new List<Document>{
+    new Document
     {
-        dossiers = await DossiersService.GetDossiersAsync();
-        StateHasChanged();
-    }
-
-    protected override void OnAfterRender(bool firstRender){
-        if(firstRender){
-            LoginService.setIsAdmin(true);
-            LoginService.setLoggedIn(true);
-        }
-    }
-    
-
-    private void HandleInput(ChangeEventArgs e)
+      Id = "1",
+      Name = "Invoice001",
+      UploadType = "Invoice",
+      DocumentPath = "/documents/invoice001.pdf",
+      Status = "Goedgekeurd",
+      CreatedDate = DateTime.Now.AddDays(-10),
+      UpdatedDate = DateTime.Now.AddDays(-5),
+      CreatedBy = "John Doe"
+    },
+    new Document
     {
-        searchTerm = e.Value.ToString().ToUpper();
-        // FilterDossiers();
-    }
-
-    // private void FilterDossiers()
-    // {
-    //     if (searchTerm == null)
-    //     {
-    //         filteredDossiers = dossiers;
-    //     }
-    //     else
-    //     {
-    //         filteredDossiers = dossiers.Where(t => t.KandidaatId.ToUpper().Contains(searchTerm)).ToList<Dossier>();
-    //     }
-    // }
-
-    private void navigateToNewDossier(){
-        NavigationManager.NavigateTo("/dossier-aanmaken");
-    }
-
-
-
-    private List<Document> documents = new List<Document>{
-      new Document
-        {
-            Id = "1",
-            Name = "Invoice001",
-            UploadType = "Invoice",
-            DocumentPath = "/documents/invoice001.pdf",
-            Status = "Goedgekeurd",
-            CreatedDate = DateTime.Now.AddDays(-10),
-            UpdatedDate = DateTime.Now.AddDays(-5),
-            CreatedBy = "John Doe"
-        },
-        new Document
-        {
-            Id = "2",
-            Name = "Contract002",
-            UploadType = "Contract",
-            DocumentPath = "/documents/contract002.pdf",
-            Status = "Wachten op beoordeling",
-            CreatedDate = DateTime.Now.AddDays(-15),
-            UpdatedDate = DateTime.Now.AddDays(-10),
-            CreatedBy = "Jane Smith"
-        },
-        new Document
-        {
-            Id = "3",
-            Name = "Proposal003",
-            UploadType = "Proposal",
-            DocumentPath = "/documents/proposal003.pdf",
-            Status = "Afgekeurd",
-            CreatedDate = DateTime.Now.AddDays(-20),
-            UpdatedDate = DateTime.Now.AddDays(-15),
-            CreatedBy = "Alice Johnson"
-        },
-        new Document
-        {
-            Id = "4",
-            Name = "Delivery004",
-            UploadType = "Delivery",
-            DocumentPath = "/documents/delivery004.pdf",
-            Status = "Nog op te leveren",
-            CreatedDate = DateTime.Now.AddDays(-25),
-            UpdatedDate = DateTime.Now.AddDays(-20),
-            CreatedBy = "Bob Williams"
-        }  
+      Id = "2",
+      Name = "Contract002",
+      UploadType = "Contract",
+      DocumentPath = "/documents/contract002.pdf",
+      Status = "Wachten op beoordeling",
+      CreatedDate = DateTime.Now.AddDays(-15),
+      UpdatedDate = DateTime.Now.AddDays(-10),
+      CreatedBy = "Jane Smith"
+    },
+    new Document
+    {
+      Id = "3",
+      Name = "Proposal003",
+      UploadType = "Proposal",
+      DocumentPath = "/documents/proposal003.pdf",
+      Status = "Afgekeurd",
+      CreatedDate = DateTime.Now.AddDays(-20),
+      UpdatedDate = DateTime.Now.AddDays(-15),
+      CreatedBy = "Alice Johnson"
+    },
+    new Document
+    {
+      Id = "4",
+      Name = "Delivery004",
+      UploadType = "Delivery",
+      DocumentPath = "/documents/delivery004.pdf",
+      Status = "Nog op te leveren",
+      CreatedDate = DateTime.Now.AddDays(-25),
+      UpdatedDate = DateTime.Now.AddDays(-20),
+      CreatedBy = "Bob Williams"
+    }  
         
-    };
+  };
     
-    public void navigate(string kandidaatId)
-    {
-        this.NavigationManager.NavigateTo($"/InterneMedewerkerDossierInzien/{kandidaatId}");
-    }
+  public void navigate(string kandidaatId)
+  {
+    this.NavigationManager.NavigateTo($"/InterneMedewerkerDossierInzien/{kandidaatId}");
+  }
     
     
 }

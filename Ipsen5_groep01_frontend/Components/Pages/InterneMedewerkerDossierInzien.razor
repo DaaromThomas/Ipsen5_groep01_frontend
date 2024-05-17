@@ -39,7 +39,7 @@
     </div>
     @if(page == 1){
       <div class="basis-gegevens" >
-        <div class="gegevens @((showPersoonsGegevens) ? "opened" : "")" @onclick="TogglePersoonsGegevens">  
+        <div class="gegevens @(isPersoonsGegevensComplete ? "green-background" : "") @(showPersoonsGegevens ? "opened" : "")" @onclick="TogglePersoonsGegevens">
           <p class="title">
             Persoons gegevens
             @if (showPersoonsGegevens)
@@ -63,7 +63,7 @@
             </div> 
           }
         </div>
-        <div class="gegevens @((showBedrijfsGegevens) ? "opened" : "")" @onclick="ToggleBedrijfsGegevens">
+        <div class="gegevens @(isBedrijfsGegevensComplete ? "green-background" : "") @(showBedrijfsGegevens ? "opened" : "")" @onclick="ToggleBedrijfsGegevens">
           <p class="title">
             Bedrijfs gegevens
             @if (showBedrijfsGegevens)
@@ -86,12 +86,11 @@
               <button class="button no-button" @onclick:stopPropagation>X</button>
             </div> 
           }
-        </div>       
-        
+        </div>        
       </div>
     } else if(page == 2){
       <div class="overige-gegevens">
-        <div class="gegevens @((showDocumentenInzien) ? "opened" : "")" @onclick="ToggleDocumentenInzien">
+        <div class="gegevens @(isAlleDocumentenComplete ? "green-background" : "") @(showDocumentenInzien ? "opened" : "")" @onclick="ToggleDocumentenInzien">
           <p class="title">
             Documenten
             @if (showDocumentenInzien)
@@ -152,7 +151,7 @@
 @code {
 
   private List<Dossier> dossiers;
-  private bool isBasisGegevensComplete;
+  private bool isPersoonsGegevensComplete;
   private bool isBedrijfsGegevensComplete;
   private bool isDocumentComplete;
   private bool isAlleDocumentenComplete;
@@ -160,7 +159,7 @@
   
   private void HandleOkButtonClickBasisGegevens()
   {
-    isBasisGegevensComplete = true; 
+    isPersoonsGegevensComplete = true; 
     checkAllGegevensComplete();
   }
   
@@ -209,7 +208,7 @@
     }
     else 
     {
-      if (isBasisGegevensComplete && isBedrijfsGegevensComplete && isAlleDocumentenComplete)
+      if (isPersoonsGegevensComplete && isBedrijfsGegevensComplete && isAlleDocumentenComplete)
       {
         DossiersService.UpdateDossierStatusAsync(this.chosenDossier.KandidaatId, "Afgerond");
         StateHasChanged();
