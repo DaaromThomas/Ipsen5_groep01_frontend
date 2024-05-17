@@ -24,7 +24,7 @@
         @if(page == 1){
           <div class="line"></div>
         }
-                
+                        
       </div>
       <div class="overig bolletje-container" @onclick="() => SwitchToPage(2)">
         <div class="bolletje">
@@ -34,7 +34,7 @@
         @if(page == 2){
           <p class="line"></p>
         }
-                
+                        
       </div>
     </div>
     @if(page == 1){
@@ -59,7 +59,7 @@
               <p class="informatie-vak">BSN: 111222333</p>
               <a class="informatie-vak passpoort" href="">Paspoort</a>
               <button class="button ok-button" @onclick="HandleOkButtonClickBasisGegevens">✔</button>
-              <button class="button no-button" @onclick:stopPropagation>X</button>
+              <button class="button no-button" @onclick="HandleNoButtonClickPersoonsGegevens">X</button>
             </div> 
           }
         </div>
@@ -83,7 +83,7 @@
               <p class="informatie-vak">Oprichtingsdatum: 12-12-1212</p>
               <a class="informatie-vak organogram">organogram</a>
               <button class="button ok-button" @onclick="HandleOkButtonClickBedrijfsGegevens">✔</button>
-              <button class="button no-button" @onclick:stopPropagation>X</button>
+              <button class="button no-button" @onclick="HandleNoButtonClickBedrijfsGegevens">X</button>
             </div> 
           }
         </div>        
@@ -108,9 +108,9 @@
                 <div class="document-container">
                   <p class="document-vak">@document.Name</p>
                   <button class="button ok-button" @onclick="(e) => HandleOkButtonClickDocumenten(document.Id)">✔</button>
-                  <button class="button no-button" @onclick:stopPropagation>X</button>  
+                  <button class="button no-button" @onclick="(e) => HandleNoButtonClickDocumenten(document.Id)">X</button>  
                 </div>
-                                    
+                                                    
               }
             </div> 
           }
@@ -140,7 +140,7 @@
 
               Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens vriendelijke en deskundige ondersteuning mijn ervaring echt verrijkte. Hun toewijding aan klanttevredenheid was onmiskenbaar en werd zeer gewaardeerd.
             </div>
-                             
+                                         
           }
         </div>
       </div>
@@ -151,129 +151,156 @@
 @code {
 
   private List<Dossier> dossiers;
-  private bool isPersoonsGegevensComplete;
-  private bool isBedrijfsGegevensComplete;
-  private bool isDocumentComplete;
-  private bool isAlleDocumentenComplete;
-  
-  
-  private void HandleOkButtonClickBasisGegevens()
-  {
-    isPersoonsGegevensComplete = true; 
-    checkAllGegevensComplete();
-  }
-  
-  private void HandleOkButtonClickBedrijfsGegevens()
-  {
-    isBedrijfsGegevensComplete = true; 
-    checkAllGegevensComplete();
-  }
-
-  private void HandleOkButtonClickDocumenten(string documentId)
-  {
-    foreach (Document document in documents)
+    private bool isPersoonsGegevensComplete;
+    private bool isBedrijfsGegevensComplete;
+    private bool isDocumentComplete;
+    private bool isAlleDocumentenComplete;
+    
+    private void HandleOkButtonClickBasisGegevens()
     {
-      if (document.Id == documentId)
-      {
-        document.Status = "Goedgekeurd";
-        HandleOkAlleDocumenten();
-        break; 
-      }
-
+        isPersoonsGegevensComplete = true; 
+        checkAllGegevensComplete();
     }
-  }
-
-  private void HandleOkAlleDocumenten()
-  {
-    bool allDocumentsComplete = true;
-
-    foreach (Document document in documents)
+    
+    private void HandleOkButtonClickBedrijfsGegevens()
     {
-      if (document.Status != "Goedgekeurd")
-      {
-        allDocumentsComplete = false;
-        break;
-      }
+        isBedrijfsGegevensComplete = true; 
+        checkAllGegevensComplete();
     }
 
-    isAlleDocumentenComplete = allDocumentsComplete;
-    checkAllGegevensComplete();
-  }
-  
-  private void checkAllGegevensComplete()
-  {
-    if (chosenDossier == null)
+    private void HandleOkButtonClickDocumenten(string documentId)
     {
-      chosenDossier = dossiers.FirstOrDefault(d => d.KandidaatId == DossierCode);
+        foreach (Document document in documents)
+        {
+            if (document.Id == documentId)
+            {
+                document.Status = "Goedgekeurd";
+                HandleOkAlleDocumenten();
+                break; 
+            }
+        }
     }
-    else 
+
+    private void HandleOkAlleDocumenten()
     {
-      if (isPersoonsGegevensComplete && isBedrijfsGegevensComplete && isAlleDocumentenComplete)
-      {
-        DossiersService.UpdateDossierStatusAsync(this.chosenDossier.KandidaatId, "Afgerond");
+        bool allDocumentsComplete = true;
+
+        foreach (Document document in documents)
+        {
+            if (document.Status != "Goedgekeurd")
+            {
+                allDocumentsComplete = false;
+                break;
+            }
+        }
+
+        isAlleDocumentenComplete = allDocumentsComplete;
+        checkAllGegevensComplete();
+    }
+    
+    private void HandleNoButtonClickPersoonsGegevens()
+    {
+        isPersoonsGegevensComplete = false; 
+        checkAllGegevensComplete();
+    }
+    
+    private void HandleNoButtonClickBedrijfsGegevens()
+    {
+        isBedrijfsGegevensComplete = false; 
+        checkAllGegevensComplete();
+    }
+    
+    private void HandleNoButtonClickDocumenten(string documentId)
+    {
+        foreach (Document document in documents)
+        {
+            if (document.Id == documentId)
+            {
+                document.Status = "Afgekeurd";
+                HandleOkAlleDocumenten();
+                break; 
+            }
+        }
+    }
+    
+    private void checkAllGegevensComplete()
+    {
+        if (chosenDossier == null)
+        {
+            chosenDossier = dossiers.FirstOrDefault(d => d.KandidaatId == DossierCode);
+        }
+        else 
+        {
+            if (!isPersoonsGegevensComplete || !isBedrijfsGegevensComplete || !isAlleDocumentenComplete)
+            {
+                DossiersService.UpdateDossierStatusAsync(this.chosenDossier.KandidaatId, "In behandeling");
+            } 
+            else
+            {
+                DossiersService.UpdateDossierStatusAsync(this.chosenDossier.KandidaatId, "Afgerond");
+            }
+            StateHasChanged();
+        }
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        dossiers = await DossiersService.GetDossiersAsync();
+        chosenDossier = dossiers.FirstOrDefault(d => d.KandidaatId == DossierCode);
         StateHasChanged();
-      } 
     }
-  }
-  
-  protected override async Task OnInitializedAsync()
-  {
-    dossiers = await DossiersService.GetDossiersAsync();
-    chosenDossier = dossiers.FirstOrDefault(d => d.KandidaatId == DossierCode);
-    StateHasChanged();
-  }
 
 
-  [Parameter]
-  public string DossierCode { get; set; }
-  private int page = 1;
-        
-  private Dossier chosenDossier;
-  private List<Document> chosenDocuments = new List<Document>();
+    [Parameter]
+    public string DossierCode { get; set; }
+    private int page = 1;
+            
+    private Dossier chosenDossier;
+    private List<Document> chosenDocuments = new List<Document>();
 
-  private void navigate(){
-    NavigationManager.NavigateTo("/InterneMedewerkerDossierScherm");
-  }
-
-  protected override void OnAfterRender(bool firstRender){
-    if(firstRender){
-      LoginService.setIsAdmin(true);
-      LoginService.setLoggedIn(true);
+    private void navigate(){
+        NavigationManager.NavigateTo("/InterneMedewerkerDossierScherm");
     }
-  }
+
+    protected override void OnAfterRender(bool firstRender){
+        if(firstRender){
+            LoginService.setIsAdmin(true);
+            LoginService.setLoggedIn(true);
+        }
+    }
 
 
-  //Page 1
-  private bool showPersoonsGegevens = false;
-  private bool showBedrijfsGegevens = false;
-  private void TogglePersoonsGegevens()
-  {
-    showPersoonsGegevens = !showPersoonsGegevens;
-  }
+    //Page 1
+    private bool showPersoonsGegevens = false;
+    private bool showBedrijfsGegevens = false;
+    private void TogglePersoonsGegevens()
+    {
+        showPersoonsGegevens = !showPersoonsGegevens;
+    }
 
-  private void ToggleBedrijfsGegevens()
-  {
-    showBedrijfsGegevens = !showBedrijfsGegevens;
-  }
+    private void ToggleBedrijfsGegevens()
+    {
+        showBedrijfsGegevens = !showBedrijfsGegevens;
+    }
 
-  //Page 2
-  private bool showDocumentenInzien = false;
-  private bool showNotities = false;
-  private void ToggleDocumentenInzien()
-  {
-    showDocumentenInzien = !showDocumentenInzien;
-  }
+    //Page 2
+    private bool showDocumentenInzien = false;
+    private bool showNotities = false;
+    private void ToggleDocumentenInzien()
+    {
+        showDocumentenInzien = !showDocumentenInzien;
+    }
 
-  private void ToggleNotities()
-  {
-    showNotities = !showNotities;
-  }
+    private void ToggleNotities()
+    {
+        showNotities = !showNotities;
+    }
 
-  private void SwitchToPage(int pageNumber)
-  {
-    page = pageNumber;
-  }
-  
+    private void SwitchToPage(int pageNumber)
+    {
+        page = pageNumber;
+    }
+    
   private List<Document> documents = new List<Document>{
     new Document
     {
