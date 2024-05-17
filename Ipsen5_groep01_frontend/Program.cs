@@ -22,6 +22,7 @@ builder.Services.AddBlazoredSessionStorage();
 
 builder.Services.AddSingleton<UploadTypeService>();
 builder.Services.AddSingleton<LoginService>();
+builder.Services.AddSingleton<FileUploadService>();
 
 
 var app = builder.Build();
