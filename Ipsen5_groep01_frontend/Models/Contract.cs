@@ -2,9 +2,9 @@
 {
     public class Contract
     {
-        public Guid Id { get; set; } // primary key
+        public Guid Id { get; set; } 
 
-        public Guid CandidateId { get; set; } // foreign key to Candidate
+        public Guid CandidateId { get; set; } 
 
         public Guid CustomerId { get; set; }
 

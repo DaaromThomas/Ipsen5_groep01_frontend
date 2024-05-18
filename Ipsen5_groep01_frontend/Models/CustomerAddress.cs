@@ -1,0 +1,19 @@
+﻿namespace Ipsen5_groep01_frontend.Models
+{
+    public class CustomerAddress
+    {
+        public Guid Id { get; set; } // primary key
+
+        public Guid CustomerId { get; set; } // foreign key to Customer
+
+        public string StreetName { get; set; }
+
+        public string HouseNumber { get; set; }
+
+        public string PostalCode { get; set; }
+
+        public string Country { get; set; }
+
+        public string Province { get; set; }
+    }
+}
