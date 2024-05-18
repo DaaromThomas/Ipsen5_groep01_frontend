@@ -1,6 +1,8 @@
 @page "/InterneMedewerkerDossierInzien/{DossierCode}"
 @rendermode InteractiveServer
 @using Models
+@using Ipsen5_groep01_frontend.Components.Services
+@inject Ipsen5_groep01_frontend.Components.Services.DossiersService DossiersService
 
 @inject NavigationManager NavigationManager
 
@@ -8,161 +10,271 @@
 @inject LoginService LoginService
 
 <div class="container">
-    <div class="button-container">
-        <button class="navigate-button" @onclick="()=>navigate()">Terug</button>
-    </div>    
-    <div class="blocks">
-        <p class="dossier-name">@DossierCode</p>
-        <div class="bolletjes">
-            <div class="basis bolletje-container " @onclick="() => SwitchToPage(1)">
-                <div class="bolletje">
-                    1
-                </div>
-                <p>Basis</p>
-                @if(page == 1){
-                    <div class="line"></div>
-                }
-                
-            </div>
-            <div class="overig bolletje-container" @onclick="() => SwitchToPage(2)">
-                <div class="bolletje">
-                    2
-                </div>
-                <p>Overig</p>
-                @if(page == 2){
-                    <p class="line"></p>
-                }
-                
-            </div>
+  <div class="button-container">
+    <button class="navigate-button" @onclick="()=>navigate()">Terug</button>
+  </div>    
+  <div class="blocks">
+    <p class="dossier-name">@DossierCode</p>
+    <div class="bolletjes">
+      <div class="basis bolletje-container " @onclick="() => SwitchToPage(1)">
+        <div class="bolletje">
+          1
         </div>
+        <p>Basis</p>
         @if(page == 1){
-                 <div class="basis-gegevens" >
-                    <div class="gegevens @((showPersoonsGegevens) ? "opened" : "")" @onclick="TogglePersoonsGegevens">
-                        <p class="title">
-                            Persoons gegevens
-                            @if (showPersoonsGegevens)
-                            {
-                                <span>&#x25B2;</span>
-                            }
-                            else
-                            {
-                                <span>&#x25BC;</span>
-                            }
-                        </p>
-                        @if (showPersoonsGegevens){
-                            <div class="info">
-                                <p class="informatie-vak">Voornaam: Max</p>
-                                <p class="informatie-vak">Achternaam: Haijes</p>
-                                <p class="informatie-vak">Geboortedatum: 12-12-2012</p>
-                                <p class="informatie-vak">BSN: 111222333</p>
-                                <a class="informatie-vak passpoort" href="">Paspoort</a>
-                                <button class="button ok-button" @onclick:stopPropagation>✔</button>
-                                <button class="button no-button" @onclick:stopPropagation>X</button>
-                            </div> 
-                        }
+          <div class="line"></div>
+        }
                         
-                    </div>
-                    <div class="gegevens @((showBedrijfsGegevens) ? "opened" : "")" @onclick="ToggleBedrijfsGegevens">
-                        <p class="title">
-                            Bedrijfs gegevens
-                            @if (showBedrijfsGegevens)
-                            {
-                                <span>&#x25B2;</span>
-                            }
-                            else
-                            {
-                                <span>&#x25BC;</span>
-                            }
-                        </p>
-                        @if (showBedrijfsGegevens){
-                            <div class="info">
-                                <p class="informatie-vak">Naam: StaffingNow</p>
-                                <p class="informatie-vak">KVK-nummer: 5684 6846</p>
-                                <p class="informatie-vak">Adress: Ergens</p>
-                                <p class="informatie-vak">Oprichtingsdatum: 12-12-1212</p>
-                                <a class="informatie-vak organogram">organogram</a>
-                                <button class="button ok-button" @onclick:stopPropagation>✔</button>
-                                <button class="button no-button" @onclick:stopPropagation>X</button>
-                            </div> 
-                        }
-                    </div>
-                </div>
-            } else if(page == 2){
-                <div class="overige-gegevens">
-                    <div class="gegevens @((showDocumentenInzien) ? "opened" : "")" @onclick="ToggleDocumentenInzien">
-                        <p class="title">
-                            Documenten
-                            @if (showDocumentenInzien)
-                            {
-                                <span>&#x25B2;</span>
-                            }
-                            else
-                            {
-                                <span>&#x25BC;</span>
-                            }
-                        </p>
-                        @if (showDocumentenInzien){
-                            <div class="documenten">
-                                @foreach(Document document in chosenDocuments){
-                                    <div class="document-container">
-                                        <p class="document-vak">@document.UploadType</p>
-                                        <button class="button ok-button" @onclick:stopPropagation>✔</button>
-                                        <button class="button no-button" @onclick:stopPropagation>X</button>  
-                                    </div>
-                                    
-                                }
-                            </div> 
-                        }
-                    </div>
-                    <div class="gegevens  @((showNotities) ? "opened" : "") " @onclick="ToggleNotities">
-                        <p class="title">
-                            Notities
-                            @if (showNotities)
-                            {
-                                <span>&#x25B2;</span>
-                            }
-                            else
-                            {
-                                <span>&#x25BC;</span>
-                            }
-                        </p>
-                        @if(showNotities){
-                            <div class="notitie">
-                               @chosenDossier.LeverancierNotitie
-
-                               <br>
-                               <br>
-
-                               Ik wil graag wat aantekeningen delen betreffende onze recente samenwerking. Allereerst wil ik mijn waardering uitspreken voor het professionalisme en de toewijding van uw team gedurende het hele proces.
-
-Ik ben zeer tevreden met de kwaliteit van de geleverde diensten/producten en de tijdige afhandeling van mijn verzoeken. Het was duidelijk dat uw team mijn behoeften serieus nam en er alles aan deed om aan mijn verwachtingen te voldoen.
-
-Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens vriendelijke en deskundige ondersteuning mijn ervaring echt verrijkte. Hun toewijding aan klanttevredenheid was onmiskenbaar en werd zeer gewaardeerd.
-                            </div>
-                             
-                        }
-                    </div>
-                </div>
-            }
+      </div>
+      <div class="overig bolletje-container" @onclick="() => SwitchToPage(2)">
+        <div class="bolletje">
+          2
+        </div>
+        <p>Overig</p>
+        @if(page == 2){
+          <p class="line"></p>
+        }
+                        
+      </div>
     </div>
+    @if(page == 1){
+      <div class="basis-gegevens" >
+        <div class="gegevens @(isPersoonsGegevensComplete ? "green-background" : "") @(showPersoonsGegevens ? "opened" : "")" @onclick="TogglePersoonsGegevens">
+          <p class="title">
+            Persoons gegevens
+            @if (showPersoonsGegevens)
+            {
+              <span>&#x25B2;</span>
+            }
+            else
+            {
+              <span>&#x25BC;</span>
+            }
+          </p>
+          @if (showPersoonsGegevens){
+            <div class="info">
+              <p class="informatie-vak">Voornaam: Max</p>
+              <p class="informatie-vak">Achternaam: Haijes</p>
+              <p class="informatie-vak">Geboortedatum: 12-12-2012</p>
+              <p class="informatie-vak">BSN: 111222333</p>
+              <a class="informatie-vak passpoort" href="">Paspoort</a>
+              <button class="button ok-button" @onclick="HandleOkButtonClickBasisGegevens">✔</button>
+              <button class="button no-button" @onclick="HandleNoButtonClickPersoonsGegevens">X</button>
+            </div> 
+          }
+        </div>
+        <div class="gegevens @(isBedrijfsGegevensComplete ? "green-background" : "") @(showBedrijfsGegevens ? "opened" : "")" @onclick="ToggleBedrijfsGegevens">
+          <p class="title">
+            Bedrijfs gegevens
+            @if (showBedrijfsGegevens)
+            {
+              <span>&#x25B2;</span>
+            }
+            else
+            {
+              <span>&#x25BC;</span>
+            }
+          </p>
+          @if (showBedrijfsGegevens){
+            <div class="info">
+              <p class="informatie-vak">Naam: StaffingNow</p>
+              <p class="informatie-vak">KVK-nummer: 5684 6846</p>
+              <p class="informatie-vak">Adress: Ergens</p>
+              <p class="informatie-vak">Oprichtingsdatum: 12-12-1212</p>
+              <a class="informatie-vak organogram">organogram</a>
+              <button class="button ok-button" @onclick="HandleOkButtonClickBedrijfsGegevens">✔</button>
+              <button class="button no-button" @onclick="HandleNoButtonClickBedrijfsGegevens">X</button>
+            </div> 
+          }
+        </div>        
+      </div>
+    } else if(page == 2){
+      <div class="overige-gegevens">
+        <div class="gegevens @(isAlleDocumentenComplete ? "green-background" : "") @(showDocumentenInzien ? "opened" : "")" @onclick="ToggleDocumentenInzien">
+          <p class="title">
+            Documenten
+            @if (showDocumentenInzien)
+            {
+              <span>&#x25B2;</span>
+            }
+            else
+            {
+              <span>&#x25BC;</span>
+            }
+          </p>
+          @if (showDocumentenInzien){
+            <div class="documenten">
+              @foreach(Document document in documents){
+                <div class="document-container">
+                  <p class="document-vak">@document.Name</p>
+                  <button class="button ok-button" @onclick="(e) => HandleOkButtonClickDocumenten(document.Id)">✔</button>
+                  <button class="button no-button" @onclick="(e) => HandleNoButtonClickDocumenten(document.Id)">X</button>  
+                </div>
+                                                    
+              }
+            </div> 
+          }
+        </div>
+        <div class="gegevens  @((showNotities) ? "opened" : "") " @onclick="ToggleNotities">
+          <p class="title">
+            Notities
+            @if (showNotities)
+            {
+              <span>&#x25B2;</span>
+            }
+            else
+            {
+              <span>&#x25BC;</span>
+            }
+          </p>
+          @if(showNotities){
+            <div class="notitie">
+              @chosenDossier.LeverancierNotitie
+            } 
+                  </div>
+                  <div class="gegevens  @((showNotities) ? "opened" : "") " @onclick="ToggleNotities">
+                      <p class="title">
+                          Notities
+                          @if (showNotities)
+                          {
+                              <span>&#x25B2;</span>
+                          }
+                          else
+                          {
+                              <span>&#x25BC;</span>
+                          }
+                      </p>
+                    @if(showNotities){
+                        <div class="notitie">
+                           @chosenDossier.LeverancierNotitie
+
+
+              <br>
+              <br>
+
+              Ik wil graag wat aantekeningen delen betreffende onze recente samenwerking. Allereerst wil ik mijn waardering uitspreken voor het professionalisme en de toewijding van uw team gedurende het hele proces.
+
+              Ik ben zeer tevreden met de kwaliteit van de geleverde diensten/producten en de tijdige afhandeling van mijn verzoeken. Het was duidelijk dat uw team mijn behoeften serieus nam en er alles aan deed om aan mijn verwachtingen te voldoen.
+
+              Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens vriendelijke en deskundige ondersteuning mijn ervaring echt verrijkte. Hun toewijding aan klanttevredenheid was onmiskenbaar en werd zeer gewaardeerd.
+            </div>
+                                         
+          }
+        </div>
+      </div>
+    }
+  </div>
 </div>
 
 @code {
+
+  private List<Dossier> dossiers;
+    private bool isPersoonsGegevensComplete;
+    private bool isBedrijfsGegevensComplete;
+    private bool isDocumentComplete;
+    private bool isAlleDocumentenComplete;
+    
+    private void HandleOkButtonClickBasisGegevens()
+    {
+        isPersoonsGegevensComplete = true; 
+        checkAllGegevensComplete();
+    }
+    
+    private void HandleOkButtonClickBedrijfsGegevens()
+    {
+        isBedrijfsGegevensComplete = true; 
+        checkAllGegevensComplete();
+    }
+
+    private void HandleOkButtonClickDocumenten(string documentId)
+    {
+        foreach (Document document in documents)
+        {
+            if (document.Id == documentId)
+            {
+                document.Status = "Goedgekeurd";
+                HandleOkAlleDocumenten();
+                break; 
+            }
+        }
+    }
+
+    private void HandleOkAlleDocumenten()
+    {
+        bool allDocumentsComplete = true;
+
+        foreach (Document document in documents)
+        {
+            if (document.Status != "Goedgekeurd")
+            {
+                allDocumentsComplete = false;
+                break;
+            }
+        }
+
+        isAlleDocumentenComplete = allDocumentsComplete;
+        checkAllGegevensComplete();
+    }
+    
+    private void HandleNoButtonClickPersoonsGegevens()
+    {
+        isPersoonsGegevensComplete = false; 
+        checkAllGegevensComplete();
+    }
+    
+    private void HandleNoButtonClickBedrijfsGegevens()
+    {
+        isBedrijfsGegevensComplete = false; 
+        checkAllGegevensComplete();
+    }
+    
+    private void HandleNoButtonClickDocumenten(string documentId)
+    {
+        foreach (Document document in documents)
+        {
+            if (document.Id == documentId)
+            {
+                document.Status = "Afgekeurd";
+                HandleOkAlleDocumenten();
+                break; 
+            }
+        }
+    }
+    
+    private void checkAllGegevensComplete()
+    {
+        if (chosenDossier == null)
+        {
+            chosenDossier = dossiers.FirstOrDefault(d => d.KandidaatId == DossierCode);
+        }
+        else 
+        {
+            if (!isPersoonsGegevensComplete || !isBedrijfsGegevensComplete || !isAlleDocumentenComplete)
+            {
+                DossiersService.UpdateDossierStatusAsync(this.chosenDossier.KandidaatId, "In behandeling");
+            } 
+            else
+            {
+                DossiersService.UpdateDossierStatusAsync(this.chosenDossier.KandidaatId, "Afgerond");
+            }
+            StateHasChanged();
+        }
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        dossiers = await DossiersService.GetDossiersAsync();
+        chosenDossier = dossiers.FirstOrDefault(d => d.KandidaatId == DossierCode);
+        StateHasChanged();
+    }
+
+
     [Parameter]
     public string DossierCode { get; set; }
     private int page = 1;
-    private List<Dossier> dossiers = new List<Dossier>();
-        
+            
     private Dossier chosenDossier;
-     private List<Document> chosenDocuments = new List<Document>();
-
-
-    protected override void OnInitialized()
-    {
-        createDossiers();
-        chosenDossier = dossiers.Find(d => d.KandidaatId == DossierCode);
-        chosenDocuments = chosenDossier.Documents;
-    }
+    private List<Document> chosenDocuments = new List<Document>();
 
     private void navigate(){
         NavigationManager.NavigateTo("/InterneMedewerkerDossierScherm");
@@ -206,6 +318,7 @@ Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens v
     {
         page = pageNumber;
     }
+
 
 
 
@@ -256,78 +369,50 @@ Ik wil graag een speciale vermelding maken van [Naam van de Medewerker], wiens v
     };
 
     private void createDossiers()
+
     {
-        Dossier newDossier = new Dossier(
-            id: "12345",
-            kandidaatId: "ABCDE",
-            status: "In behandeling",
-            date: DateTime.Now,
-            inkoopTarief: 1000.0,
-            verkoopTarief: 1500.0,
-            betalingstermijn: DateTime.Now.AddDays(30),
-            feepartij: "Voorbeeld Fee Partij",
-            functieOmschrijving: "Een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-        );
+      Id = "1",
+      Name = "Invoice001",
+      UploadType = "Invoice",
+      DocumentPath = "/documents/invoice001.pdf",
+      Status = "Goedgekeurd",
+      CreatedDate = DateTime.Now.AddDays(-10),
+      UpdatedDate = DateTime.Now.AddDays(-5),
+      CreatedBy = "John Doe"
+    },
+    new Document
+    {
+      Id = "2",
+      Name = "Contract002",
+      UploadType = "Contract",
+      DocumentPath = "/documents/contract002.pdf",
+      Status = "Wachten op beoordeling",
+      CreatedDate = DateTime.Now.AddDays(-15),
+      UpdatedDate = DateTime.Now.AddDays(-10),
+      CreatedBy = "Jane Smith"
+    },
+    // new Document
+    // {
+    //   Id = "3",
+    //   Name = "Proposal003",
+    //   UploadType = "Proposal",
+    //   DocumentPath = "/documents/proposal003.pdf",
+    //   Status = "Afgekeurd",
+    //   CreatedDate = DateTime.Now.AddDays(-20),
+    //   UpdatedDate = DateTime.Now.AddDays(-15),
+    //   CreatedBy = "Alice Johnson"
+    // },
+    // new Document
+    // {
+    //   Id = "4",
+    //   Name = "Delivery004",
+    //   UploadType = "Delivery",
+    //   DocumentPath = "/documents/delivery004.pdf",
+    //   Status = "Nog op te leveren",
+    //   CreatedDate = DateTime.Now.AddDays(-25),
+    //   UpdatedDate = DateTime.Now.AddDays(-20),
+    //   CreatedBy = "Bob Williams"
+    // }  
 
-        newDossier.Documents.Add(documents[0]);
-        newDossier.Documents.Add(documents[3]);
-
-        dossiers.Add(newDossier);
-
-        Dossier newDossier2 = new Dossier(
-            id: "123456789",
-            kandidaatId: "ABCDEFGHIJ",
-            status: "Afgerond",
-            date: DateTime.Now,
-            inkoopTarief: 2000.0,
-            verkoopTarief: 2500.0,
-            betalingstermijn: DateTime.Now.AddDays(35),
-            feepartij: "Voorbeeld Fee Partij met een spin",
-            functieOmschrijving: "Nog een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-        );
-
-        newDossier2.Documents.Add(documents[1]);
-
-        dossiers.Add(newDossier2);
-
-        Dossier newDossier3 = new Dossier(
-            id: "67890",
-            kandidaatId: "FGHIJK",
-            status: "In behandeling",
-            date: DateTime.Now,
-            inkoopTarief: 1500.0,
-            verkoopTarief: 2000.0,
-            betalingstermijn: DateTime.Now.AddDays(45),
-            feepartij: "Voorbeeld Fee Partij 3",
-            functieOmschrijving: "Nog een andere mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie 3",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 3"
-        );
-
-        newDossier3.Documents.Add(documents[2]);
-
-        dossiers.Add(newDossier3);
-
-        Dossier newDossier4 = new Dossier(
-            id: "13579",
-            kandidaatId: "LMNOP",
-            status: "Afgerond",
-            date: DateTime.Now,
-            inkoopTarief: 1800.0,
-            verkoopTarief: 2300.0,
-            betalingstermijn: DateTime.Now.AddDays(25),
-            feepartij: "Voorbeeld Fee Partij 4",
-            functieOmschrijving: "Nog een andere mooie functieonmschrijving 4",
-            leverancierNotitie: "Voorbeeld leverancier notitie 4",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 4"
-        );
-
-        newDossier4.Documents.Add(documents[3]);
-
-        dossiers.Add(newDossier4);
-    }
+  };
 }
