@@ -13,10 +13,10 @@
     background-color: #bec8cf;
     display: flex;
     flex: 1;
-    margin-left: 10vmin;
-    margin-right: 10vmin;
+    margin-left: 6vmin;
+    margin-right: 6vmin;
     flex-direction: column;
-    height: 70vmin;
+    height: 77vmin;
     border-radius: 1.5vmin
 }
 
@@ -111,7 +111,47 @@
 .edit_icon {
 
 }
+.pagination-container {
+    position: fixed;
+    bottom: 3vmin;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50vmin;
+    background-color: white;
+    text-align: center;
+    background-color: transparent;
+}
 
+
+.pagination-buttons {
+    display: flex;
+    justify-content: center;
+    margin: 1vmin;
+}
+
+.previous-page-button {
+    width: 5vmin;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    border: none;
+    padding-top: 0.5vmin;
+}
+
+.next-page-button {
+    width: 5vmin;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    border: none;
+    padding-top: 0.5vmin;
+}
+
+.pagination-info {
+    padding-top: 1vmin;
+    padding-left: 2vmin;
+    padding-right: 2vmin;
+}
 
 
 
