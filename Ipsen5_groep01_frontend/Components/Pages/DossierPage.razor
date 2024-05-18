@@ -23,7 +23,7 @@
             <div class="header-title">Status</div>
             <div class="header-title">Functie</div>
         </div>
-        @foreach (var contract in contracts)
+        @foreach (var contract in contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
         {
             <div class="dossiers">
                 <div>@contract.CustomerId</div>
@@ -31,8 +31,27 @@
                 <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
                 <div>@contract.Status</div>
                 <div>@contract.JobDescription</div>
+                <button class="view_contract">
+                    <img class="eye_icon" src="/icons/eye_icon.svg" alt="Bekijk" />
+                </button>
+                <button class="edit_contract">
+                    <img class="edit_icon" src="/icons/edit_icon.svg" alt="Bewerk" />
+                </button>
+                <button class="delete_contract">
+                    <img class="delete_icon" src="/icons/delete_icon.svg" alt="Verwijder" />
+                </button>
             </div>
         }
+        <div class="pagination-buttons">
+            @if (currentPage > 1)
+            {
+                <button class="previous-page" @onclick="() => ChangePage(-1)">Vorige</button>
+            }
+            @if (contracts.Count() > currentPage * pageSize)
+            {
+                <button class="next-page" @onclick="() => ChangePage(1)">Volgende</button>
+            }
+        </div>
     </div>
 </div>
 
@@ -40,7 +59,7 @@
 
 
 @code {
-    private List<Contract> contracts = new List<Contract>(); // Declareer de lijst met contracten
+    private List<Contract> contracts = new List<Contract>(); 
 
     private RequestMakerService _requestMakerService;
 
@@ -61,6 +80,18 @@
         await GetContracts(); 
     }
 
+    private void NavigateToContractDetails(Guid contractId)
+    {
+        NavigationManager.NavigateTo($"/Contract/contractbyid/{contractId}");
+    }
+
+    int pageSize = 7; 
+    int currentPage = 1; 
+
+    void ChangePage(int increment)
+    {
+        currentPage += increment;
+    }
 
     public async Task<List<Contract>> GetContracts()
     {

@@ -39,7 +39,7 @@
 
 .dossier-header {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 0.5fr 1.15fr;
+    grid-template-columns: 1.1fr 1.1fr 0.8fr 0.5fr 1.15fr 0.2fr 0.2fr 0.2fr;
     padding: 1vmin;
 }
 
@@ -56,7 +56,7 @@
 
 .dossiers {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 0.5fr 1.15fr;
+    grid-template-columns: 1.1fr 1.1fr 0.8fr 0.5fr 1.15fr 0.2fr 0.2fr 0.2fr;
     border-top-width: 0.1vmin;
     border-bottom-width: 0.1vmin;
     border-left-width: 0;
@@ -73,8 +73,44 @@
         padding-left: 1.2vmin
     }
 
+.view_contract {
+    background-color: transparent;
+    display: flex;
+    justify-content:center;
+    border: none;
+    width: 4vmin;
+}
+
+.eye_icon {
+    width: 4vmin;
+}
 
 
+.delete_contract {
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    border: none;
+    width: 3vmin;
+    padding-top: 0.5vmin;
+}
+
+.delete_icon {
+    width: 3vmin;
+}
+
+.edit_contract {
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    border: none;
+    width: 3.4vmin;
+    padding-top: 0.4vmin;
+}
+
+.edit_icon {
+
+}
 
 
 
