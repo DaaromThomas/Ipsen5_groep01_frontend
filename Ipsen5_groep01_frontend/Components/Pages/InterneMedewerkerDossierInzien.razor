@@ -110,6 +110,21 @@
                   <button class="button ok-button" @onclick="(e) => HandleOkButtonClickDocumenten(document.Id)">✔</button>
                   <button class="button no-button" @onclick="(e) => HandleNoButtonClickDocumenten(document.Id)">X</button>  
                 </div>
+                    <div class="gegevens  @((showNotities) ? "opened" : "") " @onclick="ToggleNotities">
+                        <p class="title">
+                            Notities
+                            @if (showNotities)
+                            {
+                                <span>&#x25B2;</span>
+                            }
+                            else
+                            {
+                                <span>&#x25BC;</span>
+                            }
+                        </p>
+                        @if(showNotities){
+                            <div class="notitie">
+                               @chosenDossier.LeverancierNotitie  
                                                     
               }
             </div> 
