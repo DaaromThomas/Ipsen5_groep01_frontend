@@ -67,7 +67,6 @@
     display: flex;
     flex-direction: column;
     row-gap: 20px;
-    /*background-color: green;*/
 }
 
 .overige-gegevens{
@@ -170,7 +169,6 @@
     background-color: #DBDBDB !important;
     height: auto;
     padding-bottom: 10px !important;
-    
 }
 
 
@@ -229,7 +227,3 @@
       justify-content: left;
       padding-left: 10%;
   }
-
-.green-background {
-    background-color: #51bb2d;
-}

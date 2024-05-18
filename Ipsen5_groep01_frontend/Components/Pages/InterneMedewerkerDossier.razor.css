@@ -120,11 +120,3 @@
 .table-status{
     font-weight: bold;
 }
-
-.green-background {
-    background-color: #51bb2d;
-}
-
-.table-row.green-background:hover td {
-    background-color: #4eb42b; /* Adjust this color as needed */
-}
