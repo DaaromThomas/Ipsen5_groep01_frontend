@@ -18,13 +18,39 @@
 }
 
 .admin-buttons {
-    flex: 1;
-    height: 100%;
     display: flex;
-    align-items: center;
     justify-content: center;
-    flex-direction: row;
-    gap: 3%;
+    gap: 10vmin
+}
+
+.button {
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.button .active-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #FF6700;
+    visibility: hidden;
+}
+
+.button .active-link .active-indicator {
+    visibility: visible;
+    }
+
+.admin-buttons:hover {
+}
+
+.link {
+    background: red;
+}
+
+.link:hover{
+    background: blue;
 }
 
 
