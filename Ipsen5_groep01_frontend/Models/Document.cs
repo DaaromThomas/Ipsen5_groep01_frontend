@@ -9,8 +9,15 @@ namespace Ipsen5_groep01_frontend.Models
             set { this.id = value; }
         } 
 
-        private UploadType uploadType;
-        public UploadType UploadType
+        private string name;
+        public string Name
+        {
+            get { return this.name; }
+            set { this.name = value; }
+        }  
+
+        private string uploadType;
+        public string UploadType
         {
             get { return this.uploadType; }
             set { this.uploadType = value; }
@@ -52,33 +59,21 @@ namespace Ipsen5_groep01_frontend.Models
             set { this.createdBy = value; }
         }  
 
-        private bool required;
-        public bool Required{
-            get { return this.required; }
-            set { this.required = value; }
-        }
-
-        private string documentType;
-        public string DocumentType{
-            get { return this.documentType; }
-            set { this.documentType = value; }
-        }
-
         public Document()
         {
             // Default constructor
         }
 
-        public Document(string id, UploadType uploadType, string documentPath, string status, DateTime createdDate, DateTime updatedDate, string createdBy)
+        public Document(string id, string name, string uploadType, string documentPath, string status, DateTime createdDate, DateTime updatedDate, string createdBy)
         {
             this.Id = id;
+            this.Name = name;
             this.UploadType = uploadType;
             this.DocumentPath = documentPath;
             this.Status = status;
             this.CreatedDate = createdDate;
             this.UpdatedDate = updatedDate;
             this.CreatedBy = createdBy;
-
         }
 
     }
