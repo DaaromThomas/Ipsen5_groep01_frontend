@@ -11,7 +11,6 @@
 @using Microsoft.AspNetCore.Identity;
 @using Microsoft.IdentityModel.Tokens;
 @using System.IdentityModel.Tokens.Jwt;
-@using Ipsen5_groep01_frontend.Services;
 @using System.Net;
 @using System.Runtime.InteropServices;
 @using System.Security.Claims;
@@ -155,14 +154,14 @@
                     {
                         role = roleClaim.Value;
                         if (role == "Admin")
-                        {
-                            NavigationManager.NavigateTo("/InterneMedewerkerDossierScherm");
+                    {
+                            NavigationManager.NavigateTo("/Dossier");
                             LoginService.setIsAdmin(true);
                             LoginService.setLoggedIn(true);
                         }
                         else if (role == "Employee")
                         {
-                            NavigationManager.NavigateTo("/InterneMedewerkerDossierScherm");
+                            NavigationManager.NavigateTo("/Dossier");
                             LoginService.setIsAdmin(true);
                             LoginService.setLoggedIn(true);
                         }

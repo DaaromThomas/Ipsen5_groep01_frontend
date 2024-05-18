@@ -1,17 +1,103 @@
-@page "/InterneMedewerkerDossierScherm"
+@page "/Dossier"
 @rendermode InteractiveServer
-@inject NavigationManager NavigationManager
 
 @using Services
+@using Models
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+
+
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
 @inject LoginService LoginService
 
-@using Models
-
 <div class="decorative-bar"></div>
+
+<div class="dossier-container-background">
+    <div class="title">Dossiers</div>
+    <div class="dossier-container">
+        <div class="dossier-header">
+            <div class="header-title">Opdrachtgever</div>
+            <div class="header-title">Professional</div>
+            <div class="header-title">Periode</div>
+            <div class="header-title">Status</div>
+            <div class="header-title">Functie</div>
+        </div>
+        @foreach (var contract in contracts)
+        {
+            <div class="dossiers">
+                <div>@contract.CustomerId</div>
+                <div>@contract.CandidateId</div>
+                <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
+                <div>@contract.Status</div>
+                <div>@contract.JobDescription</div>
+            </div>
+        }
+    </div>
+</div>
+
 
 
 
 @code {
+    private List<Contract> contracts = new List<Contract>(); // Declareer de lijst met contracten
+
+    private RequestMakerService _requestMakerService;
+
+    public DossierPage()
+    {
+
+    }
+
+    protected override void OnInitialized()
+    {
+        _requestMakerService = new RequestMakerService(HttpClient);
+
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetContracts(); 
+    }
+
+
+    public async Task<List<Contract>> GetContracts()
+    {
+        var response = await _requestMakerService.MakeGetRequest("contract/allcontracts");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["contractDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+ 
+            var contract = new Contract();
+            contract.Id = Guid.Parse((string)jToken["id"]);
+            contract.CandidateId = Guid.Parse((string)jToken["candidateId"]);
+            contract.CustomerId = Guid.Parse((string)jToken["customerId"]);
+            contract.Status = (string)jToken["status"];
+            contract.StartDate = (DateTime)jToken["startDate"];
+            contract.EndDate = (DateTime)jToken["endDate"];
+            contract.PurchaseRate = (double)jToken["purchaseRate"];
+            contract.SellingRate = (double)jToken["sellingRate"];
+            contract.PaymentTerm = (string)jToken["paymentTerm"];
+            contract.FeeParty = (string)jToken["feeParty"];
+            contract.JobDescription = (string)jToken["jobDescription"];
+            contract.Note = (string)jToken["note"];
+            contract.Template = (bool)jToken["template"];
+
+            contracts.Add(contract);
+        }
+
+        return contracts;
+    }
+
+
+
+
     // private List<Dossier> dossiers = new List<Dossier>();
     // private List<Dossier> filteredDossiers = new List<Dossier>();
     // private string searchTerm = "";
@@ -132,8 +218,8 @@
     //         CreatedDate = DateTime.Now.AddDays(-25),
     //         UpdatedDate = DateTime.Now.AddDays(-20),
     //         CreatedBy = "Bob Williams"
-    //     }  
-        
+    //     }
+
     // };
 
     // private void createDossiers()
