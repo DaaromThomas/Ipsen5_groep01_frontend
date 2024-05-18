@@ -1,0 +1,89 @@
+﻿@page "/contract/{ContractId:guid}"
+
+@rendermode InteractiveServer
+
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
+@using Models
+@using Services
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+
+<div class="container">
+    <div class="button-container">
+        <button class="navigate-button" @onclick="()=>navigate()">Terug</button>
+    </div>
+    @if (contractDetails == null)
+    {
+        <p>Laden</p>
+    }
+    else
+    {
+        
+    }
+     
+</div>
+
+@code {
+    [Parameter]
+    public Guid ContractId { get; set; }
+    private int page = 1;
+
+    private RequestMakerService _requestMakerService;
+    public Contract contractDetails;
+
+    public ViewContractPage()
+    {
+
+    }
+
+    protected override void OnInitialized()
+    {
+        _requestMakerService = new RequestMakerService(HttpClient);
+
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetContractById(ContractId.ToString());
+
+
+    }
+
+
+
+
+    public async Task<Contract> GetContractById(string contractId)
+    {
+        var response = await _requestMakerService.MakeGetRequest($"contract/contractbyid/{contractId}");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var jToken = JObject.Parse(json)["result"]["contractDto"];
+
+        contractDetails = new Contract
+        {
+            Id = Guid.Parse((string)jToken["id"]),
+            CandidateId = Guid.Parse((string)jToken["candidateId"]),
+            CustomerId = Guid.Parse((string)jToken["customerId"]),
+            Status = (string)jToken["status"],
+            StartDate = (DateTime)jToken["startDate"],
+            EndDate = (DateTime)jToken["endDate"],
+            PurchaseRate = (double)jToken["purchaseRate"],
+            SellingRate = (double)jToken["sellingRate"],
+            PaymentTerm = (string)jToken["paymentTerm"],
+            FeeParty = (string)jToken["feeParty"],
+            JobDescription = (string)jToken["jobDescription"],
+            Note = (string)jToken["note"],
+            Template = (bool)jToken["template"]
+        };
+
+        return contractDetails;
+    }
+
+    private void navigate()
+    {
+        NavigationManager.NavigateTo("/Contract");
+    }
+}

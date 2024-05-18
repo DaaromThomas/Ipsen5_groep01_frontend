@@ -119,7 +119,6 @@
 
     private async Task SignInAsync()
     {
-
         if (!string.IsNullOrEmpty(SignInModel.Email) && !string.IsNullOrEmpty(SignInModel.Password))
         {
             var response = await _requestMakerService.MakePostRequest("user/signIn", SignInModel);
@@ -155,13 +154,13 @@
                         role = roleClaim.Value;
                         if (role == "Admin")
                     {
-                            NavigationManager.NavigateTo("/Dossier");
+                            NavigationManager.NavigateTo("/contract");
                             LoginService.setIsAdmin(true);
                             LoginService.setLoggedIn(true);
                         }
                         else if (role == "Employee")
                         {
-                            NavigationManager.NavigateTo("/Dossier");
+                            NavigationManager.NavigateTo("/contract");
                             LoginService.setIsAdmin(true);
                             LoginService.setLoggedIn(true);
                         }
@@ -175,17 +174,10 @@
                         Console.WriteLine("IsAdmin: " + LoginService.getIsAdmin());
                         Console.WriteLine("LoggedIn: " + LoginService.getLoggedIn());
                     }
-
                 }
-
-            }
-            else
-            {
-
             }
         }
     }
-    
 }
 
 
