@@ -3,9 +3,8 @@ using Blazored.SessionStorage;
 using Ipsen5_groep01_frontend.Components;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
-using Ipsen5_groep01_frontend.Components.Services;
 using Ipsen5_groep01_frontend.Components.Layout;
+using Ipsen5_groep01_frontend.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);

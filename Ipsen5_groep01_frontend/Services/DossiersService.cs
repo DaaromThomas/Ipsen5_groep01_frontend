@@ -1,6 +1,6 @@
 ﻿using Ipsen5_groep01_frontend.Models;
 
-namespace Ipsen5_groep01_frontend.Components.Services;
+namespace Ipsen5_groep01_frontend.Services;
 
 public class DossiersService
 {
@@ -18,7 +18,7 @@ public class DossiersService
             functieOmschrijving: "Een mooie functieonmschrijving",
             leverancierNotitie: "Voorbeeld leverancier notitie",
             interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-            ), 
+            ),
         new Dossier(
             id: "123456789",
             kandidaatId: "ABCDEFGHIJ",
@@ -59,7 +59,7 @@ public class DossiersService
             interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 4"
             )
     };
-    
+
     public Task<List<Dossier>> GetDossiersAsync()
     {
         return Task.FromResult(dossiers);

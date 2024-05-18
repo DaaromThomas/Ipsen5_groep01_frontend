@@ -1,5 +1,6 @@
 ﻿@rendermode InteractiveServer
-@using Services
+@using Services;
+@using Ipsen5_groep01_frontend.Services
 @inject LoginService LoginService
 @inject NavigationManager NavigationManager
 
@@ -8,100 +9,108 @@
     <img class="staffingnow_logo" src="images/staffingnow_logo.png" alt="logo" />
 
     <!-- Buttons when logged in as admin -->
-    @if(loggedIn && isAdmin){
+    @if (loggedIn && isAdmin)
+    {
         <div class="admin-buttons">
             <div class="button">
                 <NavLink href="Professionals" Match="NavLinkMatch.All"
-                        style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.5vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                     <span class="" aria-hidden="true"></span> PROFESSIONALS
                 </NavLink>
             </div>
             <div class="button">
                 <NavLink href="InterneMedewerkerDossierScherm" Match="NavLinkMatch.All"
-                        style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.5vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                     <span class="" aria-hidden="true"></span> DOSSIERS
                 </NavLink>
             </div>
             <div class="button">
                 <NavLink href="documentbeheer" Match="NavLinkMatch.All"
-                        style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.5vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                     <span class="" aria-hidden="true"></span> DOCUMENT BEHEER
                 </NavLink>
             </div>
             <div class="button">
                 <NavLink href="AccountBeheer" Match="NavLinkMatch.All"
-                        style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.5vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
                     <span class="" aria-hidden="true"></span> ACCOUNT BEHEER
                 </NavLink>
             </div>
         </div>
     }
-    
-    
-    <!-- Buttons when logged in as Leverancier -->
-    @if(!loggedIn){
-    <div class="home-buttons">
-        <div class="button" style="background-color: #10ADE5;">
-            <NavLink href="signIn" Match="NavLinkMatch.All"
-                     style="color: #F5F5F5; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
-                <span class="" aria-hidden="true"></span> INLOGGEN
-            </NavLink>
+
+
+    @if (!loggedIn)
+    {
+        <div class="home-buttons">
+            <div class="signInButton" style="background-color: #10ADE5;">
+                <NavLink href="signIn" Match="NavLinkMatch.All"
+                         style="color: #F5F5F5; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif;">
+                    <span class="" aria-hidden="true"></span> INLOGGEN
+                </NavLink>
+            </div>
+            <div class="registerButton" style="background-color: #FF6700;">
+                <NavLink href="" Match="NavLinkMatch.All"
+                         style="color: #F5F5F5; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif; ">
+                    <span class="" aria-hidden="true"></span> REGISTREREN
+                </NavLink>
+            </div>
         </div>
-        <div class="button" style="background-color: #FF6700;">
-            <NavLink href="" Match="NavLinkMatch.All"
-                     style="color: #F5F5F5; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
-                <span class="" aria-hidden="true"></span> REGISTREREN
-            </NavLink>
-        </div>
-    </div>
     }
 
 
-    <!-- Profile picture -->
-    @if(loggedIn){
-    <div class="profile_pic" @onclick="() => navigateToHome()">
-        <img class="profile_pic" src="images/Microsoft_account-Logo.png" alt="logo" />
-    </div>
+    @if (loggedIn)
+    {
+        <div class="profile_pic" @onclick="() => navigateToHome()">
+            <img class="profile_pic" src="images/Microsoft_account-Logo.png" alt="logo" />
+        </div>
     }
-    
 
-    
+
+
 </div>
 
 @code {
     private bool loggedIn = false;
     private bool isAdmin = false;
 
-    protected override void OnInitialized(){
+    protected override void OnInitialized()
+    {
         LoginService.ResetState();
     }
 
-    protected override void OnAfterRender(bool firstRender){
+    protected override void OnAfterRender(bool firstRender)
+    {
         setLoggedIn(LoginService.getLoggedIn());
         setIsAdmin(LoginService.getIsAdmin());
     }
 
-    private void navigateToHome(){
+    private void navigateToHome()
+    {
         NavigationManager.NavigateTo("/");
         LoginService.setIsAdmin(false);
         LoginService.setLoggedIn(false);
     }
 
-    public void setLoggedIn(bool value){
+    public void setLoggedIn(bool value)
+    {
         this.loggedIn = value;
         StateHasChanged();
     }
 
-    public void setIsAdmin(bool value){
+    public void setIsAdmin(bool value)
+    {
         this.isAdmin = value;
         StateHasChanged();
     }
 
-    public bool getLoggedIn(){
+    public bool getLoggedIn()
+    {
         return this.loggedIn;
     }
 
-    public bool getIsAdmin(){
+    public bool getIsAdmin()
+    {
         return this.isAdmin;
     }
 }

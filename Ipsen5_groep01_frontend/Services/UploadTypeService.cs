@@ -1,7 +1,7 @@
 using System.Text;
 using Ipsen5_groep01_frontend.Models;
 
-namespace Ipsen5_groep01_frontend.Components.Services
+namespace Ipsen5_groep01_frontend.Services
 {
     public class UploadTypeService
     {
@@ -11,7 +11,7 @@ namespace Ipsen5_groep01_frontend.Components.Services
         {
             httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri("http://localhost:5196/api/");
-            
+
         }
         private List<UploadType> documenten = new List<UploadType>
         {
@@ -34,7 +34,7 @@ namespace Ipsen5_groep01_frontend.Components.Services
         {
             documenten.Remove(document);
         }
-        public async Task ToevoegenDocumentAsync(UploadType uploadType)     
+        public async Task ToevoegenDocumentAsync(UploadType uploadType)
         {
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(uploadType);
 
