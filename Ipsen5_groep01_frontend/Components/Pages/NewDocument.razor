@@ -1,10 +1,9 @@
 @page "/NewDocument"
 @attribute [StreamRendering]
 @using Ipsen5_groep01_frontend.Components.Services
-@inject Ipsen5_groep01_frontend.Components.Services.UploadTypeService UploadTypeService
+@inject Ipsen5_groep01_frontend.Components.Services.DocumentenService DocumentenService
 @inject NavigationManager NavigationManager
 
-@using Ipsen5_groep01_frontend.Models
 @using Services
 @inject LoginService LoginService
 
@@ -23,20 +22,20 @@
         <h2 class="extensies">Extensie</h2>
     </div>
     <div class="input-section">
-        <input @bind="documentName" type="text" placeholder="Voer de naam in" class="document-name" />
-        <input @bind="Required" class="document-checkbox" type="checkbox" />
-        <select @bind="DocumentType" class="document-extensie">
-            <option value="Pdf">pdf</option>
-            <option value="Docx">docx</option>
-            <option value="Txt">txt</option>
+        <input @bind="documentNaam" type="text" placeholder="Voer de naam in" class="document-name" />
+        <input @bind="verplicht" class="document-checkbox" type="checkbox" />
+        <select @bind="extensie" class="document-extensie">
+            <option value=".pdf">.pdf</option>
+            <option value=".docx">.docx</option>
+            <option value=".txt">.txt</option>
         </select>
     </div>
 </div>
 
 @code {
-    private string documentName;
-    private string DocumentType;
-    private bool Required;
+    private string documentNaam;
+    private bool verplicht;
+    private string extensie;
 
     protected override void OnAfterRender(bool firstRender){
         if(firstRender){
@@ -45,16 +44,15 @@
         }
     }
 
-   public async Task Opslaan()
+   public void Opslaan()
     {
-        var nieuwDocument = new UploadType()
+        var nieuwDocument = new DocumentMarcel
     {
-        Type = documentName,
-        DocumentType = DocumentType,
-        Required = Required
+        Naam = documentNaam,
+        Verplicht = verplicht,
+        Extensie = extensie
     };
-       UploadTypeService.ToevoegenDocument(nieuwDocument);
-       await UploadTypeService.ToevoegenDocumentAsync(nieuwDocument);
+       DocumentenService.ToevoegenDocument(nieuwDocument);
        navigate();
     }
 

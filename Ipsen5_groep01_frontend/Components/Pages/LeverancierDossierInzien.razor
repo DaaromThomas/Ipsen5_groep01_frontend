@@ -1,13 +1,10 @@
 ﻿@page "/LeverancierDossierInzien/{kandidaatId}"
 @rendermode InteractiveServer
-@using Microsoft.AspNetCore.Http
 @using Models
 @inject NavigationManager NavigationManager
 
 @using Services
 @inject LoginService LoginService
-@inject FileUploadService FileUploadService
-@inject IJSRuntime JSRuntime
 
 
 <div class="decorative-bar"></div>
@@ -30,11 +27,10 @@
                 <tr class="table-row data-row @(documentOpened.Opened ? "opened-row" : "closed-row")" style="background-color: @(GetRowColor(documentOpened.Document.Status))" @onclick="() => documentOpened.Opened = !documentOpened.Opened">
                     <td style="position: relative;">
                         <div class="name-container">
-                            <p>@documentOpened.Document.UploadType</p>
+                            <p>@documentOpened.Document.Name</p>
                             @if(documentOpened.Opened){
                                 <div class="input-container">
-                                    <InputFile class="document-input" OnChange="@(e => file = e)" @onclick:stopPropagation/>
-                                    <button class="upload-button" @onclick="() => UploadFile(documentOpened.Document.Id, file)">Uploaden</button>
+                                    <input class="document-input" type="file" placeholder="">
                                 </div>
                             }
                         </div>
@@ -67,7 +63,6 @@
     public string kandidaatId { get; set; }
     private List<DocumentOpened> chosenDocuments = new List<DocumentOpened>();
     private List<Dossier> dossiers = new List<Dossier>();
-    private InputFileChangeEventArgs file;
 
     protected override void OnInitialized()
     {
@@ -110,27 +105,6 @@
     public void navigate()
     {
         this.NavigationManager.NavigateTo($"/LeverancierDossierScherm");
-    }
-
-    private async Task UploadFile(string documentId, InputFileChangeEventArgs e)
-    {
-        var file = e.File;
-        if (file == null)
-        {
-            Console.WriteLine("No file selected.");
-            return;
-        }
-
-        using (var memoryStream = new MemoryStream())
-        {
-            await file.OpenReadStream().CopyToAsync(memoryStream);
-            memoryStream.Seek(0, SeekOrigin.Begin);
-
-            var result = await FileUploadService.UploadFileAsync(memoryStream, file.Name);
-
-            // Handle result as needed
-            Console.WriteLine(result);
-        }
     }
 
     public class DocumentOpened
@@ -246,7 +220,8 @@
         new DocumentOpened(new Document
         {
             Id = "1",
-            UploadType = new UploadType(type: "", documentType: "", required: true),
+            Name = "Invoice001",
+            UploadType = "Invoice",
             DocumentPath = "/documents/invoice001.pdf",
             Status = "Goedgekeurd",
             CreatedDate = DateTime.Now.AddDays(-10),
@@ -256,7 +231,8 @@
         new DocumentOpened(new Document
         {
             Id = "2",
-            UploadType = new UploadType(type: "", documentType: "", required: true),
+            Name = "Contract002",
+            UploadType = "Contract",
             DocumentPath = "/documents/contract002.pdf",
             Status = "Wachten op beoordeling",
             CreatedDate = DateTime.Now.AddDays(-15),
@@ -266,7 +242,8 @@
         new DocumentOpened(new Document
         {
             Id = "3",
-            UploadType = new UploadType(type: "", documentType: "", required: true),
+            Name = "Proposal003",
+            UploadType = "Proposal",
             DocumentPath = "/documents/proposal003.pdf",
             Status = "Afgekeurd",
             CreatedDate = DateTime.Now.AddDays(-20),
@@ -276,7 +253,8 @@
         new DocumentOpened(new Document
         {
             Id = "4",
-            UploadType = new UploadType(type: "", documentType: "", required: true),
+            Name = "Delivery004",
+            UploadType = "Delivery",
             DocumentPath = "/documents/delivery004.pdf",
             Status = "Nog op te leveren",
             CreatedDate = DateTime.Now.AddDays(-25),
