@@ -15,64 +15,100 @@
     flex: 1;
     margin-left: 6vmin;
     margin-right: 6vmin;
+    margin-top: 2vmin;
     flex-direction: column;
-    height: 77vmin;
-    border-radius: 1.5vmin
+    height: 86vmin;
+    border-radius: 1.5vmin;
+}
+
+.customer-filter-container {
+    background-color: white;
+    margin-left: 2vmin;
+    margin-right: 2vmin;
+    margin-bottom: 1.5vmin;
+    flex-direction: column;
+    height: 80vmin;
+    border-radius: 2vmin;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .title {
-    *rgin-left: 3vmin;
-    margin-top: 2vmin;
+    margin-left: 2vmin;
+    padding-top: 2vmin;
+    padding-bottom: 0.5vmin;
+    /*margin-top: 2vmin;*/
     font-size: 2.5vmin;
     display: flex;
-    justify-content: space-between
+    /*justify-content: space-between*/
+    font-weight: 500;
 }
 
 .customer-container {
     display: flex;
     flex-direction: column;
-    background-color: white;
+    background-color: transparent;
     margin-left: 3vmin;
     margin-right: 3vmin;
-    margin-top: 2vmin;
-    border-top-left-radius: 1vmin;
-    border-top-right-radius: 1vmin;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .customer-header {
     display: grid;
     grid-template-columns: 1.1fr 1.1fr 0.8fr 0.5fr 1.15fr 0.2fr 0.2fr 0.2fr;
-    padding: 1vmin;
+    padding: 1.5vmin;
+    background-color: #f6f6f6;
 }
 
 .header-title {
-    font-weight: bold;
-    color: black;
-    font-size: 1.5vmin;
+    font-weight: 700;
+    color: #929bab;
+    font-size: 1.4vmin;
 }
 
 .customer-header div {
     padding-left: 1vmin
 }
 
+.customer-container-border {
+    border-radius: 1.5vmin;
+}
+
 .customers {
     display: grid;
     grid-template-columns: 1.1fr 1.1fr 0.8fr 0.5fr 1.15fr 0.2fr 0.2fr 0.2fr;
-    border-top-width: 0.1vmin;
+    border-left-width: 0.1vmin;
+    border-right-width: 0.1vmin;
     border-bottom-width: 0.1vmin;
-    border-left-width: 0;
-    border-right-width: 0;
+    border-color: #e2e4e4;
+    border-top-width: 0;
     border-style: solid;
-    border-color: #bec8cf;
     padding-left: 1vmin;
     padding-right: 1vmin;
     padding-top: 2vmin;
     padding-bottom: 1.7vmin;
+    transition: background-color 0.3s;
 }
+
+    .customers:hover {
+        background-color: #e2e4e4;
+    }
 
     .customers div {
         padding-left: 1.2vmin
     }
+
+.status-container-color {
+    display: inline-flex;
+    width: auto;
+    align-items: center;
+}
+
+.status {
+    display: flex;
+    justify-content: center;
+    padding: 0.1vmin 1.2vmin;
+    border-radius: 1vmin;
+}
 
 .view_customer {
     background-color: transparent;
@@ -111,6 +147,16 @@
 
 .edit_icon {
 }
+
+.customer-footer {
+    padding: 0.1vmin;
+    background-color: #ffffff;
+    border-top-left-radius: -1.5vmin;
+    border-top-right-radius: -1.5vmin;
+    border-left-width: 0.1vmin;
+    border-right-width: 0.1vmin;
+}
+
 
 .pagination-container {
     position: fixed;
@@ -154,6 +200,9 @@
     padding-right: 2vmin;
 }
 
+.rotate-180 {
+    transform: rotate(180deg);
+}
 
 
 .new-customer-button {
@@ -162,7 +211,6 @@
     font-family: Ubuntu, sans-serif;
     color: white;
     background-color: white;
-    margin-right: 5vmin;
     border: solid 0.3vmin #FF6700;
     color: #FF6700;
     font-size: 1.6vmin;
@@ -174,3 +222,17 @@
         background-color: #FF6700;
         color: white;
     }
+
+.filter-container {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1.5vmin;
+    padding-bottom: 1.5vmin;
+    padding-right: 3vmin;
+}
+
+.filters {
+    display: flex;
+    gap: 2vmin;
+    padding-left: 3vmin;
+}
