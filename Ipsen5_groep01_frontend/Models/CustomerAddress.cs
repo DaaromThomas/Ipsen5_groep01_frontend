@@ -2,10 +2,6 @@
 {
     public class CustomerAddress
     {
-        public Guid Id { get; set; } // primary key
-
-        public Guid CustomerId { get; set; } // foreign key to Customer
-
         public string StreetName { get; set; }
 
         public string HouseNumber { get; set; }

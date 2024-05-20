@@ -1,5 +1,200 @@
 ﻿@page "/CustomerConfigPage"
 
-@code {
+@using Services
+@using Models
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@using Requests;
 
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+
+<div class="customer-container-background">
+    <EditForm Model="Customer" OnValidSubmit="CreateCustomerAsync" FormName="createCustomerForm">
+        <DataAnnotationsValidator />
+
+
+        <div class="text-fieldcontrainer">
+            <div class="form-group">
+                <label for="email">Naam:</label>
+                <InputText id="name" @bind-Value="Customer.Name" class="form-control"></InputText>
+
+            </div>
+
+            <div class="form-group">
+                <label>PONummer:</label>
+                <InputText id="poNumber" @bind-Value="Customer.PONumber" class="form-control"></InputText>
+
+            </div>
+
+            <div class="form-group">
+                <label>StreetName:</label>
+                <InputText id="streetName" @bind-Value="Customer.CustomerAddressDto.StreetName" class="form-control"></InputText>
+
+            </div>
+
+            <div class="form-group">
+                <label>PostalCode:</label>
+                <InputText id="PostalCode" @bind-Value="Customer.CustomerAddressDto.PostalCode" class="form-control"></InputText>
+
+            </div>
+
+            <div class="form-group">
+                <label>HouseNumber:</label>
+                <InputText id="HouseNumber" @bind-Value="Customer.CustomerAddressDto.HouseNumber" class="form-control"></InputText>
+
+            </div>
+
+            <div class="form-group">
+                <label>Province:</label>
+                <InputText id="Province" @bind-Value="Customer.CustomerAddressDto.Province" class="form-control"></InputText>
+
+            </div>
+
+            <div class="form-group">
+                <label>Country:</label>
+                <InputText id="Country" @bind-Value="Customer.CustomerAddressDto.Country" class="form-control"></InputText>
+            </div>
+
+            <div class="form-group">
+                <label>type:</label>
+                <InputText id="type" @bind-Value="type" class="form-control"></InputText>
+            </div>
+
+        </div>
+        <div>
+            <button type="submit" class="login-button">Klant maken</button>
+        </div>
+
+
+    </EditForm>
+</div>
+
+
+
+
+@code {
+    private Customer Customer { get; set; } = new();
+    private Contract ContractModel { get; set; } = new();
+    private List<UploadTypeModel> UploadTypes = new List<UploadTypeModel>();
+
+    private string type;
+
+    private List<Contract> contracts = new List<Contract>();
+
+    private int pageSize = 9;
+    private int currentPage = 1;
+    private int totalPages => (int)Math.Ceiling((double)contracts.Count() / pageSize);
+
+    private RequestMakerService _requestMakerService;
+
+    public CustomerConfigPage()
+    {
+
+    }
+
+    protected override void OnInitialized()
+    {
+        _requestMakerService = new RequestMakerService(HttpClient);
+
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUploadTypesAsync();
+        // await CreateCustomerAsync();
+        // await CreateCustomerTemplateAsync();
+    }
+
+    private string GetBackgroundColor(string status)
+    {
+        return status switch
+        {
+            "New" => "blue",
+            "Completed" => "purple",
+            _ => "lightgreen"
+        };
+    }
+
+    private void NavigateToContractDetails(Guid contractId)
+    {
+        NavigationManager.NavigateTo($"/Contract/{contractId}");
+    }
+
+
+    private void NavigateToNewContract()
+    {
+        NavigationManager.NavigateTo("/dossier-aanmaken");
+    }
+
+
+    void ChangePage(int increment)
+    {
+        currentPage += increment;
+    }
+
+    public async Task<List<UploadTypeModel>> GetUploadTypesAsync()
+    {
+        var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["uploadTypeDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+            var uploadType = new UploadTypeModel();
+            uploadType.Id = Guid.Parse((string)jToken["id"]);
+            uploadType.Type = (string)jToken["type"];
+            uploadType.DocumentType = (string)jToken["documentType"];
+            uploadType.Required = (bool)jToken["required"];
+
+            UploadTypes.Add(uploadType);
+        }
+        return UploadTypes;
+    }
+
+    public async Task CreateCustomerAsync()
+    {
+        CustomerRequest CustomerRequest = new CustomerRequest
+            {
+                CustomerDto = Customer
+            };
+        var response = await _requestMakerService.MakePostRequest("customer/customers", CustomerRequest);
+    }
+
+    public async Task CreateCustomerTemplateAsync()
+    {
+        ContractModel.CandidateId = Guid.Empty;
+        ContractModel.CustomerId = Guid.Empty;
+        ContractModel.Status = "";
+        ContractModel.StartDate =  DateTime.Parse("2024-05-20T19:37:39.108Z");
+        ContractModel.EndDate = DateTime.Parse("2024-05-20T19:37:39.108Z");
+        ContractModel.PurchaseRate = 0;
+        ContractModel.SellingRate = 0;
+        ContractModel.PaymentTerm = "";
+        ContractModel.FeeParty = "";
+        ContractModel.JobDescription = "";
+        ContractModel.Note = "";
+        ContractModel.Template = true;
+
+        CandidateDocumentModel CandidateDocument = new CandidateDocumentModel
+        {
+            UploadTypeId = Guid.Empty,
+            DocumentBlob = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F },
+            Status = "New",
+            CreatedBy = "zak",
+            UpdatedBy = "zak",
+            CreatedDate =   DateTime.Parse("2024-05-20T19:37:39.108Z"),
+            UpdatedDate =  DateTime.Parse("2024-05-20T19:37:39.108Z")
+        };
+
+        ContractModel.CandidateDocumentsDto.Add(CandidateDocument);
+
+
+        var response = await _requestMakerService.MakePostRequest("contract/addcontract", ContractModel);
+    }
 }

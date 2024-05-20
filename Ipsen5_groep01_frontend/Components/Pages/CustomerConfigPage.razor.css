@@ -1,0 +1,11 @@
+﻿.customer-container-background {
+    background-color: #f6f6f6;
+    display: flex;
+    flex: 1;
+    margin-left: 6vmin;
+    margin-right: 6vmin;
+    margin-top: 2vmin;
+    flex-direction: column;
+    height: 86vmin;
+    border-radius: 1.5vmin;
+}

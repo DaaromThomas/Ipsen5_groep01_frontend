@@ -8,6 +8,11 @@
 
         public string PONumber { get; set; }
 
-        public CustomerAddress customerAddress { get; set; }
+        public CustomerAddress CustomerAddressDto { get; set; }
+
+        public Customer()
+        {
+            CustomerAddressDto = new CustomerAddress();
+        }
     }
 }

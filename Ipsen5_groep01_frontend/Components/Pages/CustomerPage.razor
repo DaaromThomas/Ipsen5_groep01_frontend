@@ -150,12 +150,12 @@
             customer.Name = (string)jToken["name"];
             customer.PONumber = (string)jToken["poNumber"];
 
-            customer.customerAddress = new CustomerAddress();
-            customer.customerAddress.StreetName = (string)jToken["streetName"];
-            customer.customerAddress.HouseNumber = (string)jToken["houseNumber"];
-            customer.customerAddress.PostalCode = (string)jToken["postalCode"];
-            customer.customerAddress.Country = (string)jToken["country"];
-            customer.customerAddress.Province = (string)jToken["province"];
+            customer.CustomerAddressDto = new CustomerAddress();
+            customer.CustomerAddressDto.StreetName = (string)jToken["streetName"];
+            customer.CustomerAddressDto.HouseNumber = (string)jToken["houseNumber"];
+            customer.CustomerAddressDto.PostalCode = (string)jToken["postalCode"];
+            customer.CustomerAddressDto.Country = (string)jToken["country"];
+            customer.CustomerAddressDto.Province = (string)jToken["province"];
 
             customers.Add(customer);
         }
