@@ -9,68 +9,91 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 
-<div class="decorative-bar"></div>
 
 <div class="contract-container-background">
     <div class="title">
         <div class="">Contracten</div>
-        <div class="new-contract-button-container">
-            <button class="new-contract-button" @onclick="() => NavigateToNewContract()">NIEUW CONTRACT</button>
-        </div>
-
     </div>
-    <div class="contract-container">
-        <div class="contract-header">
-            <div class="header-title">Opdrachtgever</div>
-            <div class="header-title">Professional</div>
-            <div class="header-title">Periode</div>
-            <div class="header-title">Status</div>
-            <div class="header-title">Functie</div>
-        </div>
-        @foreach (var contract in contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
-        {
-            <div class="contracts">
-                <div>@contract.CustomerId</div>
-                <div>@contract.CandidateId</div>
-                <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
-                <div>@contract.Status</div>
-                <div>@contract.JobDescription</div>
-                <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id)">
-                    <img class="eye_icon" src="/icons/eye_icon.svg" alt="Bekijk" />
-                </button>
-                <button class="edit_contract">
-                    <img class="edit_icon" src="/icons/edit_icon.svg" alt="Bewerk" />
-                </button>
-                <button class="delete_contract">
-                    <img class="delete_icon" src="/icons/delete_icon.svg" alt="Verwijder" />
-                </button>
-            </div>
-        }
-        <div class="pagination-container">
-
-            <div class="pagination-buttons">
-                @if (currentPage > 1)
-                {
-                    <button class="previous-page-button" @onclick="() => ChangePage(-1)">
-                        <img class="edit_icon" src="/icons/arrow_left_icon.svg" alt="Bewerk" />
-                    </button>
-                }
-
-
-                <div class="pagination-info">
-                    @currentPage van @totalPages
+    <div class="contract-filter-container">
+        <div class="filter-container">
+            <div class="filters">
+                <div class="new-contract-button-container">
+                    <button class="new-contract-button" @onclick="() => NavigateToNewContract()">Zoeken</button>
+                </div>
+                <div class="new-contract-button-container">
+                    <button class="new-contract-button" @onclick="() => NavigateToNewContract()">Filter Dropdown</button>
                 </div>
 
-                @if (contracts.Count() > currentPage * pageSize)
-                {
-                    <button class="next-page-button" @onclick="() => ChangePage(1)">
-                        <img class="edit_icon" src="/icons/arrow_right_icon.svg" alt="Bewerk" />
-                    </button>
-                }
+            </div>
+
+            <div class="new-contract-button-container">
+                <button class="new-contract-button" @onclick="() => NavigateToNewContract()">NIEUW CONTRACT</button>
             </div>
 
         </div>
+        <div class="contract-container">
+            <div class="contract-container-border">
+                <div class="contract-header">
+                    <div class="header-title">Opdrachtgever</div>
+                    <div class="header-title">Professional</div>
+                    <div class="header-title">Periode</div>
+                    <div class="header-title">Status</div>
+                    <div class="header-title">Functie</div>
+                    <div class="header-title">Acties</div>
+                </div>
+                @foreach (var contract in contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
+                {
+                    <div class="contracts">
+                        <div>@contract.CustomerId</div>
+                        <div>@contract.CandidateId</div>
+                        <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
 
+                        <div class="status-container-color">
+                            <div class="status" style="background-color: @(GetBackgroundColor(contract.Status));">
+                                @contract.Status
+                            </div>
+                        </div>
+
+                        <div>@contract.JobDescription</div>
+                        <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id)">
+                            <img class="eye_icon" src="/icons/eye_icon.svg" alt="Bekijk" />
+                        </button>
+                        <button class="edit_contract">
+                            <img class="edit_icon" src="/icons/edit_icon.svg" alt="Bewerk" />
+                        </button>
+                        <button class="delete_contract">
+                            <img class="delete_icon" src="/icons/delete_icon.svg" alt="Verwijder" />
+                        </button>
+                    </div>
+                }
+            </div>
+
+            <div class="pagination-container">
+
+                <div class="pagination-buttons">
+                    @if (currentPage > 1)
+                    {
+                        <button class="previous-page-button" @onclick="() => ChangePage(-1)">
+                            <img class="edit_icon" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                        </button>
+                    }
+
+
+                    <div class="pagination-info">
+                        @currentPage van @totalPages
+                    </div>
+
+                    @if (contracts.Count() > currentPage * pageSize)
+                    {
+                        <button class="next-page-button" @onclick="() => ChangePage(1)">
+                            <img class="rotate-180" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                        </button>
+                    }
+                </div>
+
+            </div>
+
+        </div>
     </div>
 </div>
 
@@ -80,7 +103,7 @@
 @code {
     private List<Contract> contracts = new List<Contract>();
 
-    private int pageSize = 8;
+    private int pageSize = 9;
     private int currentPage = 1;
     private int totalPages => (int)Math.Ceiling((double)contracts.Count() / pageSize);
 
@@ -101,6 +124,16 @@
     protected override async Task OnInitializedAsync()
     {
         await GetContracts();
+    }
+
+    private string GetBackgroundColor(string status)
+    {
+        return status switch
+        {
+            "New" => "lightgreen",
+            "Completed" => "purple",
+            _ => "lightblue"
+        };
     }
 
     private void NavigateToContractDetails(Guid contractId)

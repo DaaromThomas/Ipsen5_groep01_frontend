@@ -21,8 +21,8 @@
     </div>
     <div class="customer-container">
         <div class="customer-header">
-            <div class="header-title">Opdrachtgever</div>
-            <div class="header-title">Professional</div>
+            <div class="header-title">Klant</div>
+            <div class="header-title">PONummer</div>
             <div class="header-title">Periode</div>
             <div class="header-title">Status</div>
             <div class="header-title">Functie</div>
@@ -32,7 +32,9 @@
             <div class="customers">
                 <div>@customer.Name</div>
                 <div>@customer.PONumber</div>
-               
+                <div></div>
+                <div></div>
+                <div></div>
                 <button class="view_customer" @onclick="() => NavigateTocustomerDetails(customer.Id)">
                     <img class="eye_icon" src="/icons/eye_icon.svg" alt="Bekijk" />
                 </button>
