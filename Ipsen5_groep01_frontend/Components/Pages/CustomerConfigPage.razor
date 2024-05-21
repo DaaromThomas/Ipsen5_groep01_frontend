@@ -11,74 +11,234 @@
 
 
 <div class="customer-container-background">
-    <EditForm Model="Customer" OnValidSubmit="CreateCustomerAsync" FormName="createCustomerForm">
-        <DataAnnotationsValidator />
+    @if (currentPage == 1)
+    {
+        <EditForm Model="Customer" OnValidSubmit="NextPage" FormName="createCustomerForm">
+            <DataAnnotationsValidator />
+
+            <div class="text-fieldcontrainer">
+                <div class="wizard-container">
+                    <div class="items-wizard">
+
+                        <div class="basic-info-container">
+                            <img class="number-wizard-image" src="/icons/1.1.png" />
+                            <div class="basic-info">Basis gegevens</div>
+                        </div>
+
+                        <div class="address-wizard">
+                            <img class="number-wizard-image" src="/icons/2.1.png" />
+                            <div class="address-wizard">Adres gegevens</div>
+                             
+                        </div>
+
+                        <div class="required-documents-wizard-container">
+                            <img class="number-wizard-image" src="/icons/3.1.png" />
+                            <div class="required-documents-wizard">Verplichte documenten</div>
+                        </div>
+
+                        <div class="last-check-wizard">
+                            <img class="number-wizard-image" src="/icons/3.1.png" />
+                            <div class="last-check">Controleren</div>
+                        </div>
+
+                        <div class="question-mark">
+                            <img class="question-mark-image" src="/icons/question-mark.png" />
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="field-container">
+
+                    <div class="title-container">
+                        <div class="page-name-container">Klant Configuratie</div>
+                        <div class="customer-name-container">Stap 1: Basis gegevens</div>
+                        <div class="instructions-container">Vul alstublieft de naam van de klant en het PO-nummer in.</div>
+                    </div>
+
+                    <div class="name-number-contrainer">
 
 
-        <div class="text-fieldcontrainer">
-            <div class="form-group">
-                <label for="email">Naam:</label>
-                <InputText id="name" @bind-Value="Customer.Name" class="form-control"></InputText>
+                        <div class="form-group text-field">
+                            <label for="name">Naam:</label>
+                            <InputText id="name" @bind-Value="Customer.Name" class="form-control"></InputText>
+                        </div>
 
+                        <div class="form-group text-field">
+                            <label for="poNumber">PO Nummer:</label>
+                            <InputText id="poNumber" @bind-Value="Customer.PONumber" class="form-control"></InputText>
+                        </div>
+
+                    </div>
+                    <div class="next-button-container">
+                        <button type="submit" class="next-button">
+                            Volgende
+                            <img class="next-button-image" src="/icons/right-arrow-icon.svg" />
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>PONummer:</label>
-                <InputText id="poNumber" @bind-Value="Customer.PONumber" class="form-control"></InputText>
 
+        </EditForm>
+    }
+    else if (currentPage == 2)
+    {
+        <EditForm Model="Customer" OnValidSubmit="NextPage" FormName="createCustomerAddressForm">
+            <DataAnnotationsValidator />
+
+            <div class="text-fieldcontrainer">
+                <div class="wizard-container">
+                    <div class="items-wizard">
+
+                        <div class="basic-info-container">
+                            <img class="number-wizard-image" src="/icons/1.1.png" />
+                            <div class="basic-info-faded">Basis gegevens</div>
+                        </div>
+
+                        <div class="address-wizard">
+                            <img class="number-wizard-image" src="/icons/2.1.png" />
+                            <div class="basic-info">Adres gegevens</div>
+
+                        </div>
+
+                        <div class="required-documents-wizard-container">
+                            <img class="number-wizard-image" src="/icons/3.1.png" />
+                            <div class="required-documents-wizard">Verplichte documenten</div>
+                        </div>
+
+                        <div class="last-check-wizard">
+                            <img class="number-wizard-image" src="/icons/3.1.png" />
+                            <div class="last-check">Controleren</div>
+
+                        </div>
+                        <div class="question-mark">
+                            <img class="question-mark-image" src="/icons/question-mark.png" />
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="field-container">
+
+                    <div class="title-container">
+                        <div class="page-name-container">Klant Configuratie</div>
+                        <div class="customer-name-container">Stap 2: Adres gegevens</div>
+                        <div class="instructions-container">Vul alstublieft het adress van de klant in.</div>
+                    </div>
+
+                    <div class="name-number-contrainer">
+
+                        <div class="form-group">
+                            <label for="streetName">Straatnaam:</label>
+                            <InputText id="streetName" @bind-Value="Customer.CustomerAddressDto.StreetName" class="form-control"></InputText>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="postalCode">Postcode:</label>
+                            <InputText id="postalCode" @bind-Value="Customer.CustomerAddressDto.PostalCode" class="form-control"></InputText>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="houseNumber">Huisnummer:</label>
+                            <InputText id="houseNumber" @bind-Value="Customer.CustomerAddressDto.HouseNumber" class="form-control"></InputText>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="province">Provincie:</label>
+                            <InputText id="province" @bind-Value="Customer.CustomerAddressDto.Province" class="form-control"></InputText>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country">Land:</label>
+                            <InputText id="country" @bind-Value="Customer.CustomerAddressDto.Country" class="form-control"></InputText>
+                        </div>
+
+                    </div>
+                    <div class="next-button-container">
+                        <button type="button" class="next-button" @onclick="PreviousPage">Vorige</button>
+                        <button type="submit" class="next-button">
+                            Volgende
+                            <img class="next-button-image" src="/icons/right-arrow-icon.svg" />
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>StreetName:</label>
-                <InputText id="streetName" @bind-Value="Customer.CustomerAddressDto.StreetName" class="form-control"></InputText>
+            
+        </EditForm>
+    }
+    else if (currentPage == 3)
+    {
+        <EditForm Model="Customer" OnValidSubmit="SubmitForms" FormName="createTemplateCustomerForm">
+            <DataAnnotationsValidator />
 
+            <div class="text-fieldcontrainer">
+                <div class="wizard-container">
+                    <div class="items-wizard">
+
+                        <div class="basic-info-container">
+                            <img class="number-wizard-image" src="/icons/1.1.png" />
+                            <div class="basic-info-faded">Basis gegevens</div>
+                        </div>
+
+                        <div class="address-wizard">
+                            <img class="number-wizard-image" src="/icons/2.1.png" />
+                            <div class="basic-info-faded">Adres gegevens</div>
+
+                        </div>
+
+                        <div class="required-documents-wizard-container">
+                            <img class="number-wizard-image" src="/icons/3.1.png" />
+                            <div class="basic-info">Verplichte documenten</div>
+                        </div>
+
+                        <div class="last-check-wizard">
+                            <img class="number-wizard-image" src="/icons/3.1.png" />
+                            <div class="last-check">Controleren</div>
+
+                        </div>
+                        <div class="question-mark">
+                            <img class="question-mark-image" src="/icons/question-mark.png" />
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="field-container">
+
+                    <div class="title-container">
+                        <div class="page-name-container">Klant Configuratie</div>
+                        <div class="customer-name-container">Stap 3: Verplichte documenten</div>
+                        <div class="instructions-container">Selecteer alstublieft de verplichte documenten van de klant in.</div>
+                    </div>
+
+                    <div class="name-number-contrainer">
+
+                        <div class="form-group">
+                            <label for="type">Selecteer:</label>
+                            <select id="type" @onchange="UpdateSelectedUploadTypes" multiple class="form-control dropdownlist">
+                                @foreach (var uploadType in UploadTypes)
+                                {
+                                    <option value="@uploadType.Id">@uploadType.Type</option>
+                                }
+                            </select>
+                        </div>
+
+                        
+
+                    </div>
+                    <div class="next-button-container-dropdown">
+                        <button type="button" class="next-button" @onclick="PreviousPage">Vorige</button>
+                        <button type="submit" class="next-button">
+                            Volgende
+                            <img class="next-button-image" src="/icons/right-arrow-icon.svg" />
+                        </button>
+                    </div>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label>PostalCode:</label>
-                <InputText id="PostalCode" @bind-Value="Customer.CustomerAddressDto.PostalCode" class="form-control"></InputText>
-
-            </div>
-
-            <div class="form-group">
-                <label>HouseNumber:</label>
-                <InputText id="HouseNumber" @bind-Value="Customer.CustomerAddressDto.HouseNumber" class="form-control"></InputText>
-
-            </div>
-
-            <div class="form-group">
-                <label>Province:</label>
-                <InputText id="Province" @bind-Value="Customer.CustomerAddressDto.Province" class="form-control"></InputText>
-
-            </div>
-
-            <div class="form-group">
-                <label>Country:</label>
-                <InputText id="Country" @bind-Value="Customer.CustomerAddressDto.Country" class="form-control"></InputText>
-            </div>
-
-           
-
-        </div>
-        <div>
-            <button type="submit" class="login-button">Klant maken</button>
-        </div>
-
-
-    </EditForm>
-
-      <EditForm Model="Customer" OnValidSubmit="CreateCustomerTemplateAsync" FormName="createTemplateCustomerForm">
-        <DataAnnotationsValidator />
-
-         <div class="form-group">
-                <label>type:</label>
-                <InputText id="type" @bind-Value="type" class="form-control"></InputText>
-            </div>
-
-         <div>
-            <button type="submit" class="login-button">Klant maken</button>
-        </div>
-         </EditForm>
+        </EditForm>
+    }
 </div>
 
 
@@ -88,7 +248,7 @@
     private Customer Customer { get; set; } = new();
     private Contract ContractModel { get; set; } = new();
     private List<UploadTypeModel> UploadTypes = new List<UploadTypeModel>();
-
+    private List<Guid> selectedUploadTypeIds = new List<Guid>();
     private Guid customerId;
     private string type;
 
@@ -97,6 +257,49 @@
     private int pageSize = 9;
     private int currentPage = 1;
     private int totalPages => (int)Math.Ceiling((double)contracts.Count() / pageSize);
+
+    private void UpdateSelectedUploadTypes(ChangeEventArgs e)
+    {
+        var selectedValues = e.Value as IEnumerable<string>;
+        if (selectedValues != null)
+        {
+            selectedUploadTypeIds = selectedValues.Select(Guid.Parse).ToList();
+        }
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < 3)
+        {
+            currentPage++;
+        }
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+        }
+    }
+
+
+
+
+
+
+
+    private async Task SubmitForms()
+    {
+        await CreateCustomerAsync();
+        await CreateCustomerTemplateAsync();
+        NavigationManager.NavigateTo("/customer");
+    }
+
+
+
+
+
 
     private RequestMakerService _requestMakerService;
 
@@ -171,9 +374,9 @@
     public async Task CreateCustomerAsync()
     {
         CustomerRequest CustomerRequest = new CustomerRequest
-        {
-            CustomerDto = Customer
-        };
+            {
+                CustomerDto = Customer
+            };
 
 
         var response = await _requestMakerService.MakePostRequest("customer/customers", CustomerRequest);
@@ -201,25 +404,29 @@
         ContractModel.Note = $"{customerId} Template";
         ContractModel.Template = true;
 
-        CandidateDocumentModel CandidateDocument = new CandidateDocumentModel
+        foreach(var uploadTypeId in selectedUploadTypeIds)
         {
-            UploadTypeId = Guid.Parse("57D6EE80-E3D4-4AD6-7801-08DC74DEF872"),
-            DocumentBlob = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F },
-            Status = $"{customerId} Template",
-            CreatedBy = $"{customerId} Template",
-            UpdatedBy = $"{customerId} Template",
-            CreatedDate =   DateTime.Parse("2024-05-20T19:37:39.108Z"),
-            UpdatedDate =  DateTime.Parse("2024-05-20T19:37:39.108Z")
-        };
+            CandidateDocumentModel CandidateDocument = new CandidateDocumentModel
+                {
+                    UploadTypeId = uploadTypeId,
+                    DocumentBlob = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F },
+                    Status = $"{customerId} Template",
+                    CreatedBy = $"{customerId} Template",
+                    UpdatedBy = $"{customerId} Template",
+                    CreatedDate = DateTime.Parse("2024-05-20T19:37:39.108Z"),
+                    UpdatedDate = DateTime.Parse("2024-05-20T19:37:39.108Z")
+                };
 
-        ContractModel.CandidateDocumentsDto.Add(CandidateDocument);
+            ContractModel.CandidateDocumentsDto.Add(CandidateDocument);
+        }
+       
 
-         ContractRequest contractRequest = new ContractRequest
-        {
-            ContractDto = ContractModel
-        };
+        ContractRequest contractRequest = new ContractRequest
+            {
+                ContractDto = ContractModel
+            };
 
-        
+
         var response = await _requestMakerService.MakePostRequest("contract/contract", contractRequest);
     }
 }
