@@ -57,10 +57,7 @@
                 <InputText id="Country" @bind-Value="Customer.CustomerAddressDto.Country" class="form-control"></InputText>
             </div>
 
-            <div class="form-group">
-                <label>type:</label>
-                <InputText id="type" @bind-Value="type" class="form-control"></InputText>
-            </div>
+           
 
         </div>
         <div>
@@ -69,6 +66,19 @@
 
 
     </EditForm>
+
+      <EditForm Model="Customer" OnValidSubmit="CreateCustomerTemplateAsync" FormName="createTemplateCustomerForm">
+        <DataAnnotationsValidator />
+
+         <div class="form-group">
+                <label>type:</label>
+                <InputText id="type" @bind-Value="type" class="form-control"></InputText>
+            </div>
+
+         <div>
+            <button type="submit" class="login-button">Klant maken</button>
+        </div>
+         </EditForm>
 </div>
 
 
@@ -79,6 +89,7 @@
     private Contract ContractModel { get; set; } = new();
     private List<UploadTypeModel> UploadTypes = new List<UploadTypeModel>();
 
+    private Guid customerId;
     private string type;
 
     private List<Contract> contracts = new List<Contract>();
@@ -160,41 +171,55 @@
     public async Task CreateCustomerAsync()
     {
         CustomerRequest CustomerRequest = new CustomerRequest
-            {
-                CustomerDto = Customer
-            };
+        {
+            CustomerDto = Customer
+        };
+
+
         var response = await _requestMakerService.MakePostRequest("customer/customers", CustomerRequest);
+
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var resultObject = outerObject["result"];
+
+        customerId = Guid.Parse((string)resultObject["id"]);
     }
 
     public async Task CreateCustomerTemplateAsync()
     {
-        ContractModel.CandidateId = Guid.Empty;
-        ContractModel.CustomerId = Guid.Empty;
-        ContractModel.Status = "";
-        ContractModel.StartDate =  DateTime.Parse("2024-05-20T19:37:39.108Z");
-        ContractModel.EndDate = DateTime.Parse("2024-05-20T19:37:39.108Z");
+        ContractModel.CandidateId = Guid.Parse("10000000-0000-0000-0000-000000000000");
+        ContractModel.CustomerId = customerId;
+        ContractModel.Status = $"{customerId} Template";
+        ContractModel.StartDate = DateTime.Now;
+        ContractModel.EndDate = new DateTime();
         ContractModel.PurchaseRate = 0;
         ContractModel.SellingRate = 0;
-        ContractModel.PaymentTerm = "";
-        ContractModel.FeeParty = "";
-        ContractModel.JobDescription = "";
-        ContractModel.Note = "";
+        ContractModel.PaymentTerm = $"{customerId} Template";
+        ContractModel.FeeParty = $"{customerId} Template";
+        ContractModel.JobDescription = $"{customerId} Template";
+        ContractModel.Note = $"{customerId} Template";
         ContractModel.Template = true;
 
         CandidateDocumentModel CandidateDocument = new CandidateDocumentModel
         {
-            UploadTypeId = Guid.Empty,
+            UploadTypeId = Guid.Parse("57D6EE80-E3D4-4AD6-7801-08DC74DEF872"),
             DocumentBlob = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F },
-            Status = "New",
-            CreatedBy = "zak",
-            UpdatedBy = "zak",
+            Status = $"{customerId} Template",
+            CreatedBy = $"{customerId} Template",
+            UpdatedBy = $"{customerId} Template",
             CreatedDate =   DateTime.Parse("2024-05-20T19:37:39.108Z"),
             UpdatedDate =  DateTime.Parse("2024-05-20T19:37:39.108Z")
         };
 
         ContractModel.CandidateDocumentsDto.Add(CandidateDocument);
 
+         ContractRequest contractRequest = new ContractRequest
+        {
+            ContractDto = ContractModel
+        };
 
-        var response = await _requestMakerService.MakePostRequest("contract/addcontract", ContractModel);
+        
+        var response = await _requestMakerService.MakePostRequest("contract/contract", contractRequest);
     }
 }
