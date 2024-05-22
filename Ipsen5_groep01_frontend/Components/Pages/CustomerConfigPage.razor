@@ -247,59 +247,14 @@
 @code {
     private Customer Customer { get; set; } = new();
     private Contract ContractModel { get; set; } = new();
-    private List<UploadTypeModel> UploadTypes = new List<UploadTypeModel>();
-    private List<Guid> selectedUploadTypeIds = new List<Guid>();
-    private Guid customerId;
-    private string type;
 
     private List<Contract> contracts = new List<Contract>();
+    private List<UploadTypeModel> UploadTypes = new List<UploadTypeModel>();
+    private List<Guid> selectedUploadTypeIds = new List<Guid>();
 
-    private int pageSize = 9;
+    private Guid customerId;
+    private string type;
     private int currentPage = 1;
-    private int totalPages => (int)Math.Ceiling((double)contracts.Count() / pageSize);
-
-    private void UpdateSelectedUploadTypes(ChangeEventArgs e)
-    {
-        var selectedValues = e.Value as IEnumerable<string>;
-        if (selectedValues != null)
-        {
-            selectedUploadTypeIds = selectedValues.Select(Guid.Parse).ToList();
-        }
-    }
-
-    private void NextPage()
-    {
-        if (currentPage < 3)
-        {
-            currentPage++;
-        }
-    }
-
-    private void PreviousPage()
-    {
-        if (currentPage > 1)
-        {
-            currentPage--;
-        }
-    }
-
-
-
-
-
-
-
-    private async Task SubmitForms()
-    {
-        await CreateCustomerAsync();
-        await CreateCustomerTemplateAsync();
-        NavigationManager.NavigateTo("/customer");
-    }
-
-
-
-
-
 
     private RequestMakerService _requestMakerService;
 
@@ -318,35 +273,6 @@
     protected override async Task OnInitializedAsync()
     {
         await GetUploadTypesAsync();
-        // await CreateCustomerAsync();
-        // await CreateCustomerTemplateAsync();
-    }
-
-    private string GetBackgroundColor(string status)
-    {
-        return status switch
-        {
-            "New" => "blue",
-            "Completed" => "purple",
-            _ => "lightgreen"
-        };
-    }
-
-    private void NavigateToContractDetails(Guid contractId)
-    {
-        NavigationManager.NavigateTo($"/Contract/{contractId}");
-    }
-
-
-    private void NavigateToNewContract()
-    {
-        NavigationManager.NavigateTo("/dossier-aanmaken");
-    }
-
-
-    void ChangePage(int increment)
-    {
-        currentPage += increment;
     }
 
     public async Task<List<UploadTypeModel>> GetUploadTypesAsync()
@@ -429,4 +355,38 @@
 
         var response = await _requestMakerService.MakePostRequest("contract/contract", contractRequest);
     }
+
+    private void UpdateSelectedUploadTypes(ChangeEventArgs e)
+    {
+        var selectedValues = e.Value as IEnumerable<string>;
+        if (selectedValues != null)
+        {
+            selectedUploadTypeIds = selectedValues.Select(Guid.Parse).ToList();
+        }
+    }
+
+    private async Task SubmitForms()
+    {
+        await CreateCustomerAsync();
+        await CreateCustomerTemplateAsync();
+        NavigationManager.NavigateTo("/customer");
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < 3)
+        {
+            currentPage++;
+        }
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+        }
+    }
 }
+
+

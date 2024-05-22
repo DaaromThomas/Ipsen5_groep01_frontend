@@ -14,89 +14,101 @@
 
 
 <div class="upload-type-container-background">
-    <div class="title">
-        <div class="">Document manager</div>
-    </div>
-    <div class="upload-type-filter-container">
-        <div class="filter-container">
-            <div class="filters">
-                <div class="new-upload-type-button-container">
-                    <button class="new-upload-type-button" @onclick="() => NavigateToNewuploadtype()">Zoeken</button>
-                </div>
-                <div class="new-upload-type-button-container">
-                    <button class="new-upload-type-button" @onclick="() => NavigateToNewuploadtype()">Filter Dropdown</button>
-                </div>
 
-            </div>
+    <div class="filter-container">
+        <div class="filters">
 
-            <div class="new-upload-type-button-container">
-                <button class="new-upload-type-button" @onclick="() => NavigateToNewuploadtype()">Nieuw Document</button>
-            </div>
+            <div class="search-container">
+                <EditForm Model="UploadTypes" FormName="createCustomerAddressForm">
+                    <DataAnnotationsValidator />
 
-        </div>
-        <div class="upload-type-container">
-            <div class="upload-type-header">
-                <div class="header-title">Naam</div>
-                <div class="header-title">Verplicht</div>
-                <div class="header-title"></div>
-                <div class="header-title"></div>
-                <div class="header-title"></div>
-                <div class="header-title"></div>
-            </div>
-            @foreach (var uploadtype in UploadTypes.Skip((currentPage - 1) * pageSize).Take(pageSize))
-            {
-                <div class="upload-types">
-                    <div>@uploadtype.Type</div>
-                    <div>@uploadtype.Required</div>
-                    <div>@uploadtype.DocumentType</div>
-
-                    <div class="status-container-color">
-                        <div class="status">
-                            @uploadtype.DocumentType
-                        </div>
+                    <div class="form-group search-field">
+                        <InputText id="name" @bind-Value="valuetijdelijk" class="form-control" placeholder="Zoeken"></InputText>
                     </div>
 
-                    <div>@uploadtype.DocumentType</div>
-                    <button class="view_upload-type" @onclick="() => NavigateTouploadtypeDetails(uploadtype.Id)">
-                        <img class="eye_icon" src="/icons/eye_icon.svg" alt="Bekijk" />
-                    </button>
-                    <button class="edit_upload-type">
-                        <img class="edit_icon" src="/icons/edit_icon.svg" alt="Bewerk" />
-                    </button>
-                    <button class="delete_upload-type">
-                        <img class="delete_icon" src="/icons/delete_icon.svg" alt="Verwijder" />
-                    </button>
-                </div>
-            }
+                </EditForm>
+            </div>
+
+            <div class="dropdown-container">
+                <select class="dropdown-field">
+                    <option value="">Selecteer filter</option>
+                    <option value="option1">Optie 1</option>
+                    <option value="option2">Optie 2</option>
+                    <option value="option3">Optie 3</option>
+                </select>
+            </div>
+
         </div>
 
+        <div class="new-upload-type-button-container">
+            <button class="new-upload-type-button" @onclick="() => NavigateToNewuploadtype()">Nieuw Document</button>
+        </div>
+
+    </div>
+    <div class="upload-type-container">
+        <div class="upload-type-header">
+            <div class="header-title">Naam</div>
+            <div class="header-title">Verplicht</div>
+            <div class="header-title"></div>
+            <div class="header-title"></div>
+            <div class="header-title"></div>
+            <div class="header-title"></div>
+        </div>
+        @foreach (var uploadtype in UploadTypes.Skip((currentPage - 1) * pageSize).Take(pageSize))
+        {
+            <div class="upload-types">
+                <div>@uploadtype.Type</div>
+                <div>@uploadtype.Required</div>
+                <div>@uploadtype.DocumentType</div>
+
+                <div class="status-container-color">
+                    <div class="status">
+                        @uploadtype.DocumentType
+                    </div>
+                </div>
+
+                <div>@uploadtype.DocumentType</div>
+                <button class="view_upload-type" @onclick="() => NavigateTouploadtypeDetails(uploadtype.Id)">
+                    <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
+                </button>
+                <button class="edit_upload-type">
+                    <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
+                </button>
+                <button class="delete_upload-type">
+                    <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
+                </button>
+            </div>
+        }
+
         <div class="pagination-container">
-
             <div class="pagination-buttons">
-                @if (currentPage > 1)
-                {
-                    <button class="previous-page-button" @onclick="() => ChangePage(-1)">
-                        <img class="edit_icon" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
-                    </button>
-                }
 
+                <button class="previous-page-button" @onclick="() => ChangePage(-1)">
+                    @if (currentPage > 1)
+                    {
+                        <img class="rotate-18" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    }
+                </button>
 
                 <div class="pagination-info">
                     @currentPage van @totalPages
                 </div>
 
-                @if (UploadTypes.Count() > currentPage * pageSize)
-                {
-                    <button class="next-page-button" @onclick="() => ChangePage(1)">
+                <button class="next-page-button" @onclick="() => ChangePage(1)">
+                    @if (UploadTypes.Count() > currentPage * pageSize)
+                    {
                         <img class="rotate-180" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
-                    </button>
-                }
+                    }
+                </button>
+
             </div>
-
         </div>
-
-
     </div>
+
+
+
+
+
 
 </div>
 
@@ -106,6 +118,7 @@
     private int pageSize = 9;
     private int currentPage = 1;
     private int totalPages => (int)Math.Ceiling((double)UploadTypes.Count() / pageSize);
+    private string valuetijdelijk = "";
 
     private RequestMakerService _requestMakerService;
 

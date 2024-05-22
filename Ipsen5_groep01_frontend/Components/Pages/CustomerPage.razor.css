@@ -1,54 +1,68 @@
-﻿.decorative-bar {
-    width: 100%;
-    height: 70px;
-    background: linear-gradient(0.25turn, #FF6700 0%, #1A222D 53%, #183749 70%, #10ADE5 100%);
-    margin-bottom: 30px;
-}
-
-.container {
-    display: flex;
-}
-
-.customer-container-background {
-    background-color: #f6f6f6;
+﻿.customer-container-background {
+    background-color: transparent;
     display: flex;
     flex: 1;
-    margin-left: 6vmin;
-    margin-right: 6vmin;
-    margin-top: 2vmin;
+    margin-left: 6.5vmin;
+    margin-right: 6.5vmin;
+    margin-top: 1.5vmin;
     flex-direction: column;
     height: 86vmin;
-    border-radius: 1.5vmin;
 }
 
-.customer-filter-container {
-    background-color: white;
-    margin-left: 2vmin;
-    margin-right: 2vmin;
-    margin-bottom: 1.5vmin;
-    flex-direction: column;
-    height: 80vmin;
-    border-radius: 2vmin;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
 
-.title {
-    margin-left: 2vmin;
-    padding-top: 2vmin;
-    padding-bottom: 0.5vmin;
-    /*margin-top: 2vmin;*/
-    font-size: 2.5vmin;
+.filter-container {
     display: flex;
-    /*justify-content: space-between*/
-    font-weight: 500;
+    justify-content: space-between;
 }
+
+.filters {
+    display: flex;
+    gap: 2vmin;
+}
+
+
+.new-customer-button {
+    width: 18vmin;
+    height: 4vmin;
+    font-family: Ubuntu, sans-serif;
+    color: white;
+    background-color: white;
+    border: solid 0.3vmin #0a80fe;
+    color: #0a80fe;
+    font-size: 1.6vmin;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+    .new-customer-button:hover {
+        background-color: #0a80fe;
+        color: white;
+    }
+
+
+.search-field {
+    width: 45vmin;
+    height: 4vmin;
+    font-family: Ubuntu, sans-serif;
+    font-size: 1.6vmin;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.dropdown-field {
+    width: 25vmin;
+    height: 4vmin;
+    font-family: Ubuntu, sans-serif;
+    font-size: 1.6vmin;
+}
+
+
 
 .customer-container {
     display: flex;
     flex-direction: column;
     background-color: transparent;
-    margin-left: 3vmin;
-    margin-right: 3vmin;
+    margin-top: 2vmin;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -56,13 +70,13 @@
     display: grid;
     grid-template-columns: 1.1fr 1.1fr 0.8fr 0.5fr 1.15fr 0.2fr 0.2fr 0.2fr;
     padding: 1.5vmin;
-    background-color: #f6f6f6;
+    background-color: #0a80fe;
 }
 
 .header-title {
     font-weight: 700;
-    color: #929bab;
-    font-size: 1.4vmin;
+    color: white;
+    font-size: 1.5vmin;
 }
 
 .customer-header div {
@@ -70,7 +84,7 @@
 }
 
 .customer-container-border {
-    border-radius: 1.5vmin;
+    border-radius: 1.6vmin;
 }
 
 .customers {
@@ -117,9 +131,8 @@
     border: none;
     width: 4vmin;
 }
-
 .eye_icon {
-    width: 4vmin;
+    width: 2.8vmin;
 }
 
 
@@ -128,25 +141,27 @@
     display: flex;
     justify-content: center;
     border: none;
-    width: 3vmin;
-    padding-top: 0.5vmin;
+    width: 2vmin;
+    padding-top: 0.2vmin;
+}
+.delete_icon {
+    width: 2.5vmin;
 }
 
-.delete_icon {
-    width: 3vmin;
-}
 
 .edit_customer {
     background-color: transparent;
     display: flex;
     justify-content: center;
     border: none;
-    width: 3.4vmin;
+    width: 3vmin;
+    height: 1vmin;
     padding-top: 0.4vmin;
 }
-
 .edit_icon {
+    width: 2.5vmin;
 }
+
 
 .customer-footer {
     padding: 0.1vmin;
@@ -157,7 +172,6 @@
     border-right-width: 0.1vmin;
 }
 
-
 .pagination-container {
     position: fixed;
     bottom: 3vmin;
@@ -167,8 +181,8 @@
     background-color: white;
     text-align: center;
     background-color: transparent;
-}
 
+}
 
 .pagination-buttons {
     display: flex;
@@ -205,34 +219,3 @@
 }
 
 
-.new-customer-button {
-    width: 18vmin;
-    height: 4vmin;
-    font-family: Ubuntu, sans-serif;
-    color: white;
-    background-color: white;
-    border: solid 0.3vmin #FF6700;
-    color: #FF6700;
-    font-size: 1.6vmin;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-    .new-customer-button:hover {
-        background-color: #FF6700;
-        color: white;
-    }
-
-.filter-container {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 1.5vmin;
-    padding-bottom: 1.5vmin;
-    padding-right: 3vmin;
-}
-
-.filters {
-    display: flex;
-    gap: 2vmin;
-    padding-left: 3vmin;
-}
