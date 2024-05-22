@@ -7,7 +7,6 @@
     margin-top: 2vmin;
     flex-direction: column;
     height: 86vmin;
-    border-radius: 1.5vmin;
 }
 
 .text-fieldcontrainer{
@@ -86,8 +85,7 @@
 }
 
 .wizard-container {
-    border-top-left-radius: 2vmin;
-    border-bottom-left-radius: 2vmin;
+
     background-color: #0a80fe;
     width: 35vmin;
     height: 86vmin;

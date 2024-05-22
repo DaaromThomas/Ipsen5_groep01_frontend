@@ -102,20 +102,14 @@
             isPageInitialized = true;
             await Task.Delay(100);
 
-            if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+            if (!AuthService.IsLoggedIn || AuthService.Role != "Admin" || AuthService == null)
             {
                 NavigationManager.NavigateTo("/");
             }
         }
     }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
-        if (firstRender)
-        {
-            StateHasChanged();
-        }
-    }
+   
 
     private void navigateToHome()
     {
