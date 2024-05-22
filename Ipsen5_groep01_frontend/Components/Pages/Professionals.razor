@@ -1,15 +1,19 @@
 @page "/Professionals"
+
 @using Services;
-@using Ipsen5_groep01_frontend.Services
-@inject LoginService LoginService
+
+@inject AuthService AuthService
+@inject NavigationManager NavigationManager
 
 <h1>Professionals</h1>
 
 @code {
-     protected override void OnAfterRender(bool firstRender){
-        if(firstRender){
-            LoginService.setIsAdmin(true);
-            LoginService.setLoggedIn(true);
+    protected override void OnInitialized()
+    {
+        if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+        {
+            NavigationManager.NavigateTo("/signin");
         }
     }
 }
+

@@ -11,7 +11,7 @@
 
 @inject UploadTypeService UploadTypeService
 @inject LoginService LoginService
-
+@inject AuthService AuthService
 
 <div class="upload-type-container-background">
 
@@ -129,6 +129,12 @@
 
     protected override void OnInitialized()
     {
+        if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+        {
+            NavigationManager.NavigateTo("/signin");
+        }
+
+
         _requestMakerService = new RequestMakerService(HttpClient);
 
         base.OnInitialized();

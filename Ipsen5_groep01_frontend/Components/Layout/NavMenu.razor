@@ -3,12 +3,12 @@
 @using Ipsen5_groep01_frontend.Services
 @inject LoginService LoginService
 @inject NavigationManager NavigationManager
+   @inject AuthService AuthService
 
 <div class="navbar">
     <img class="staffingnow_logo" src="images/staffingnow_logo.png" alt="logo" />
 
-    <!-- Buttons when logged in as admin -->
-    @if (loggedIn && isAdmin)
+    @if (AuthService.IsLoggedIn || AuthService.Role == "Admin")
     {
         <div class="admin-buttons">
             <div class="button">
@@ -57,11 +57,9 @@
                 </NavLink>
             </div>
         </div>
-
     }
 
-
-    @if (!loggedIn)
+    @if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
     {
         <div class="home-buttons">
             <div class="signInButton" style="background-color: #10ADE5;">
@@ -80,7 +78,8 @@
     }
 
 
-    @if (loggedIn)
+
+    @if (AuthService.IsLoggedIn || AuthService.Role == "Admin")
     {
         <div class="profile_pic" @onclick="() => navigateToHome()">
             <img class="profile_pic" src="images/Microsoft_account-Logo.png" alt="logo" />
@@ -94,45 +93,35 @@
 @code {
     private bool loggedIn = false;
     private bool isAdmin = false;
+    private bool isPageInitialized = false;
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
-        LoginService.ResetState();
+        if (!isPageInitialized)
+        {
+            isPageInitialized = true;
+            await Task.Delay(100);
+
+            if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+            {
+                NavigationManager.NavigateTo("/");
+            }
+        }
     }
 
     protected override void OnAfterRender(bool firstRender)
     {
-        setLoggedIn(LoginService.getLoggedIn());
-        setIsAdmin(LoginService.getIsAdmin());
+        if (firstRender)
+        {
+            StateHasChanged();
+        }
     }
 
     private void navigateToHome()
     {
         NavigationManager.NavigateTo("/");
-        LoginService.setIsAdmin(false);
-        LoginService.setLoggedIn(false);
-    }
-
-    public void setLoggedIn(bool value)
-    {
-        this.loggedIn = value;
-        StateHasChanged();
-    }
-
-    public void setIsAdmin(bool value)
-    {
-        this.isAdmin = value;
-        StateHasChanged();
-    }
-
-    public bool getLoggedIn()
-    {
-        return this.loggedIn;
-    }
-
-    public bool getIsAdmin()
-    {
-        return this.isAdmin;
+        AuthService.LogOut();
     }
 }
+
 

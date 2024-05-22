@@ -2,13 +2,16 @@
 
 @rendermode InteractiveServer
 
-@inject NavigationManager NavigationManager
-@inject HttpClient HttpClient
 
 @using Models
 @using Services
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
+
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+@inject AuthService AuthService
+
 
 <div class="container">
     <div class="button-container">
@@ -40,6 +43,11 @@
 
     protected override void OnInitialized()
     {
+        if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+        {
+            NavigationManager.NavigateTo("/signin");
+        }
+
         _requestMakerService = new RequestMakerService(HttpClient);
 
         base.OnInitialized();
@@ -48,8 +56,6 @@
     protected override async Task OnInitializedAsync()
     {
         await GetContractById(ContractId.ToString());
-
-
     }
 
 

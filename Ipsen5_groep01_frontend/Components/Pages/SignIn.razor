@@ -4,7 +4,7 @@
 @inject NavigationManager NavigationManager
 @inject HttpClient HttpClient
 @inject LoginService LoginService
-
+@inject AuthService AuthService
 
 @using Services
 @using Microsoft.AspNetCore.Http;
@@ -27,29 +27,20 @@
 
 <div class="page">
     <div class="linear-gradient-Container">
-
         <div class="login-container">
             <div class="title-login">
-                <div class="title-login">
-                    <div class="inlog-text">Inlog</div>
-                    <div class="gen-text">gen</div>
-                </div>
-
-
+                <div class="inlog-text">Inlog</div>
+                <div class="gen-text">gen</div>
             </div>
             <div class="login">
-
                 <EditForm Model="SignInModel" OnValidSubmit="SignInAsync" FormName="signInForm">
                     <DataAnnotationsValidator />
-
-
                     <div class="text-fieldcontrainer">
                         <div class="form-group">
                             <label for="email">Email:</label>
                             <InputText id="email" @bind-Value="SignInModel.Email" class="form-control"></InputText>
                             <ValidationMessage For="() => SignInModel.Email"></ValidationMessage>
                         </div>
-
                         <div class="form-group">
                             <label>Password:</label>
                             <InputText id="password" @bind-Value="SignInModel.Password" type="password" class="form-control"></InputText>
@@ -59,15 +50,12 @@
                     <div>
                         <button type="submit" class="login-button">INLOGGEN</button>
                     </div>
-
-
                 </EditForm>
             </div>
             <div class="back-button-container">
                 <button class="back-button" @onclick="NavigateToHome">TERUG</button>
             </div>
         </div>
-
     </div>
     <div></div>
     <div class="footer">
@@ -78,8 +66,6 @@
         </div>
     </div>
 </div>
-
-
 
 @code {
     [SupplyParameterFromForm]
@@ -106,16 +92,12 @@
 
     protected override void OnInitialized()
     {
+        AuthService.LogOut();
         _requestMakerService = new RequestMakerService(HttpClient);
         base.OnInitialized();
     }
 
-    protected override void OnAfterRender(bool firstRender){
-        if(firstRender){
-            LoginService.setIsAdmin(false);
-            LoginService.setLoggedIn(false);
-        }
-    }
+   
 
     private async Task SignInAsync()
     {
@@ -134,50 +116,35 @@
                     var key = Encoding.ASCII.GetBytes(secret);
 
                     var tokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
-                        ValidateIssuer = false,
-                        ValidateAudience = false
-                    };
+                        {
+                            ValidateIssuerSigningKey = true,
+                            IssuerSigningKey = new SymmetricSecurityKey(key),
+                            ValidateIssuer = false,
+                            ValidateAudience = false
+                        };
 
                     SecurityToken validatedToken;
                     ClaimsPrincipal principal;
 
                     principal = handler.ValidateToken(Token, tokenValidationParameters, out validatedToken);
 
-
                     var roleClaim = principal.FindFirst(ClaimTypes.Role);
 
                     if (roleClaim != null)
                     {
                         role = roleClaim.Value;
-                        if (role == "Admin")
-                    {
-                            NavigationManager.NavigateTo("/contract");
-                            LoginService.setIsAdmin(true);
-                            LoginService.setLoggedIn(true);
-                        }
-                        else if (role == "Employee")
+                        AuthService.LogIn(role);
+                        if (role == "Admin" || role == "Employee")
                         {
                             NavigationManager.NavigateTo("/contract");
-                            LoginService.setIsAdmin(true);
-                            LoginService.setLoggedIn(true);
                         }
                         else if (role == "User")
                         {
                             NavigationManager.NavigateTo("/LeverancierDossierScherm");
-                            LoginService.setIsAdmin(false);
-                            LoginService.setLoggedIn(true);
                         }
-                        
-                        Console.WriteLine("IsAdmin: " + LoginService.getIsAdmin());
-                        Console.WriteLine("LoggedIn: " + LoginService.getLoggedIn());
                     }
                 }
             }
         }
     }
 }
-
-
