@@ -1,0 +1,177 @@
+﻿@page "/documentbeheer"
+@attribute [StreamRendering]
+
+@using Services
+@using Models
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+@inject UploadTypeService UploadTypeService
+@inject LoginService LoginService
+
+
+<div class="upload-type-container-background">
+    <div class="title">
+        <div class="">Document manager</div>
+    </div>
+    <div class="upload-type-filter-container">
+        <div class="filter-container">
+            <div class="filters">
+                <div class="new-upload-type-button-container">
+                    <button class="new-upload-type-button" @onclick="() => NavigateToNewuploadtype()">Zoeken</button>
+                </div>
+                <div class="new-upload-type-button-container">
+                    <button class="new-upload-type-button" @onclick="() => NavigateToNewuploadtype()">Filter Dropdown</button>
+                </div>
+
+            </div>
+
+            <div class="new-upload-type-button-container">
+                <button class="new-upload-type-button" @onclick="() => NavigateToNewuploadtype()">Nieuw Document</button>
+            </div>
+
+        </div>
+        <div class="upload-type-container">
+            <div class="upload-type-header">
+                <div class="header-title">Naam</div>
+                <div class="header-title">Verplicht</div>
+                <div class="header-title"></div>
+                <div class="header-title"></div>
+                <div class="header-title"></div>
+                <div class="header-title"></div>
+            </div>
+            @foreach (var uploadtype in UploadTypes.Skip((currentPage - 1) * pageSize).Take(pageSize))
+            {
+                <div class="upload-types">
+                    <div>@uploadtype.Type</div>
+                    <div>@uploadtype.Required</div>
+                    <div>@uploadtype.DocumentType</div>
+
+                    <div class="status-container-color">
+                        <div class="status">
+                            @uploadtype.DocumentType
+                        </div>
+                    </div>
+
+                    <div>@uploadtype.DocumentType</div>
+                    <button class="view_upload-type" @onclick="() => NavigateTouploadtypeDetails(uploadtype.Id)">
+                        <img class="eye_icon" src="/icons/eye_icon.svg" alt="Bekijk" />
+                    </button>
+                    <button class="edit_upload-type">
+                        <img class="edit_icon" src="/icons/edit_icon.svg" alt="Bewerk" />
+                    </button>
+                    <button class="delete_upload-type">
+                        <img class="delete_icon" src="/icons/delete_icon.svg" alt="Verwijder" />
+                    </button>
+                </div>
+            }
+        </div>
+
+        <div class="pagination-container">
+
+            <div class="pagination-buttons">
+                @if (currentPage > 1)
+                {
+                    <button class="previous-page-button" @onclick="() => ChangePage(-1)">
+                        <img class="edit_icon" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    </button>
+                }
+
+
+                <div class="pagination-info">
+                    @currentPage van @totalPages
+                </div>
+
+                @if (UploadTypes.Count() > currentPage * pageSize)
+                {
+                    <button class="next-page-button" @onclick="() => ChangePage(1)">
+                        <img class="rotate-180" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    </button>
+                }
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+@code {
+    private List<UploadTypeModel> UploadTypes = new List<UploadTypeModel>();
+
+    private int pageSize = 9;
+    private int currentPage = 1;
+    private int totalPages => (int)Math.Ceiling((double)UploadTypes.Count() / pageSize);
+
+    private RequestMakerService _requestMakerService;
+
+    public UploadTypeManagement()
+    {
+
+    }
+
+    protected override void OnInitialized()
+    {
+        _requestMakerService = new RequestMakerService(HttpClient);
+
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllUploadTypesAsync();
+    }
+
+    private string GetBackgroundColor(string status)
+    {
+        return status switch
+        {
+            "New" => "lightgreen",
+            "Completed" => "purple",
+            _ => "lightblue"
+        };
+    }
+
+    private void NavigateTouploadtypeDetails(Guid uploadtypeId)
+    {
+        NavigationManager.NavigateTo($"/uploadtype/{uploadtypeId}");
+    }
+
+
+    private void NavigateToNewuploadtype()
+    {
+        NavigationManager.NavigateTo("/dossier-aanmaken");
+    }
+
+
+    void ChangePage(int increment)
+    {
+        currentPage += increment;
+    }
+
+    public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
+    {
+        var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["uploadTypeDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+            var uploadType = new UploadTypeModel();
+            uploadType.Id = Guid.Parse((string)jToken["id"]);
+            uploadType.Type = (string)jToken["type"];
+            uploadType.DocumentType = (string)jToken["documentType"];
+            uploadType.Required = (bool)jToken["required"];
+
+            UploadTypes.Add(uploadType);
+        }
+        return UploadTypes;
+    }
+}
