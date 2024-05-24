@@ -3,7 +3,7 @@
 @using Ipsen5_groep01_frontend.Services
 @inject LoginService LoginService
 @inject NavigationManager NavigationManager
-   @inject AuthService AuthService
+ @inject AuthService AuthService
 
 <div class="navbar">
     <img class="staffingnow_logo" src="images/staffingnow_logo.png" alt="logo" />
@@ -91,8 +91,6 @@
 </div>
 
 @code {
-    private bool loggedIn = false;
-    private bool isAdmin = false;
     private bool isPageInitialized = false;
 
     protected override async void OnInitialized()
@@ -102,14 +100,14 @@
             isPageInitialized = true;
             await Task.Delay(100);
 
-            if (!AuthService.IsLoggedIn || AuthService.Role != "Admin" || AuthService == null)
-            {
+            if (!AuthService.IsLoggedIn || AuthService.Role != "Admin" || AuthService.Role == null || AuthService.Role == "")
+        {
                 NavigationManager.NavigateTo("/");
             }
         }
     }
 
-   
+    
 
     private void navigateToHome()
     {

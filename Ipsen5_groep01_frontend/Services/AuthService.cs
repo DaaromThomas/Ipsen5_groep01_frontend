@@ -1,4 +1,6 @@
-﻿namespace Ipsen5_groep01_frontend.Services
+﻿using Microsoft.AspNetCore.Components.Authorization;
+
+namespace Ipsen5_groep01_frontend.Services
 {
     public class AuthService
     {
@@ -8,11 +10,15 @@
         public bool IsLoggedIn => _isLoggedIn;
         public string Role => _role;
 
+
+
+
         public void LogIn(string role)
         {
             _isLoggedIn = true;
             _role = role;
 
+           
         }
 
         public void LogOut()
@@ -20,8 +26,6 @@
             _isLoggedIn = false;
             _role = string.Empty;
         }
-
-       
 
     }
 }

@@ -132,7 +132,7 @@
 
                     if (roleClaim != null)
                     {
-                        role = roleClaim.Value;
+                        var role = roleClaim.Value;
                         AuthService.LogIn(role);
                         if (role == "Admin" || role == "Employee")
                         {
@@ -147,4 +147,5 @@
             }
         }
     }
+
 }
