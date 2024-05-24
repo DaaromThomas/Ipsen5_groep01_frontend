@@ -3,12 +3,12 @@
 @using Ipsen5_groep01_frontend.Services
 @inject LoginService LoginService
 @inject NavigationManager NavigationManager
- @inject AuthService AuthService
+@inject AuthService AuthService
 
 <div class="navbar">
     <img class="staffingnow_logo" src="images/staffingnow_logo.png" alt="logo" />
 
-    @if (AuthService.IsLoggedIn || AuthService.Role == "Admin")
+    @if (loggedIn && role == "Admin")
     {
         <div class="admin-buttons">
             <div class="button">
@@ -59,7 +59,7 @@
         </div>
     }
 
-    @if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+    @if (!loggedIn && role != "Admin")
     {
         <div class="home-buttons">
             <div class="signInButton" style="background-color: #10ADE5;">
@@ -79,7 +79,7 @@
 
 
 
-    @if (AuthService.IsLoggedIn || AuthService.Role == "Admin")
+    @if (loggedIn || role == "Admin")
     {
         <div class="profile_pic" @onclick="() => navigateToHome()">
             <img class="profile_pic" src="images/Microsoft_account-Logo.png" alt="logo" />
@@ -92,6 +92,8 @@
 
 @code {
     private bool isPageInitialized = false;
+    private bool loggedIn = true;
+    private string role = "Admin";
 
     protected override async void OnInitialized()
     {
@@ -101,7 +103,7 @@
             await Task.Delay(100);
 
             if (!AuthService.IsLoggedIn || AuthService.Role != "Admin" || AuthService.Role == null || AuthService.Role == "")
-        {
+            {
                 NavigationManager.NavigateTo("/");
             }
         }
