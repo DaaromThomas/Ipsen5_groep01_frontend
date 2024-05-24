@@ -1,108 +1,119 @@
 ﻿@rendermode InteractiveServer
-@using Services
+@using Services;
+@using Ipsen5_groep01_frontend.Services
 @inject LoginService LoginService
 @inject NavigationManager NavigationManager
+ @inject AuthService AuthService
 
 <div class="navbar">
-    <!-- StaffingNow Logo -->
     <img class="staffingnow_logo" src="images/staffingnow_logo.png" alt="logo" />
 
-    <!-- Buttons when logged in as admin -->
-    @if(loggedIn && isAdmin){
+    @if (AuthService.IsLoggedIn || AuthService.Role == "Admin")
+    {
         <div class="admin-buttons">
             <div class="button">
-                <NavLink href="Professionals" Match="NavLinkMatch.All"
-                        style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                <NavLink class="link" href="Professionals" Match="NavLinkMatch.All"
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;"
+                         ActiveClass="active-link"
+                         onmouseover="this.style.color='#FF6700';" onmouseout="this.style.color='#1A222D';">
                     <span class="" aria-hidden="true"></span> PROFESSIONALS
+                    <div class="active-indicator"></div>
                 </NavLink>
             </div>
             <div class="button">
-                <NavLink href="InterneMedewerkerDossierScherm" Match="NavLinkMatch.All"
-                        style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                <NavLink href="Customer" Match="NavLinkMatch.All"
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;"
+                         ActiveClass="active-link"
+                         onmouseover="this.style.color='#FF6700';" onmouseout="this.style.color='#1A222D';">
+                    <span class="" aria-hidden="true"></span> KLANTEN
+                    <div class="active-indicator"></div>
+                </NavLink>
+            </div>
+            <div class="button">
+                <NavLink href="contract" Match="NavLinkMatch.All"
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;"
+                         ActiveClass="active-link"
+                         onmouseover="this.style.color='#FF6700';" onmouseout="this.style.color='#1A222D';">
                     <span class="" aria-hidden="true"></span> DOSSIERS
+                    <div class="active-indicator"></div>
                 </NavLink>
             </div>
             <div class="button">
                 <NavLink href="documentbeheer" Match="NavLinkMatch.All"
-                        style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;"
+                         ActiveClass="active-link"
+                         onmouseover="this.style.color='#FF6700';" onmouseout="this.style.color='#1A222D';">
                     <span class="" aria-hidden="true"></span> DOCUMENT BEHEER
+                    <div class="active-indicator"></div>
                 </NavLink>
             </div>
             <div class="button">
                 <NavLink href="AccountBeheer" Match="NavLinkMatch.All"
-                        style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;"
+                         ActiveClass="active-link"
+                         onmouseover="this.style.color='#FF6700';" onmouseout="this.style.color='#1A222D';">
                     <span class="" aria-hidden="true"></span> ACCOUNT BEHEER
+                    <div class="active-indicator"></div>
                 </NavLink>
             </div>
         </div>
     }
-    
-    
-    <!-- Buttons when logged in as Leverancier -->
-    @if(!loggedIn){
-    <div class="home-buttons">
-        <div class="button" style="background-color: #10ADE5;">
-            <NavLink href="signIn" Match="NavLinkMatch.All"
-                     style="color: #F5F5F5; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
-                <span class="" aria-hidden="true"></span> INLOGGEN
-            </NavLink>
+
+    @if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+    {
+        <div class="home-buttons">
+            <div class="signInButton" style="background-color: #10ADE5;">
+                <NavLink href="signIn" Match="NavLinkMatch.All"
+                         style="color: #F5F5F5; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif;">
+                    <span class="" aria-hidden="true"></span> INLOGGEN
+                </NavLink>
+            </div>
+            <div class="registerButton" style="background-color: #FF6700;">
+                <NavLink href="" Match="NavLinkMatch.All"
+                         style="color: #F5F5F5; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif; ">
+                    <span class="" aria-hidden="true"></span> REGISTREREN
+                </NavLink>
+            </div>
         </div>
-        <div class="button" style="background-color: #FF6700;">
-            <NavLink href="" Match="NavLinkMatch.All"
-                     style="color: #F5F5F5; font-weight: bold; text-decoration: none; font-size: 22px; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;">
-                <span class="" aria-hidden="true"></span> REGISTREREN
-            </NavLink>
-        </div>
-    </div>
     }
 
 
-    <!-- Profile picture -->
-    @if(loggedIn){
-    <div class="profile_pic" @onclick="() => navigateToHome()">
-        <img class="profile_pic" src="images/Microsoft_account-Logo.png" alt="logo" />
-    </div>
-    }
-    
 
-    
+    @if (AuthService.IsLoggedIn || AuthService.Role == "Admin")
+    {
+        <div class="profile_pic" @onclick="() => navigateToHome()">
+            <img class="profile_pic" src="images/Microsoft_account-Logo.png" alt="logo" />
+        </div>
+    }
+
+
+
 </div>
 
 @code {
-    private bool loggedIn = false;
-    private bool isAdmin = false;
+    private bool isPageInitialized = false;
 
-    protected override void OnInitialized(){
-        LoginService.ResetState();
+    protected override async void OnInitialized()
+    {
+        if (!isPageInitialized)
+        {
+            isPageInitialized = true;
+            await Task.Delay(100);
+
+            if (!AuthService.IsLoggedIn || AuthService.Role != "Admin" || AuthService.Role == null || AuthService.Role == "")
+        {
+                NavigationManager.NavigateTo("/");
+            }
+        }
     }
 
-    protected override void OnAfterRender(bool firstRender){
-        setLoggedIn(LoginService.getLoggedIn());
-        setIsAdmin(LoginService.getIsAdmin());
-    }
+    
 
-    private void navigateToHome(){
+    private void navigateToHome()
+    {
         NavigationManager.NavigateTo("/");
-        LoginService.setIsAdmin(false);
-        LoginService.setLoggedIn(false);
-    }
-
-    public void setLoggedIn(bool value){
-        this.loggedIn = value;
-        StateHasChanged();
-    }
-
-    public void setIsAdmin(bool value){
-        this.isAdmin = value;
-        StateHasChanged();
-    }
-
-    public bool getLoggedIn(){
-        return this.loggedIn;
-    }
-
-    public bool getIsAdmin(){
-        return this.isAdmin;
+        AuthService.LogOut();
     }
 }
+
 

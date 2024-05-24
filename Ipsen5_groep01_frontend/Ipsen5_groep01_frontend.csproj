@@ -7,9 +7,15 @@
         <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
     </PropertyGroup>
 
-
     <ItemGroup>
-      <Folder Include="Components\NewFolder\" />
+      <Compile Remove="Components\NewFolder\**" />
+      <Compile Remove="Components\Services\**" />
+      <Content Remove="Components\NewFolder\**" />
+      <Content Remove="Components\Services\**" />
+      <EmbeddedResource Remove="Components\NewFolder\**" />
+      <EmbeddedResource Remove="Components\Services\**" />
+      <None Remove="Components\NewFolder\**" />
+      <None Remove="Components\Services\**" />
     </ItemGroup>
 
     <ItemGroup>

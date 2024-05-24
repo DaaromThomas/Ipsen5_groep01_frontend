@@ -1,0 +1,40 @@
+﻿@page "/authguard"
+
+@using Services;
+
+@inject AuthService AuthService;
+@inject NavigationManager NavigationManager;
+
+@if (!AuthService.IsLoggedIn)
+{
+    <RedirectToLogin />
+}
+else
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (!AuthService.IsLoggedIn)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}
+
+@code {
+    private class RedirectToLogin : ComponentBase
+    {
+        [Inject] private NavigationManager NavigationManager { get; set; }
+
+        protected override void OnInitialized()
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}

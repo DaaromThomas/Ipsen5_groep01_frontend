@@ -4,7 +4,7 @@
     flex-direction: column;
     min-height: 100vh;
     height: fit-content;
-    background-color: #F5F5F5;
+    background-color: white;
 }
 
 main {
@@ -13,7 +13,7 @@ main {
 
 .top-row {
     border-bottom: 1px solid #d6d5d5;
-    min-height: 130px;
+    height: 10vmin;
     display: flex;
     align-items: center;
 }

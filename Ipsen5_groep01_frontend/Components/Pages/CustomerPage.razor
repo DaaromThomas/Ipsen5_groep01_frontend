@@ -1,0 +1,179 @@
+﻿@page "/customer"
+@rendermode InteractiveServer
+
+@using Services
+@using Models
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject AuthService AuthService
+
+<div class="customer-container-background">
+
+    <div class="filter-container">
+        <div class="filters">
+            <div class="search-container">
+                <EditForm Model="customers" FormName="createCustomerAddressForm">
+                    <DataAnnotationsValidator />
+
+                    <div class="form-group search-field">
+                        <InputText id="name" @bind-Value="valuetijdelijk" class="form-control" placeholder="Zoeken"></InputText>
+                    </div>
+
+                </EditForm>
+            </div>
+
+            <div class="dropdown-container">
+                <select class="dropdown-field">
+                    <option value="">Selecteer filter</option>
+                    <option value="option1">Optie 1</option>
+                    <option value="option2">Optie 2</option>
+                    <option value="option3">Optie 3</option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="new-customer-button-container">
+            <button class="new-customer-button" @onclick="() => NavigateToNewcustomer()">Nieuw Klant</button>
+        </div>
+    </div>
+
+    <div class="customer-container">
+
+        <div class="customer-header">
+            <div class="header-title">Klant</div>
+            <div class="header-title">PONummer</div>
+            <div class="header-title">-</div>
+            <div class="header-title">-</div>
+            <div class="header-title">-</div>
+            <div class="header-title">Acties</div>
+        </div>
+
+        @foreach (var customer in customers.Skip((currentPage - 1) * pageSize).Take(pageSize))
+        {
+            <div class="customers">
+                <div>@customer.Name</div>
+                <div>@customer.PONumber</div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <button class="view_customer" @onclick="() => NavigateTocustomerDetails(customer.Id)">
+                    <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
+                </button>
+                <button class="edit_customer">
+                    <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
+                </button>
+                <button class="delete_customer">
+                    <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
+                </button>
+            </div>
+        }
+
+        <div class="pagination-container">
+            <div class="pagination-buttons">
+
+                <button class="previous-page-button" @onclick="() => ChangePage(-1)">
+                    @if (currentPage > 1)
+                    {
+                        <img class="rotate-18" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    }
+                </button>
+
+                <div class="pagination-info">
+                    @currentPage van @totalPages
+                </div>
+
+                <button class="next-page-button" @onclick="() => ChangePage(1)">
+                    @if (customers.Count() > currentPage * pageSize)
+                    {
+                        <img class="rotate-180" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    }
+                </button>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+@code {
+    private List<Customer> customers = new List<Customer>();
+
+    private int pageSize = 10;
+    private int currentPage = 1;
+    private int totalPages => (int)Math.Ceiling((double)customers.Count() / pageSize);
+    private string valuetijdelijk = "";
+
+    private RequestMakerService _requestMakerService;
+
+    public CustomerPage()
+    {
+
+    }
+
+    protected override void OnInitialized()
+    {
+        if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+        {
+            NavigationManager.NavigateTo("/signin");
+        }
+
+        _requestMakerService = new RequestMakerService(HttpClient);
+
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCustomers();
+    }
+
+    private void NavigateTocustomerDetails(Guid customerId)
+    {
+        NavigationManager.NavigateTo($"/customer/{customerId}");
+    }
+
+    private void NavigateToNewcustomer()
+    {
+        NavigationManager.NavigateTo("/customerconfigpage");
+    }
+
+    void ChangePage(int increment)
+    {
+        currentPage += increment;
+    }
+
+    public async Task<List<Customer>> GetCustomers()
+    {
+        var response = await _requestMakerService.MakeGetRequest("customer/allcustomers");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var customerArray = outerObject["result"]["customerDto"];
+
+
+        foreach (var jToken in customerArray)
+        {
+            var customer = new Customer();
+            customer.Id = Guid.Parse((string)jToken["id"]);
+            customer.Name = (string)jToken["name"];
+            customer.PONumber = (string)jToken["poNumber"];
+
+            customer.CustomerAddressDto = new CustomerAddress();
+            customer.CustomerAddressDto.StreetName = (string)jToken["streetName"];
+            customer.CustomerAddressDto.HouseNumber = (string)jToken["houseNumber"];
+            customer.CustomerAddressDto.PostalCode = (string)jToken["postalCode"];
+            customer.CustomerAddressDto.Country = (string)jToken["country"];
+            customer.CustomerAddressDto.Province = (string)jToken["province"];
+
+            customers.Add(customer);
+        }
+        return customers;
+    }
+}

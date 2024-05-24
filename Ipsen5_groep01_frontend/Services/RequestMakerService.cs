@@ -35,5 +35,11 @@ namespace Ipsen5_groep01_frontend.Services
 
             return await _httpClient.PostAsync(url, content);
         }
+
+        public async Task<HttpResponseMessage> MakeGetRequest(string endpoint)
+        {
+            var url = $"{BaseUrl}/{endpoint}";
+            return await _httpClient.GetAsync(url);
+        }
     }
 }

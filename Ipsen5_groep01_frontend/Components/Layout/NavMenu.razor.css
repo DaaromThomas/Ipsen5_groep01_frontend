@@ -1,45 +1,81 @@
 .navbar {
     width: 100%;
-    min-height: 100%;
-    height: auto;
+    
+
     display: flex;
     align-items: center;
-    padding: 0;
+   
 }
 
 .staffingnow_logo {
     width: 100%;
-    max-width: 330px;
+    width: 23vmin;
     margin-left: 5%;
 }
 
 .profile_pic {
-    height: 130px;
-    max-width: 100%;
+    height: 8vmin;
 }
 
-.admin-buttons, .home-buttons {
-    flex: 1;
-    height: 100%;
+.admin-buttons {
     display: flex;
-    align-items: center;
     justify-content: center;
-    flex-direction: row;
-    gap: 3%;
+    gap: 10vmin
 }
-
-.home-buttons{
-   justify-content: right;
-   margin-right: 15%;
-}
-
 
 .button {
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.button .active-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #FF6700;
+    visibility: hidden;
+}
+
+.button .active-link .active-indicator {
+    visibility: visible;
+    }
+
+.admin-buttons:hover {
+}
+
+.link {
+    background: red;
+}
+
+.link:hover{
+    background: blue;
+}
+
+
+.home-buttons {
+    display: flex;
+    justify-content: end;
+    margin-right: 10vmin;
+    gap: 3vmin
+}
+
+
+.signInButton {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-width: 200px;
-    height: 50px;
+    width: 18vmin;
+    height: 4vmin;
+}
+
+.registerButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 18vmin;
+    height: 4vmin;
 }
 
 

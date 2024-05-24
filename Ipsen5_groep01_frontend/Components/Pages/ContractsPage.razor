@@ -1,0 +1,218 @@
+@page "/contract"
+@rendermode InteractiveServer
+
+
+@using Services
+@using Models
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject AuthService AuthService
+
+
+        <div class="contract-container-background">
+
+            <div class="filter-container">
+                <div class="filters">
+                    <div class="search-container">
+                        <EditForm Model="contracts" FormName="createCustomerAddressForm">
+                            <DataAnnotationsValidator />
+
+                            <div class="form-group search-field">
+                                <InputText id="name" @bind-Value="tijdelijk" class="form-control" placeholder="Zoeken"></InputText>
+                            </div>
+
+                        </EditForm>
+                    </div>
+
+                    <div class="dropdown-container">
+                        <select class="dropdown-field">
+                            <option value="">Selecteer filter</option>
+                            <option value="option1">Optie 1</option>
+                            <option value="option2">Optie 2</option>
+                            <option value="option3">Optie 3</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="new-contract-button-container">
+                    <button class="new-contract-button" @onclick="() => NavigateToNewContract()">Nieuw Contract</button>
+                </div>
+
+            </div>
+            <div class="contract-container">
+                <div class="contract-header">
+                    <div class="header-title">Opdrachtgever</div>
+                    <div class="header-title">Professional</div>
+                    <div class="header-title">Periode</div>
+                    <div class="header-title">Status</div>
+                    <div class="header-title">Functie</div>
+                    <div class="header-title">Acties</div>
+                </div>
+
+                @foreach (var contract in contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
+                {
+                    @if (contract.Template == false)
+                    {
+
+                        <div class="contracts">
+                            <div>@contract.CustomerId</div>
+                            <div>@contract.CandidateId</div>
+                            <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
+
+                            <div class="status-container-color">
+                                <div class="status" style="background-color: @(GetBackgroundColor(contract.Status));">
+                                    @contract.Status
+                                </div>
+                            </div>
+
+                            <div>@contract.JobDescription</div>
+                            <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id)">
+                                <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
+                            </button>
+                            <button class="edit_contract">
+                                <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
+                            </button>
+                            <button class="delete_contract">
+                                <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
+                            </button>
+                        </div>
+                    }
+                }
+
+        <div class="pagination-container">
+            <div class="pagination-buttons">
+
+                <button class="previous-page-button" @onclick="() => ChangePage(-1)">
+                    @if (currentPage > 1)
+                    {
+                        <img class="rotate-18" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    }
+                </button>
+
+                <div class="pagination-info">
+                    @currentPage van @totalPages
+                </div>
+
+                <button class="next-page-button" @onclick="() => ChangePage(1)">
+                    @if (contracts.Count() > currentPage * pageSize)
+                    {
+                        <img class="rotate-180" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    }
+                </button>
+
+            </div>
+        </div>
+
+            </div>
+        </div>
+
+
+
+@code {
+    private List<Contract> contracts = new List<Contract>();
+
+    private int pageSize = 10;
+    private int currentPage = 1;
+    private int totalPages => (int)Math.Ceiling((double)contracts.Count() / pageSize);
+    private string tijdelijk = "";
+
+    private RequestMakerService _requestMakerService;
+
+    public ContractsPage()
+    {
+
+    }
+
+
+
+
+
+
+    protected override void OnInitialized()
+    {
+      
+
+        if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+        {
+            NavigationManager.NavigateTo("/signin");
+        }
+
+
+
+        _requestMakerService = new RequestMakerService(HttpClient);
+
+        base.OnInitialized();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetContracts();
+    }
+
+    public async Task<List<Contract>> GetContracts()
+    {
+        var response = await _requestMakerService.MakeGetRequest("contract/allcontracts");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["contractDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+
+            var contract = new Contract();
+            contract.Id = Guid.Parse((string)jToken["id"]);
+            contract.CandidateId = Guid.Parse((string)jToken["candidateId"]);
+            contract.CustomerId = Guid.Parse((string)jToken["customerId"]);
+            contract.Status = (string)jToken["status"];
+            contract.StartDate = (DateTime)jToken["startDate"];
+            contract.EndDate = (DateTime)jToken["endDate"];
+            contract.PurchaseRate = (double)jToken["purchaseRate"];
+            contract.SellingRate = (double)jToken["sellingRate"];
+            contract.PaymentTerm = (string)jToken["paymentTerm"];
+            contract.FeeParty = (string)jToken["feeParty"];
+            contract.JobDescription = (string)jToken["jobDescription"];
+            contract.Note = (string)jToken["note"];
+            contract.Template = (bool)jToken["template"];
+
+            contracts.Add(contract);
+        }
+
+        return contracts;
+    }
+
+    private string GetBackgroundColor(string status)
+    {
+        return status switch
+        {
+            "New" => "lightgreen",
+            "Completed" => "#AA77FF",
+            _ => "lightblue"
+        };
+    }
+
+    private void NavigateToContractDetails(Guid contractId)
+    {
+        NavigationManager.NavigateTo($"/Contract/{contractId}");
+    }
+
+    private void NavigateToNewContract()
+    {
+        NavigationManager.NavigateTo("/dossier-aanmaken");
+    }
+
+    void ChangePage(int increment)
+    {
+        currentPage += increment;
+    }
+}

@@ -3,9 +3,10 @@ using Blazored.SessionStorage;
 using Ipsen5_groep01_frontend.Components;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
-using Ipsen5_groep01_frontend.Components.Services;
 using Ipsen5_groep01_frontend.Components.Layout;
+using Ipsen5_groep01_frontend.Services;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,12 @@ builder.Services.AddRazorComponents()
 builder.Services.AddHttpClient();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredSessionStorage();
+builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<LoginService>();
+builder.Services.AddAuthorizationCore();
+
+
+builder.Services.AddSingleton<AuthService>();
 
 
 builder.Services.AddSingleton<DossiersService>();
@@ -28,7 +35,6 @@ builder.Services.AddSingleton<FileUploadService>();
 
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

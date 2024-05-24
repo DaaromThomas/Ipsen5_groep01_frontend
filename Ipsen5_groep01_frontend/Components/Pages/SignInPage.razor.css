@@ -77,7 +77,7 @@
     grid-column-start: 2;
     grid-column-end: 4;
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
 .title-login {
@@ -90,6 +90,18 @@
     align-items: center;
     font-size: 3vmin;
     font-weight: bold;
+    border-top-left-radius: 1vmin;
+    border-top-right-radius: 1vmin;
+}
+
+.inlog-text {
+    color: #1d232f;
+    font-family: Helvetica, sans-serif;
+}
+
+.gen-text {
+    color: #0baee5;
+    font-family: Helvetica, sans-serif;
 }
 
 .login {
@@ -110,35 +122,47 @@
     color: white;
     font-weight: 600;
     background-color: #10ADE5;
-    border-width: 0;
+    border: solid 0.25vmin #10ADE5;
+    transition: background-color 0.3s;
+}
+
+.login-button:hover {
+    background-color: white;
+    color: #10ADE5;
 }
 
 .back-button-container {
     background-color: white;
     grid-row-start: 7;
-    grid-row-end: 9;
+    grid-row-end: 10;
     display: flex;
-    align-items: center;
+    align-items: end;
+    border-bottom-left-radius: 1vmin;
+    border-bottom-right-radius: 1vmin;
 }
 
 .back-button {
-    width: 20vmin;
-    height: 5vmin;
+    width: 18vmin;
+    height: 4vmin;
     font-family: Ubuntu, sans-serif;
     font-size: 1.8vmin;
     color: white;
     font-weight: 600;
     background-color: white;
-    ;
     margin-left: 5vmin;
-    border-color: #FF6700;
-    border-width: 0.3vmin;
+    margin-bottom: 5vmin;
+    border: solid 0.3vmin #FF6700;
     color: #FF6700;
     font-size: 1.6vmin;
     font-weight: bold;
-    /*border-width: 0.3vmin;*/
+    transition: background-color 0.3s; 
+    letter-spacing: 0.05vmin
 }
 
+.back-button:hover {
+    background-color: #FF6700;
+    color: white;
+}
 
 .text-fieldcontrainer {
     width: 50vmin;
@@ -157,7 +181,7 @@
 .footer-text-container {
     display: flex;
     align-items: center;
-    justify-content: center;
+    padding-left: 5vmin;
 }
 
 .footer-text {
@@ -166,6 +190,3 @@
     font-weight: 700;
     font-family: Ubuntu, sans-serif;
 }
-
-
-

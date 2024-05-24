@@ -3,7 +3,8 @@
 @inject NavigationManager NavigationManager
 @using Ipsen5_groep01_frontend.Components.Data
 
-@using Services
+@using Services;
+@using Ipsen5_groep01_frontend.Services
 @inject LoginService LoginService
 
 <PageTitle>Dossier Aanmaken</PageTitle>
@@ -199,7 +200,7 @@
     
     private void LeaveAddDossier()
     { 
-        NavigationManager.NavigateTo("/InterneMedewerkerDossierScherm");
+        NavigationManager.NavigateTo("/Contract");
     }
 
     private object GetWizardImagePath(int screen)
