@@ -351,3 +351,19 @@ button {
     padding-top: 7vmin;
     gap: 3vmin;
 }
+
+
+/*Page 3*/
+
+.section-review {
+    background-color: white;
+    padding: 2vmin;
+    border-radius: 1.5vmin;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    margin-top: 3vmin;
+    width: 90vmin;
+    
+}
