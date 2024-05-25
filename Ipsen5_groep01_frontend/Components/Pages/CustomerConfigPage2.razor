@@ -234,7 +234,49 @@
                     Selecteer hieronder de benodigde documenten om verder te gaan.
                 </div>
 
-              
+                <div class="selected-documents-container">
+
+
+
+
+                    <div class="section-documents">
+                        <div class="section-title">Overige documenten</div>
+
+                        <div class="uploadtype-container">
+                            @foreach (var uploadType in UploadTypes.Where(u => !selectedItems.Contains(u.Id) && !u.Required))
+                            {
+                                <div class="input-checkbox-container" @onclick="() => ToggleSelection(uploadType.Id)">
+                                    @uploadType.Type
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="section-documents">
+                        <div class="section-title">Standaard documenten</div>
+                        <div class="uploadtype-container">
+                            @foreach (var uploadType in UploadTypes.Where(u => u.Required))
+                            {
+                                <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
+                                    @uploadType.Type
+                                </div>
+                            }
+                        </div>
+
+                     
+                        <div class="section-title-selected">Geselecteerde documenten</div>
+
+                        <div class="uploadtype-container">
+                            @foreach (var uploadType in UploadTypes.Where(u => selectedItems.Contains(u.Id) && !u.Required))
+                            {
+                                <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
+                                    @uploadType.Type
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
 
             </div>
 
