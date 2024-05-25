@@ -1,0 +1,589 @@
+﻿@page "/CustomerConfigPage2"
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using Services
+@using Models
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@using Requests;
+@using Microsoft.AspNetCore.Authorization;
+
+
+@inject IJSRuntime JSRuntime
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject AuthService AuthService
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+</style>
+
+<div class="containe">
+
+    <div class="page-title"> Klant Configuratie </div>
+
+
+    <div class="wizard-container">
+
+
+        <div class="wizard-circle-container">
+            <div class="wizard-circle">
+                <div class="circle" style="background-color: @GetCircleColorClass(1);" id="circle1"></div>
+
+                <div class="line" style="background-color: @GetLineColorClass(1);"></div>
+            </div>
+            <div class="wizard-title">Contact gegevens</div>
+            <div class="wizard-title-status">@(currentStep >= 2 ? "Completed" : "Bezig")</div>
+        </div>
+
+        <div class="wizard-circle-container">
+            <div class="wizard-circle">
+                <div class="circle" style="background-color: @GetCircleColorClass(2);" id="circle1"></div>
+                <div class="line" style="background-color: @GetLineColorClass(2);"></div>
+            </div>
+            <div class="wizard-title">Documenten</div>
+            <div class="wizard-title-status">
+                @(currentStep == 2 ? "Bezig" : (currentStep >= 3 ? "Completed" : "In afwachting"))
+            </div>
+
+        </div>
+
+        <div class="wizard-circle-container">
+
+            <div class="wizard-circle">
+                <div class="circle" style="background-color: @GetCircleColorClass(3);" id="circle3"></div>
+            </div>
+            <div class="wizard-title">Controleren & opslaan</div>
+            <div class="wizard-title-status">@(currentStep >= 3 ? "Bezig" : "In afwachting")</div>
+
+
+        </div>
+    </div>
+
+    @if (currentStep == 1)
+    {
+        <div class="input-container">
+
+            <div class="input-description-container">
+                <div class="description-title">
+                    Contact gegevens
+                </div>
+
+                <div class="description">
+                    Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+                </div>
+
+                <div class="section">
+
+
+
+                    <div class="section-title">Bedrijfs gegevens</div>
+                    <div>
+
+                        <div class="input-title">Bedrijfs naam</div>
+                        <div>
+                            <input class="input-field" placeholder="StaffingNow" />
+                        </div>
+                    </div>
+
+                    <div class="input-pair-Container">
+                        <div>
+                            <div class="input-title">Kvk</div>
+                            <div>
+                                <input class="input-field-pair" placeholder="12345678" />
+                            </div>
+
+                        </div>
+
+                        <div>
+                            <div class="input-title">Btw-Nummer</div>
+                            <div>
+                                <input class="input-field-pair" placeholder="NL123456789B01" />
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <div class="input-title">Rekeningnummer</div>
+                        <div>
+                            <input class="input-field" placeholder="NL20INGB0001234567" />
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+
+                <div class="section">
+                    <div class="section-title">Contact persoon</div>
+                    <div class="input-pair-Container">
+
+                        <div>
+
+                            <div class="input-title">Voornaam</div>
+                            <div>
+                                <input class="input-field-pair" placeholder="Holees" />
+                            </div>
+
+
+                        </div>
+                        <div>
+                            <div class="input-title">Achternaam</div>
+                            <div>
+                                <input class="input-field-pair" placeholder="Vliet" />
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="input-pair-Container-odd">
+
+                        <div>
+                            <div class="input-title">Email</div>
+                            <div>
+                                <input class="input-field-pair-odd-first" placeholder="Voorbeeld@email.com" />
+                            </div>
+
+
+                        </div>
+                        <div>
+                            <div class="input-title">Telefoonnummer</div>
+                            <div>
+                                <input class="input-field-pair-odd-second" placeholder="0612345678" />
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="section">
+                    <div class="section-title">Adres</div>
+                    <div class="input-pair-Container">
+
+                        <div>
+                            <div class="input-title">Postcode</div>
+                            <div>
+                                <input class="input-field-pair" placeholder="1234 AB" />
+                            </div>
+
+
+                        </div>
+                        <div>
+                            <div class="input-title">Huisnummer</div>
+                            <div>
+                                <input class="input-field-pair" placeholder="12" />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="input-pair-Container">
+
+                        <div>
+                            <div class="input-title">Stad</div>
+                            <div>
+                                <input class="input-field-pair" />
+                            </div>
+
+
+                        </div>
+                        <div>
+                            <div class="input-title">Straat</div>
+                            <div>
+                                <input class="input-field-pair" />
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <div class="button-container">
+                <button class="previous-button" @onclick="GoToPreviousStep">
+                    Vorige
+                </button>
+                <button class="next-button" @onclick="GoToNextStep">
+                    Volgende
+                </button>
+            </div>
+
+
+        </div>
+    }
+    else if (currentStep == 2)
+    {
+        <div class="input-container-select-documents">
+
+            <div class="input-description-container-select-documents">
+
+                <div class="description-title">
+                    Benodigde Documenten
+                </div>
+
+                <div class="description">
+                    Selecteer hieronder de benodigde documenten om verder te gaan.
+                </div>
+
+              
+
+            </div>
+
+            <div class="button-container-2">
+                <button class="previous-button" @onclick="GoToPreviousStep">
+                    Vorige
+                </button>
+                <button class="next-button" @onclick="GoToNextStep">
+                    Volgende
+                </button>
+            </div>
+
+
+        </div>
+    }
+</div>
+
+
+@code {
+    private List<Guid> selectedItems = new List<Guid>();
+
+    private string GetSelectedClass(Guid id)
+    {
+        return selectedItems.Contains(id) ? "selected" : string.Empty;
+    }
+
+    private void ToggleSelection(Guid id)
+    {
+        var uploadType = UploadTypes.FirstOrDefault(u => u.Id == id);
+
+        if (uploadType != null)
+        {
+            if (uploadType.Required)
+            {
+                uploadType.Required = false;
+                selectedItems.Add(id);
+            }
+            if (selectedItems.Contains(id))
+            {
+                selectedItems.Remove(id);
+            }
+            else
+            {
+                selectedItems.Add(id);
+            }
+        }
+    }
+
+    private int currentStep = 1;
+
+    private Customer Customer { get; set; } = new();
+    private Contract ContractModel { get; set; } = new();
+
+    private List<Contract> contracts = new List<Contract>();
+    private List<UploadTypeModel> UploadTypes = new List<UploadTypeModel>();
+    private List<Guid> selectedUploadTypeIds = new List<Guid>();
+
+    private Guid customerId;
+    private string type;
+    private int currentPage = 1;
+
+    private RequestMakerService _requestMakerService;
+
+    public CustomerConfigPage2()
+    {
+
+    }
+
+    private List<int> selectedLeftItems = new List<int>();
+    private List<int> selectedRightItems = new List<int>();
+
+    private void MoveToRightList()
+    {
+        foreach (var item in selectedLeftItems)
+        {
+            selectedRightItems.Add(item);
+        }
+        selectedLeftItems.Clear();
+    }
+
+    private void MoveToLeftList()
+    {
+        foreach (var item in selectedRightItems)
+        {
+            selectedLeftItems.Add(item);
+        }
+        selectedRightItems.Clear();
+    }
+
+    protected override void OnInitialized()
+    {
+        // if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+        // {
+        //     NavigationManager.NavigateTo("/signin");
+        // }
+
+        _requestMakerService = new RequestMakerService(HttpClient);
+
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUploadTypesAsync();
+    }
+
+    public async Task<List<UploadTypeModel>> GetUploadTypesAsync()
+    {
+        var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["uploadTypeDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+            var uploadType = new UploadTypeModel();
+            uploadType.Id = Guid.Parse((string)jToken["id"]);
+            uploadType.Type = (string)jToken["type"];
+            uploadType.DocumentType = (string)jToken["documentType"];
+            uploadType.Required = (bool)jToken["required"];
+
+            UploadTypes.Add(uploadType);
+        }
+        return UploadTypes;
+    }
+
+    public async Task CreateCustomerAsync()
+    {
+        CustomerRequest CustomerRequest = new CustomerRequest
+            {
+                CustomerDto = Customer
+            };
+
+
+        var response = await _requestMakerService.MakePostRequest("customer/customers", CustomerRequest);
+
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var resultObject = outerObject["result"];
+
+        customerId = Guid.Parse((string)resultObject["id"]);
+    }
+
+    public async Task CreateCustomerTemplateAsync()
+    {
+        ContractModel.CandidateId = Guid.Parse("10000000-0000-0000-0000-000000000000");
+        ContractModel.CustomerId = customerId;
+        ContractModel.Status = $"{customerId} Template";
+        ContractModel.StartDate = DateTime.Now;
+        ContractModel.EndDate = new DateTime();
+        ContractModel.PurchaseRate = 0;
+        ContractModel.SellingRate = 0;
+        ContractModel.PaymentTerm = $"{customerId} Template";
+        ContractModel.FeeParty = $"{customerId} Template";
+        ContractModel.JobDescription = $"{customerId} Template";
+        ContractModel.Note = $"{customerId} Template";
+        ContractModel.Template = true;
+
+        foreach (var uploadTypeId in selectedUploadTypeIds)
+        {
+            CandidateDocumentModel CandidateDocument = new CandidateDocumentModel
+                {
+                    UploadTypeId = uploadTypeId,
+                    DocumentBlob = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F },
+                    Status = $"{customerId} Template",
+                    CreatedBy = $"{customerId} Template",
+                    UpdatedBy = $"{customerId} Template",
+                    CreatedDate = DateTime.Parse("2024-05-20T19:37:39.108Z"),
+                    UpdatedDate = DateTime.Parse("2024-05-20T19:37:39.108Z")
+                };
+
+            ContractModel.CandidateDocumentsDto.Add(CandidateDocument);
+        }
+
+
+        ContractRequest contractRequest = new ContractRequest
+            {
+                ContractDto = ContractModel
+            };
+
+
+        var response = await _requestMakerService.MakePostRequest("contract/contract", contractRequest);
+    }
+
+    private void UpdateSelectedUploadTypes(ChangeEventArgs e)
+    {
+        var selectedValues = e.Value as IEnumerable<string>;
+        if (selectedValues != null)
+        {
+            selectedUploadTypeIds = selectedValues.Select(Guid.Parse).ToList();
+        }
+    }
+
+    private async Task SubmitForms()
+    {
+        await CreateCustomerAsync();
+        await CreateCustomerTemplateAsync();
+        NavigationManager.NavigateTo("/customer");
+    }
+
+    private void NextPage()
+    {
+        if (currentPage < 3)
+        {
+            currentPage++;
+        }
+    }
+
+    private void PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage--;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private string GetCircleColorClass(int step)
+    {
+        if (currentStep == 1)
+        {
+            if (step == 1)
+            {
+                return "blue";
+            }
+            else
+            {
+                return "grey";
+            }
+        }
+        else if (currentStep == 2)
+        {
+            if (step == 1)
+            {
+                return "green";
+            }
+            else if (step == 2)
+            {
+                return "blue";
+            }
+            else
+            {
+                return "grey";
+            }
+        }
+        else if (currentStep == 3)
+        {
+            if (step == 1 || step == 2)
+            {
+                return "green";
+            }
+            else
+            {
+                return "blue";
+            }
+        }
+        else
+        {
+            return "grey";
+        }
+    }
+
+    private string GetLineColorClass(int step)
+    {
+        if (currentStep == 1)
+        {
+            return "grey";
+        }
+        else if (currentStep == 2)
+        {
+            if (step == 1)
+            {
+                return "blue";
+            }
+            else
+            {
+                return "grey";
+            }
+        }
+        else if (currentStep == 3)
+        {
+            if (step == 1)
+            {
+                return "green";
+
+            }
+            else if (step == 2)
+            {
+                return "blue";
+
+            }
+            else
+            {
+                return "grey";
+            }
+
+        }
+        else
+        {
+            return "grey";
+        }
+    }
+
+    private void GoToNextStep()
+    {
+        if (currentStep < 3)
+        {
+            currentStep++;
+        }
+    }
+
+    private void GoToPreviousStep()
+    {
+        currentStep--;
+    }
+}
+
+
