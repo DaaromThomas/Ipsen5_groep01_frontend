@@ -33,13 +33,8 @@
 
 
 <div class="containe ">
-
     <div class="page-title data-aos=" fade-right""> Klant Configuratie </div>
-
-
     <div class="wizard-container">
-
-
         <div class="wizard-circle-container">
             <div class="wizard-circle">
                 <div class="circle" style="background-color: @GetCircleColorClass(1);" id="circle1"></div>
@@ -59,18 +54,14 @@
             <div class="wizard-title-status">
                 @(currentStep == 2 ? "Bezig" : (currentStep >= 3 ? "Completed" : "In afwachting"))
             </div>
-
         </div>
 
         <div class="wizard-circle-container">
-
             <div class="wizard-circle">
                 <div class="circle" style="background-color: @GetCircleColorClass(3);" id="circle3"></div>
             </div>
             <div class="wizard-title">Controleren & opslaan</div>
             <div class="wizard-title-status">@(currentStep >= 3 ? "Bezig" : "In afwachting")</div>
-
-
         </div>
     </div>
 
@@ -90,22 +81,14 @@
                         Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
                     </div>
 
-
-
                     <div class="section">
-
-
-
                         <div class="section-title">Bedrijfs gegevens</div>
                         <div>
-
                             <div class="input-title">Bedrijfsnaam</div>
                             <div>
                                 <input class="input-field" placeholder="StaffingNow" @bind="@Customer.Name" />
                                 <ValidationMessage For="() => Customer.Name"></ValidationMessage>
                             </div>
-
-
                         </div>
 
                         <div class="input-pair-Container">
@@ -124,9 +107,7 @@
 
                                 </div>
                                 <ValidationMessage For="() => Customer.VAT"></ValidationMessage>
-
                             </div>
-
                         </div>
 
                         <div>
@@ -137,28 +118,18 @@
                             </div>
                             <ValidationMessage For="() => Customer.BankAccountNumber"></ValidationMessage>
                         </div>
-
-
-
-
                     </div>
-
-
-
 
 
                     <div class="section">
                         <div class="section-title">Contact persoon</div>
                         <div class="input-pair-Container">
-
                             <div>
-
                                 <div class="input-title">Voornaam</div>
                                 <div>
                                     <input class="input-field-pair" placeholder="Holees" @bind="@Customer.FirstName" />
                                 </div>
                                 <ValidationMessage For="() => Customer.FirstName"></ValidationMessage>
-
                             </div>
                             <div>
                                 <div class="input-title">Achternaam</div>
@@ -171,14 +142,12 @@
 
 
                         <div class="input-pair-Container-odd">
-
                             <div>
                                 <div class="input-title">Email</div>
                                 <div>
                                     <input class="input-field-pair-odd-first" placeholder="Voorbeeld@email.com" @bind="@Customer.Email" />
                                 </div>
                                 <ValidationMessage For="() => Customer.Email"></ValidationMessage>
-
                             </div>
                             <div>
                                 <div class="input-title">Telefoonnummer</div>
@@ -188,7 +157,6 @@
                                 <ValidationMessage For="() => Customer.PhoneNumber"></ValidationMessage>
                             </div>
                         </div>
-
                     </div>
 
 
@@ -196,14 +164,12 @@
                     <div class="section">
                         <div class="section-title">Adres</div>
                         <div class="input-pair-Container">
-
                             <div>
                                 <div class="input-title">Postcode</div>
                                 <div>
                                     <input class="input-field-pair" placeholder="1234 AB" @bind="@Customer.CustomerAddressDto.PostalCode" />
                                 </div>
                                 <ValidationMessage For="() => Customer.CustomerAddressDto.PostalCode"></ValidationMessage>
-
                             </div>
                             <div>
                                 <div class="input-title">Huisnummer</div>
@@ -215,25 +181,19 @@
                         </div>
 
                         <div class="input-pair-Container">
-
                             <div>
                                 <div class="input-title">Stad</div>
                                 <div>
                                     <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.Country" />
                                 </div>
-
-
                             </div>
                             <div>
                                 <div class="input-title">Straat</div>
                                 <div>
                                     <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.StreetName" />
                                 </div>
-
                             </div>
                         </div>
-
-
                     </div>
 
                     <div class="button-container">
@@ -247,19 +207,13 @@
                 </EditForm>
 
             </div>
-
-
-
-
         </div>
 
     }
     else if (currentStep == 2)
     {
         <div class="input-container-select-documents">
-
             <div class="input-description-container-select-documents">
-
 
                 <div class="description-title">
                     Benodigde Documenten
@@ -269,13 +223,7 @@
                     Selecteer hieronder de benodigde documenten om verder te gaan.
                 </div>
 
-
-
                 <div class="selected-documents-container">
-
-
-
-
 
                     <div class="section-documents">
                         <div class="section-title">Overige documenten</div>
@@ -283,16 +231,12 @@
                         <div class="uploadtype-container">
                             @foreach (var uploadType in UploadTypes.Where(u => !selectedItems.Contains(u.Id) && !u.Required))
                             {
-
                                 <div class="input-checkbox-container" @onclick="() => ToggleSelection(uploadType.Id)">
                                     @uploadType.Type
                                 </div>
-
                             }
                         </div>
                     </div>
-
-
 
                     <div class="section-documents">
                         <div class="section-title">Standaard documenten</div>
@@ -305,7 +249,6 @@
                             }
                         </div>
 
-
                         <div class="section-title-selected">Geselecteerde documenten</div>
 
                         <div class="uploadtype-container">
@@ -317,13 +260,8 @@
                             }
                         </div>
                     </div>
-
-
-
                 </div>
-
             </div>
-
 
             <div class="button-container-2">
                 <button class="previous-button" @onclick="GoToPreviousStep">
@@ -333,10 +271,7 @@
                     Volgende
                 </button>
             </div>
-
-
         </div>
-
     }
     else
     {
@@ -450,47 +385,19 @@
                     Opslaan
                 </button>
             </div>
-
-
         </div>
     }
 </div>
 
 
 @code {
-    private List<Guid> selectedItems = new List<Guid>();
-
-    private string GetSelectedClass(Guid id)
-    {
-        return selectedItems.Contains(id) ? "selected" : string.Empty;
-    }
-
-    private void ToggleSelection(Guid id)
-    {
-        var uploadType = UploadTypes.FirstOrDefault(u => u.Id == id);
-
-        if (uploadType != null)
-        {
-            if (uploadType.Required)
-            {
-                uploadType.Required = false;
-            }
-            if (selectedItems.Contains(id))
-            {
-                selectedItems.Remove(id);
-            }
-            else
-            {
-                selectedItems.Add(id);
-            }
-        }
-    }
-
-    private int currentStep = 1;
-
+    private RequestMakerService _requestMakerService;
+   
     private Customer Customer { get; set; } = new();
     private Contract ContractModel { get; set; } = new();
 
+
+    private List<Guid> selectedItems = new List<Guid>();
     private List<Contract> contracts = new List<Contract>();
     private List<UploadTypeModel> UploadTypes = new List<UploadTypeModel>();
     private List<Guid> selectedUploadTypeIds = new List<Guid>();
@@ -498,8 +405,9 @@
     private Guid customerId;
     private string type;
     private int currentPage = 1;
+    private int currentStep = 1;
+    public Animate FadeToRight;
 
-    private RequestMakerService _requestMakerService;
 
     public CustomerConfigPage2()
     {
@@ -523,6 +431,7 @@
     {
         await GetUploadTypesAsync();
     }
+
 
     public async Task<List<UploadTypeModel>> GetUploadTypesAsync()
     {
@@ -611,6 +520,34 @@
         var response = await _requestMakerService.MakePostRequest("contract/contract", contractRequest);
     }
 
+   
+
+    private string GetSelectedClass(Guid id)
+    {
+        return selectedItems.Contains(id) ? "selected" : string.Empty;
+    }
+
+    private void ToggleSelection(Guid id)
+    {
+        var uploadType = UploadTypes.FirstOrDefault(u => u.Id == id);
+
+        if (uploadType != null)
+        {
+            if (uploadType.Required)
+            {
+                uploadType.Required = false;
+            }
+            if (selectedItems.Contains(id))
+            {
+                selectedItems.Remove(id);
+            }
+            else
+            {
+                selectedItems.Add(id);
+            }
+        }
+    }
+
     private void UpdateSelectedUploadTypes(ChangeEventArgs e)
     {
         var selectedValues = e.Value as IEnumerable<string>;
@@ -620,31 +557,14 @@
         }
     }
 
+
+
     private async Task SubmitForms()
     {
         await CreateCustomerAsync();
         await CreateCustomerTemplateAsync();
         NavigationManager.NavigateTo("/customer");
     }
-
-    private void NextPage()
-    {
-        if (currentPage < 3)
-        {
-            currentPage++;
-        }
-    }
-
-    private void PreviousPage()
-    {
-        if (currentPage > 1)
-        {
-            currentPage--;
-        }
-    }
-
-
-
 
     private string GetCircleColorClass(int step)
     {
@@ -759,7 +679,6 @@
         }
     }
 
-
     private async Task GoToPreviousStep()
     {
         currentStep--;
@@ -771,10 +690,6 @@
         await JSRuntime.InvokeVoidAsync("scrollToTop");
 
     }
-
-
-
-    public Animate FadeToRight;
 }
 
 
