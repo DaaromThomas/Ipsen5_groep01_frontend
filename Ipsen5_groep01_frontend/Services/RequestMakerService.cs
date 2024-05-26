@@ -53,7 +53,7 @@ namespace Ipsen5_groep01_frontend.Services
             var apiKey = jsonDocument.RootElement.GetProperty("postal_code_api_key").GetString();
 
 
-            var url = $"https://postcode.tech/api/v1/postcode?postcode={postcode}&number={number}";
+            var url = $"https://postcode.tech/api/v1/postcode/full?postcode={postcode}&number={number}";
 
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);

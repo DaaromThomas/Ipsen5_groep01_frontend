@@ -9,6 +9,7 @@
 @using Microsoft.AspNetCore.Authorization;
 @using BlazorAnimate;
 @using System;
+@using System.Text.RegularExpressions;
 
 @using System.Text.Json;
 
@@ -199,14 +200,14 @@
                                 <div>
                                     <input class="input-field-pair" placeholder="1234 AB" @bind="@Customer.CustomerAddressDto.PostalCode" />
                                 </div>
-                                <ValidationMessage For="() => Customer.CustomerAddressDto.PostalCode"></ValidationMessage>
+                                <div style="color: #e50000">@postalCodeValidationMessage</div>
                             </div>
                             <div>
                                 <div class="input-title">Huisnummer</div>
                                 <div>
                                     <input class="input-field-pair" placeholder="12" @bind="@Customer.CustomerAddressDto.HouseNumber" />
                                 </div>
-                                <ValidationMessage For="() => Customer.CustomerAddressDto.HouseNumber"></ValidationMessage>
+                                <div style="color: #e50000">@houseNumberValidationMessage</div>
                             </div>
                         </div>
 
@@ -214,7 +215,7 @@
                             <div>
                                 <div class="input-title">Stad</div>
                                 <div>
-                                    <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.Country" />
+                                    <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.City" />
                                 </div>
                             </div>
                             <div>
@@ -447,7 +448,8 @@
     private string type;
     private int currentPage = 1;
     private int currentStep = 1;
-    public Animate FadeToRight;
+    private string houseNumberValidationMessage;
+    private string postalCodeValidationMessage;
 
 
     public CustomerConfigPage2()
@@ -472,6 +474,7 @@
     {
         await GetUploadTypesAsync();
     }
+
 
 
     public async Task<List<UploadTypeModel>> GetUploadTypesAsync()
@@ -610,9 +613,6 @@
         await CreateCustomerTemplateAsync();
         NavigationManager.NavigateTo("/customer");
     }
-    // #10ADE5
-    // #FF6700
-
 
     private string GetCircleColorClass(int step)
     {
@@ -714,7 +714,10 @@
             Customer.CustomerAddressDto.HouseNumber != null
         )
         {
-            GetAddressInfro();
+
+            GetAddressInfo();
+
+
             if (currentStep < 3)
             {
                 currentStep++;
@@ -725,22 +728,64 @@
                 await JSRuntime.InvokeVoidAsync("scrollToTop");
                 // FadeToRight.Run();
             }
+
+        }
+        else
+        {
+            if (Customer.CustomerAddressDto.HouseNumber == null && Customer.CustomerAddressDto.PostalCode == null)
+            {
+                houseNumberValidationMessage = "Huisnummer is verplicht";
+                postalCodeValidationMessage = "Postcode is verplicht";
+            }
+            else if (Customer.CustomerAddressDto.HouseNumber == null && !Regex.IsMatch(Customer.CustomerAddressDto.PostalCode, @"^\d{4} \w{2}$"))
+            {
+                houseNumberValidationMessage = "Huisnummer is verplicht";
+                postalCodeValidationMessage = "Ongeldige postcode, voorbeeld 1234 AB";
+            }
+            else if (Customer.CustomerAddressDto.HouseNumber == null)
+            {
+                houseNumberValidationMessage = "Huisnummer is verplicht";
+                postalCodeValidationMessage = "";
+            }
+            else if (Customer.CustomerAddressDto.PostalCode == null)
+            {
+                postalCodeValidationMessage = "Postcode is verplicht";
+                houseNumberValidationMessage = "";
+            }
+            else if (!Regex.IsMatch(Customer.CustomerAddressDto.PostalCode, @"^\d{4} \w{2}$"))
+            {
+                postalCodeValidationMessage = "Ongeldige postcode, voorbeeld 1234 AB";
+                houseNumberValidationMessage = "";
+            }
+            else
+            {
+                houseNumberValidationMessage = "";
+                postalCodeValidationMessage = "";
+            }
+
         }
     }
 
     private async Task GoToPreviousStep()
     {
-        currentStep--;
+        if (currentStep == 1)
+        {
+            NavigationManager.NavigateTo("/customer");
+        }
+        else
+        {
+            currentStep--;
+        }
+
         if (currentStep == 2)
         {
-
             await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
         }
-        await JSRuntime.InvokeVoidAsync("scrollToTop");
 
+        await JSRuntime.InvokeVoidAsync("scrollToTop");
     }
 
-    public async Task GetAddressInfro()
+    public async Task GetAddressInfo()
     {
         if (Customer.CustomerAddressDto.PostalCode != null && Customer.CustomerAddressDto.HouseNumber != null)
         {
@@ -750,8 +795,8 @@
             var root = jsonResponse.RootElement;
 
             Customer.CustomerAddressDto.StreetName = root.GetProperty("street").GetString();
-            Customer.CustomerAddressDto.City = root.GetProperty("city").GetString();
             Customer.CustomerAddressDto.Province = root.GetProperty("province").GetString();
+            Customer.CustomerAddressDto.City = root.GetProperty("city").GetString();
         }
     }
 }
