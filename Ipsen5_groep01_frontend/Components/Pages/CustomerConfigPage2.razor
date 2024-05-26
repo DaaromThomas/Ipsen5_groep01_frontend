@@ -8,6 +8,9 @@
 @using Requests;
 @using Microsoft.AspNetCore.Authorization;
 @using BlazorAnimate;
+@using System;
+
+@using System.Text.Json;
 
 @inject IJSRuntime JSRuntime
 @inject HttpClient HttpClient
@@ -37,7 +40,16 @@
     <div class="wizard-container">
         <div class="wizard-circle-container">
             <div class="wizard-circle">
-                <div class="circle" style="background-color: @GetCircleColorClass(1);" id="circle1"></div>
+                <div class="circle" style="background-color: @GetCircleColorClass(1);" id="circle1">
+                    @if (currentStep >= 2)
+                    {
+                        <img src="/icons/checkmark.png" />
+                    }
+                    else
+                    {
+                        <div class="wizard-step">1</div>
+                    }
+                </div>
 
                 <div class="line" style="background-color: @GetLineColorClass(1);"></div>
             </div>
@@ -47,7 +59,16 @@
 
         <div class="wizard-circle-container">
             <div class="wizard-circle">
-                <div class="circle" style="background-color: @GetCircleColorClass(2);" id="circle1"></div>
+                <div class="circle" style="background-color: @GetCircleColorClass(2);" id="circle1">
+                    @if (currentStep >= 3)
+                    {
+                        <img src="/icons/checkmark.png" />
+                    }
+                    else
+                    {
+                        <div class="wizard-step">2</div>
+                    }
+                </div>
                 <div class="line" style="background-color: @GetLineColorClass(2);"></div>
             </div>
             <div class="wizard-title">Documenten</div>
@@ -58,7 +79,16 @@
 
         <div class="wizard-circle-container">
             <div class="wizard-circle">
-                <div class="circle" style="background-color: @GetCircleColorClass(3);" id="circle3"></div>
+                <div class="circle" style="background-color: @GetCircleColorClass(3);" id="circle3">
+                    @if (currentStep >= 4)
+                    {
+                        <img src="/icons/checkmark.png" />
+                    }
+                    else
+                    {
+                        <div class="wizard-step">3</div>
+                    }
+                </div>
             </div>
             <div class="wizard-title">Controleren & opslaan</div>
             <div class="wizard-title-status">@(currentStep >= 3 ? "Bezig" : "In afwachting")</div>
@@ -193,6 +223,13 @@
                                     <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.StreetName" />
                                 </div>
                             </div>
+
+                        </div>
+                        <div>
+                            <div class="input-title">Provincie</div>
+                            <div>
+                                <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.Province" />
+                            </div>
                         </div>
                     </div>
 
@@ -302,7 +339,7 @@
 
                         <div>
                             <div class="input-title">Btw-Nummer</div>
-                            <div class ="input-value">@Customer.VAT</div>
+                            <div class="input-value">@Customer.VAT</div>
                         </div>
                     </div>
                     <div>
@@ -354,11 +391,15 @@
                     <div class="input-pair-Container-3">
                         <div>
                             <div class="input-title">Stad</div>
-                            <div class="input-value"></div>
+                            <div class="input-value">@Customer.CustomerAddressDto.City</div>
                         </div>
                         <div>
                             <div class="input-title">Straat</div>
-                            <div class="input-value"></div>
+                            <div class="input-value">@Customer.CustomerAddressDto.StreetName</div>
+                        </div>
+                        <div>
+                            <div class="input-title">Provincie</div>
+                            <div class="input-value">@Customer.CustomerAddressDto.Province</div>
                         </div>
                     </div>
                 </div>
@@ -392,7 +433,7 @@
 
 @code {
     private RequestMakerService _requestMakerService;
-   
+
     private Customer Customer { get; set; } = new();
     private Contract ContractModel { get; set; } = new();
 
@@ -450,12 +491,16 @@
             uploadType.DocumentType = (string)jToken["documentType"];
             uploadType.Required = (bool)jToken["required"];
 
-            UploadTypes.Add(uploadType);
-
-            if (uploadType.Required)
+            if (!UploadTypes.Any(u => u.Type == uploadType.Type))
             {
-                selectedItems.Add(uploadType.Id);
 
+                UploadTypes.Add(uploadType);
+
+                if (uploadType.Required)
+                {
+                    selectedItems.Add(uploadType.Id);
+
+                }
             }
         }
         return UploadTypes;
@@ -520,7 +565,7 @@
         var response = await _requestMakerService.MakePostRequest("contract/contract", contractRequest);
     }
 
-   
+
 
     private string GetSelectedClass(Guid id)
     {
@@ -565,6 +610,9 @@
         await CreateCustomerTemplateAsync();
         NavigationManager.NavigateTo("/customer");
     }
+    // #10ADE5
+    // #FF6700
+
 
     private string GetCircleColorClass(int step)
     {
@@ -572,7 +620,7 @@
         {
             if (step == 1)
             {
-                return "blue";
+                return "#FF6700";
             }
             else
             {
@@ -583,11 +631,11 @@
         {
             if (step == 1)
             {
-                return "green";
+                return "#1f262f";
             }
             else if (step == 2)
             {
-                return "blue";
+                return "#FF6700";
             }
             else
             {
@@ -598,11 +646,11 @@
         {
             if (step == 1 || step == 2)
             {
-                return "green";
+                return "#1f262f";
             }
             else
             {
-                return "blue";
+                return "#FF6700";
             }
         }
         else
@@ -621,7 +669,7 @@
         {
             if (step == 1)
             {
-                return "blue";
+                return "#FF6700";
             }
             else
             {
@@ -632,12 +680,12 @@
         {
             if (step == 1)
             {
-                return "green";
+                return "#1f262f";
 
             }
             else if (step == 2)
             {
-                return "blue";
+                return "#FF6700";
 
             }
             else
@@ -666,6 +714,7 @@
             Customer.CustomerAddressDto.HouseNumber != null
         )
         {
+            GetAddressInfro();
             if (currentStep < 3)
             {
                 currentStep++;
@@ -689,6 +738,21 @@
         }
         await JSRuntime.InvokeVoidAsync("scrollToTop");
 
+    }
+
+    public async Task GetAddressInfro()
+    {
+        if (Customer.CustomerAddressDto.PostalCode != null && Customer.CustomerAddressDto.HouseNumber != null)
+        {
+            var response = await _requestMakerService.GetAddressInfoAsync(Customer.CustomerAddressDto.PostalCode, Customer.CustomerAddressDto.HouseNumber);
+
+            var jsonResponse = JsonDocument.Parse(response);
+            var root = jsonResponse.RootElement;
+
+            Customer.CustomerAddressDto.StreetName = root.GetProperty("street").GetString();
+            Customer.CustomerAddressDto.City = root.GetProperty("city").GetString();
+            Customer.CustomerAddressDto.Province = root.GetProperty("province").GetString();
+        }
     }
 }
 

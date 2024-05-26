@@ -36,9 +36,13 @@
 }
 
 .circle {
+    transition: background-color 1s ease;
     width: 5vmin;
     height: 5vmin;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
     .circle.active {
@@ -66,6 +70,13 @@
     font-size: 1.3vmin;
     font-family: Inter;
     font-weight: 600;
+}
+
+.wizard-step {
+    font-size: 2.5vmin;
+    font-family: Inter;
+    font-weight: 800;
+    color: white;
 }
 
 button {

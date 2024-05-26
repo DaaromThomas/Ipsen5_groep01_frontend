@@ -16,6 +16,7 @@ namespace Ipsen5_groep01_frontend.Models
         public string LastName { get; set; }
 
         [Required(ErrorMessage = "KvK-nummer is verplicht")]
+        [MaxLength(8, ErrorMessage = "KvK-nummer mag maximaal 8 tekens bevatten")]
         public string KVK { get; set; }
 
         [Required(ErrorMessage = "BTW-nummer is verplicht")]
