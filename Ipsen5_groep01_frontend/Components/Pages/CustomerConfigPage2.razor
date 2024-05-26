@@ -1,4 +1,4 @@
-﻿@page "/CustomerConfigPage2"
+﻿@page "/CustomerConfigPage"
 
 @using Microsoft.AspNetCore.Components.Authorization
 @using Services
@@ -126,7 +126,7 @@
                             <div>
                                 <div class="input-title">Kvk</div>
                                 <div>
-                                    <input class="input-field-pair" placeholder="12345678" @bind="@Customer.KVK" />
+                                    <input type="number" class="input-field-pair" placeholder="12345678" @bind="@Customer.KVK" />
                                 </div>
                                 <ValidationMessage For="() => Customer.KVK"></ValidationMessage>
                             </div>
@@ -183,7 +183,7 @@
                             <div>
                                 <div class="input-title">Telefoonnummer</div>
                                 <div>
-                                    <input class="input-field-pair-odd-second" placeholder="0612345678" @bind="@Customer.PhoneNumber" />
+                                    <input type="number" class="input-field-pair-odd-second" placeholder="0612345678" @bind="@Customer.PhoneNumber" />
                                 </div>
                                 <ValidationMessage For="() => Customer.PhoneNumber"></ValidationMessage>
                             </div>
@@ -215,13 +215,13 @@
                             <div>
                                 <div class="input-title">Stad</div>
                                 <div>
-                                    <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.City" />
+                                    <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.City" readonly />
                                 </div>
                             </div>
                             <div>
                                 <div class="input-title">Straat</div>
                                 <div>
-                                    <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.StreetName" />
+                                    <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.StreetName" readonly />
                                 </div>
                             </div>
 
@@ -229,7 +229,7 @@
                         <div>
                             <div class="input-title">Provincie</div>
                             <div>
-                                <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.Province" />
+                                <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.Province" readonly />
                             </div>
                         </div>
                     </div>
@@ -423,7 +423,7 @@
                 <button class="previous-button" @onclick="GoToPreviousStep">
                     Vorige
                 </button>
-                <button class="next-button" @onclick="GoToNextStep">
+                <button class="next-button" @onclick="CreateCustomerAsync">
                     Opslaan
                 </button>
             </div>
@@ -460,10 +460,10 @@
 
     protected override void OnInitialized()
     {
-        // if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
-        // {
-        //     NavigationManager.NavigateTo("/signin");
-        // }
+        if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+        {
+            NavigationManager.NavigateTo("/signin");
+        }
 
         _requestMakerService = new RequestMakerService(HttpClient);
 
@@ -525,6 +525,8 @@
         var resultObject = outerObject["result"];
 
         customerId = Guid.Parse((string)resultObject["id"]);
+
+        await CreateCustomerTemplateAsync();
     }
 
     public async Task CreateCustomerTemplateAsync()
@@ -566,6 +568,8 @@
 
 
         var response = await _requestMakerService.MakePostRequest("contract/contract", contractRequest);
+
+        NavigationManager.NavigateTo("/customer");
     }
 
 
@@ -712,21 +716,32 @@
             Customer.PhoneNumber != null &&
             Customer.CustomerAddressDto.PostalCode != null &&
             Customer.CustomerAddressDto.HouseNumber != null
+
         )
         {
 
-            GetAddressInfo();
+            bool founded = await GetAddressInfo();
 
-
-            if (currentStep < 3)
+            if (founded == true)
             {
-                currentStep++;
-                if (currentStep == 2)
+                postalCodeValidationMessage = "";
+                houseNumberValidationMessage = "";
+
+                if (currentStep < 3)
                 {
-                    await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
+                    currentStep++;
+                    if (currentStep == 2)
+                    {
+                        await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
+                    }
+                    await JSRuntime.InvokeVoidAsync("scrollToTop");
+                    // FadeToRight.Run();
                 }
-                await JSRuntime.InvokeVoidAsync("scrollToTop");
-                // FadeToRight.Run();
+
+            }
+            else
+            {
+                postalCodeValidationMessage = "Ongeldige Postcode huisnummer combinatie";
             }
 
         }
@@ -785,20 +800,31 @@
         await JSRuntime.InvokeVoidAsync("scrollToTop");
     }
 
-    public async Task GetAddressInfo()
+    public async Task<bool> GetAddressInfo()
     {
-        if (Customer.CustomerAddressDto.PostalCode != null && Customer.CustomerAddressDto.HouseNumber != null)
+
+        try
         {
             var response = await _requestMakerService.GetAddressInfoAsync(Customer.CustomerAddressDto.PostalCode, Customer.CustomerAddressDto.HouseNumber);
-
             var jsonResponse = JsonDocument.Parse(response);
             var root = jsonResponse.RootElement;
 
             Customer.CustomerAddressDto.StreetName = root.GetProperty("street").GetString();
             Customer.CustomerAddressDto.Province = root.GetProperty("province").GetString();
             Customer.CustomerAddressDto.City = root.GetProperty("city").GetString();
+            return true;
         }
+        catch (Exception ex)
+        {
+            return false;
+        }
+
+
+
     }
+
+
+ 
 }
 
 
