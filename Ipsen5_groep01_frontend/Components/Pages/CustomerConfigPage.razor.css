@@ -1,4 +1,4 @@
-﻿.customer-container-background {
+﻿/*.customer-container-background {
     background-color: #f6f6f6;
     display: flex;
     flex: 1;
@@ -15,9 +15,9 @@
     padding-right: 10vmin;
 }
 
-.field-container {
+.field-container {*/
     /*background-color: blue;*/
-    width: 130vmin;
+    /*width: 130vmin;
 }
 
 .name-number-contrainer {
@@ -175,4 +175,4 @@
 .dropdownlist {
     width: 50vmin;
     height: 30vmin;
-}
+}*/

@@ -7,7 +7,7 @@
 @using Newtonsoft.Json.Linq;
 @using Requests;
 @using Microsoft.AspNetCore.Authorization;
-
+@using BlazorAnimate;
 
 @inject IJSRuntime JSRuntime
 @inject HttpClient HttpClient
@@ -19,9 +19,22 @@
     @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 </style>
 
-<div class="containe">
+<script>
+    function scrollToTop() {
+        window.scrollTo({ top: 0.09 * document.body.scrollHeight, behavior: 'smooth' });
+    }
 
-    <div class="page-title"> Klant Configuratie </div>
+    function scrollToTopStep2() {
+        window.scrollTo({ top: 0.08 * document.body.scrollHeight, behavior: 'smooth' });
+    }
+  
+</script>
+<script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
+
+
+<div class="containe ">
+
+    <div class="page-title data-aos=" fade-right""> Klant Configuratie </div>
 
 
     <div class="wizard-container">
@@ -63,7 +76,7 @@
 
     @if (currentStep == 1)
     {
-        <div class="input-container">
+        <div class="input-container " >
 
             <div class="input-description-container">
                 <div class="description-title">
@@ -73,6 +86,8 @@
                 <div class="description">
                     Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
                 </div>
+
+
 
                 <div class="section">
 
@@ -120,6 +135,9 @@
                 </div>
 
 
+
+
+
                 <div class="section">
                     <div class="section-title">Contact persoon</div>
                     <div class="input-pair-Container">
@@ -163,6 +181,9 @@
                     </div>
 
                 </div>
+
+
+
                 <div class="section">
                     <div class="section-title">Adres</div>
                     <div class="input-pair-Container">
@@ -219,12 +240,14 @@
 
 
         </div>
+
     }
     else if (currentStep == 2)
     {
         <div class="input-container-select-documents">
 
             <div class="input-description-container-select-documents">
+
 
                 <div class="description-title">
                     Benodigde Documenten
@@ -234,7 +257,10 @@
                     Selecteer hieronder de benodigde documenten om verder te gaan.
                 </div>
 
+
+
                 <div class="selected-documents-container">
+
 
 
 
@@ -245,12 +271,16 @@
                         <div class="uploadtype-container">
                             @foreach (var uploadType in UploadTypes.Where(u => !selectedItems.Contains(u.Id) && !u.Required))
                             {
+
                                 <div class="input-checkbox-container" @onclick="() => ToggleSelection(uploadType.Id)">
                                     @uploadType.Type
                                 </div>
+
                             }
                         </div>
                     </div>
+
+
 
                     <div class="section-documents">
                         <div class="section-title">Standaard documenten</div>
@@ -263,7 +293,7 @@
                             }
                         </div>
 
-                     
+
                         <div class="section-title-selected">Geselecteerde documenten</div>
 
                         <div class="uploadtype-container">
@@ -276,9 +306,12 @@
                         </div>
                     </div>
 
+
+
                 </div>
 
             </div>
+
 
             <div class="button-container-2">
                 <button class="previous-button" @onclick="GoToPreviousStep">
@@ -291,9 +324,11 @@
 
 
         </div>
+
     }
     else
     {
+        @* <Animate Animation="Animations.SlideRight" Duration="TimeSpan.FromSeconds(1)"> *@
         <div class="input-container">
 
             <div class="input-description-container">
@@ -308,12 +343,12 @@
                 <div class="section-review">
                     <div class="section-title">Bedrijfs gegevens</div>
                     <div>
-                        <div class="input-title">Bedrijfsnaam</div> 
+                        <div class="input-title">Bedrijfsnaam</div>
                     </div>
 
                     <div class="input-pair-Container">
                         <div>
-                            <div class="input-title">Kvk</div>                        
+                            <div class="input-title">Kvk</div>
                         </div>
 
                         <div>
@@ -321,7 +356,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="input-title">Rekeningnummer</div>        
+                        <div class="input-title">Rekeningnummer</div>
                     </div>
                 </div>
 
@@ -340,10 +375,10 @@
 
                     <div class="input-pair-Container-odd">
                         <div>
-                            <div class="input-title">Email</div>                  
+                            <div class="input-title">Email</div>
                         </div>
                         <div>
-                            <div class="input-title">Telefoonnummer</div>                          
+                            <div class="input-title">Telefoonnummer</div>
                         </div>
                     </div>
                 </div>
@@ -352,10 +387,10 @@
                     <div class="section-title">Adres</div>
                     <div class="input-pair-Container">
                         <div>
-                            <div class="input-title">Postcode</div>                          
+                            <div class="input-title">Postcode</div>
                         </div>
                         <div>
-                            <div class="input-title">Huisnummer</div>                            
+                            <div class="input-title">Huisnummer</div>
                         </div>
                     </div>
 
@@ -364,7 +399,7 @@
                             <div class="input-title">Stad</div>
                         </div>
                         <div>
-                            <div class="input-title">Straat</div>                      
+                            <div class="input-title">Straat</div>
                         </div>
                     </div>
                 </div>
@@ -375,12 +410,12 @@
                     <div class="uploadtype-container">
                         @foreach (var uploadType in UploadTypes.Where(u => selectedItems.Contains(u.Id)))
                         {
-                            <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
+                            <div class="input-checkbox-container selected">
                                 @uploadType.Type
                             </div>
                         }
                     </div>
-               </div>
+                </div>
             </div>
 
             <div class="button-container">
@@ -587,35 +622,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private string GetCircleColorClass(int step)
     {
         if (currentStep == 1)
@@ -702,18 +708,40 @@
         }
     }
 
-    private void GoToNextStep()
+    private async Task GoToNextStep()
     {
         if (currentStep < 3)
         {
             currentStep++;
+            if(currentStep == 2)
+            {
+                
+            await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
+            }
+            await JSRuntime.InvokeVoidAsync("scrollToTop");
+
+            
+            // FadeToRight.Run();
         }
     }
 
-    private void GoToPreviousStep()
+    private async Task GoToPreviousStep()
     {
         currentStep--;
+        if (currentStep == 2)
+        {
+
+            await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
+        }
+        await JSRuntime.InvokeVoidAsync("scrollToTop");
+
     }
+
+
+
+    public Animate FadeToRight;
 }
+
+
 
 

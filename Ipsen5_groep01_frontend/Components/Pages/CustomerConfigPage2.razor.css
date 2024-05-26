@@ -12,7 +12,7 @@
 
 .wizard-container {
     display: flex;
-    height: 23vmin;
+    height: 17vmin;
     align-items: center;
     justify-content: center;
     border: solid;
@@ -120,6 +120,7 @@ button {
     padding-top: 5vmin;
     font-family: Inter;
     font-weight: 600;
+    animation: fade-up 0.5s;
 }
 
 .description {
@@ -367,3 +368,7 @@ button {
     width: 90vmin;
     
 }
+
+
+
+
