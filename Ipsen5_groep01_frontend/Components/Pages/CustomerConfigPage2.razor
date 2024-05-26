@@ -27,7 +27,7 @@
     function scrollToTopStep2() {
         window.scrollTo({ top: 0.08 * document.body.scrollHeight, behavior: 'smooth' });
     }
-  
+
 </script>
 <script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
 
@@ -76,167 +76,179 @@
 
     @if (currentStep == 1)
     {
-        <div class="input-container " >
+        <div class="input-container ">
 
             <div class="input-description-container">
-                <div class="description-title">
-                    Contact gegevens
-                </div>
+                <EditForm Model="@Customer" FormName="createcustomer">
+                    <DataAnnotationsValidator />
 
-                <div class="description">
-                    Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
-                </div>
-
-
-
-                <div class="section">
-
-
-
-                    <div class="section-title">Bedrijfs gegevens</div>
-                    <div>
-
-                        <div class="input-title">Bedrijfsnaam</div>
-                        <div>
-                            <input class="input-field" placeholder="StaffingNow" />
-                        </div>
+                    <div class="description-title">
+                        Contact gegevens
                     </div>
 
-                    <div class="input-pair-Container">
-                        <div>
-                            <div class="input-title">Kvk</div>
-                            <div>
-                                <input class="input-field-pair" placeholder="12345678" />
-                            </div>
-
-                        </div>
-
-                        <div>
-                            <div class="input-title">Btw-Nummer</div>
-                            <div>
-                                <input class="input-field-pair" placeholder="NL123456789B01" />
-                            </div>
-
-
-                        </div>
-
-                    </div>
-
-                    <div>
-                        <div class="input-title">Rekeningnummer</div>
-                        <div>
-                            <input class="input-field" placeholder="NL20INGB0001234567" />
-                        </div>
+                    <div class="description">
+                        Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
                     </div>
 
 
 
-
-                </div>
-
+                    <div class="section">
 
 
 
-
-                <div class="section">
-                    <div class="section-title">Contact persoon</div>
-                    <div class="input-pair-Container">
-
+                        <div class="section-title">Bedrijfs gegevens</div>
                         <div>
 
-                            <div class="input-title">Voornaam</div>
+                            <div class="input-title">Bedrijfsnaam</div>
                             <div>
-                                <input class="input-field-pair" placeholder="Holees" />
+                                <input class="input-field" placeholder="StaffingNow" @bind="@Customer.Name" />
+                                <ValidationMessage For="() => Customer.Name"></ValidationMessage>
                             </div>
 
 
                         </div>
-                        <div>
-                            <div class="input-title">Achternaam</div>
+
+                        <div class="input-pair-Container">
                             <div>
-                                <input class="input-field-pair" placeholder="Vliet" />
+                                <div class="input-title">Kvk</div>
+                                <div>
+                                    <input class="input-field-pair" placeholder="12345678" @bind="@Customer.KVK" />
+                                </div>
+                                <ValidationMessage For="() => Customer.KVK"></ValidationMessage>
+                            </div>
+
+                            <div>
+                                <div class="input-title">Btw-Nummer</div>
+                                <div>
+                                    <input class="input-field-pair" placeholder="NL123456789B01" @bind="@Customer.VAT" />
+
+                                </div>
+                                <ValidationMessage For="() => Customer.VAT"></ValidationMessage>
+
                             </div>
 
                         </div>
+
+                        <div>
+                            <div class="input-title">Rekeningnummer</div>
+                            <div>
+                                <input class="input-field" placeholder="NL20INGB0001234567" @bind="@Customer.BankAccountNumber" />
+
+                            </div>
+                            <ValidationMessage For="() => Customer.BankAccountNumber"></ValidationMessage>
+                        </div>
+
+
+
+
                     </div>
 
 
-                    <div class="input-pair-Container-odd">
 
-                        <div>
-                            <div class="input-title">Email</div>
+
+
+                    <div class="section">
+                        <div class="section-title">Contact persoon</div>
+                        <div class="input-pair-Container">
+
                             <div>
-                                <input class="input-field-pair-odd-first" placeholder="Voorbeeld@email.com" />
+
+                                <div class="input-title">Voornaam</div>
+                                <div>
+                                    <input class="input-field-pair" placeholder="Holees" @bind="@Customer.FirstName" />
+                                </div>
+                                <ValidationMessage For="() => Customer.FirstName"></ValidationMessage>
+
                             </div>
-
-
-                        </div>
-                        <div>
-                            <div class="input-title">Telefoonnummer</div>
                             <div>
-                                <input class="input-field-pair-odd-second" placeholder="0612345678" />
+                                <div class="input-title">Achternaam</div>
+                                <div>
+                                    <input class="input-field-pair" placeholder="Vliet" @bind="@Customer.LastName" />
+                                </div>
+                                <ValidationMessage For="() => Customer.LastName"></ValidationMessage>
                             </div>
-
                         </div>
-                    </div>
-
-                </div>
 
 
+                        <div class="input-pair-Container-odd">
 
-                <div class="section">
-                    <div class="section-title">Adres</div>
-                    <div class="input-pair-Container">
-
-                        <div>
-                            <div class="input-title">Postcode</div>
                             <div>
-                                <input class="input-field-pair" placeholder="1234 AB" />
+                                <div class="input-title">Email</div>
+                                <div>
+                                    <input class="input-field-pair-odd-first" placeholder="Voorbeeld@email.com" @bind="@Customer.Email" />
+                                </div>
+                                <ValidationMessage For="() => Customer.Email"></ValidationMessage>
+
                             </div>
-
-
-                        </div>
-                        <div>
-                            <div class="input-title">Huisnummer</div>
                             <div>
-                                <input class="input-field-pair" placeholder="12" />
+                                <div class="input-title">Telefoonnummer</div>
+                                <div>
+                                    <input class="input-field-pair-odd-second" placeholder="0612345678" @bind="@Customer.PhoneNumber" />
+                                </div>
+                                <ValidationMessage For="() => Customer.PhoneNumber"></ValidationMessage>
                             </div>
-
                         </div>
-                    </div>
 
-                    <div class="input-pair-Container">
-
-                        <div>
-                            <div class="input-title">Stad</div>
-                            <div>
-                                <input class="input-field-pair" />
-                            </div>
-
-
-                        </div>
-                        <div>
-                            <div class="input-title">Straat</div>
-                            <div>
-                                <input class="input-field-pair" />
-                            </div>
-
-                        </div>
                     </div>
 
 
-                </div>
+
+                    <div class="section">
+                        <div class="section-title">Adres</div>
+                        <div class="input-pair-Container">
+
+                            <div>
+                                <div class="input-title">Postcode</div>
+                                <div>
+                                    <input class="input-field-pair" placeholder="1234 AB" @bind="@Customer.CustomerAddressDto.PostalCode" />
+                                </div>
+                                <ValidationMessage For="() => Customer.CustomerAddressDto.PostalCode"></ValidationMessage>
+
+                            </div>
+                            <div>
+                                <div class="input-title">Huisnummer</div>
+                                <div>
+                                    <input class="input-field-pair" placeholder="12" @bind="@Customer.CustomerAddressDto.HouseNumber" />
+                                </div>
+                                <ValidationMessage For="() => Customer.CustomerAddressDto.HouseNumber"></ValidationMessage>
+                            </div>
+                        </div>
+
+                        <div class="input-pair-Container">
+
+                            <div>
+                                <div class="input-title">Stad</div>
+                                <div>
+                                    <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.Country" />
+                                </div>
+
+
+                            </div>
+                            <div>
+                                <div class="input-title">Straat</div>
+                                <div>
+                                    <input class="input-field-pair" @bind="@Customer.CustomerAddressDto.StreetName" />
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="button-container">
+                        <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
+                            Vorige
+                        </button>
+                        <button type="submit" class="next-button" @onclick="GoToNextStep">
+                            Volgende
+                        </button>
+                    </div>
+                </EditForm>
 
             </div>
 
-            <div class="button-container">
-                <button class="previous-button" @onclick="GoToPreviousStep">
-                    Vorige
-                </button>
-                <button class="next-button" @onclick="GoToNextStep">
-                    Volgende
-                </button>
-            </div>
+
 
 
         </div>
@@ -333,73 +345,85 @@
 
             <div class="input-description-container">
                 <div class="description-title">
-                    Contact gegevens
+                    Controleren & Oplsaan
                 </div>
 
                 <div class="description">
-                    Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+                    Controleer hieronder de basisgegevens. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
                 </div>
 
                 <div class="section-review">
                     <div class="section-title">Bedrijfs gegevens</div>
                     <div>
                         <div class="input-title">Bedrijfsnaam</div>
+                        <div class="input-value">@Customer.Name</div>
                     </div>
 
-                    <div class="input-pair-Container">
+                    <div class="input-pair-Container-3">
                         <div>
                             <div class="input-title">Kvk</div>
+                            <div class="input-value">@Customer.KVK</div>
                         </div>
 
                         <div>
                             <div class="input-title">Btw-Nummer</div>
+                            <div class ="input-value">@Customer.VAT</div>
                         </div>
                     </div>
                     <div>
                         <div class="input-title">Rekeningnummer</div>
+                        <div class="input-value">@Customer.BankAccountNumber</div>
                     </div>
                 </div>
 
 
                 <div class="section-review">
                     <div class="section-title">Contact persoon</div>
-                    <div class="input-pair-Container">
+                    <div class="input-pair-Container-3">
                         <div>
                             <div class="input-title">Voornaam</div>
+                            <div class="input-value">@Customer.FirstName</div>
                         </div>
                         <div>
                             <div class="input-title">Achternaam</div>
+                            <div class="input-value">@Customer.LastName</div>
                         </div>
                     </div>
 
 
-                    <div class="input-pair-Container-odd">
+                    <div class="input-pair-Container-3">
                         <div>
                             <div class="input-title">Email</div>
+                            <div class="input-value">@Customer.Email</div>
                         </div>
                         <div>
                             <div class="input-title">Telefoonnummer</div>
+                            <div class="input-value">@Customer.PhoneNumber</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="section-review">
                     <div class="section-title">Adres</div>
-                    <div class="input-pair-Container">
+                    <div class="input-pair-Container-3">
                         <div>
                             <div class="input-title">Postcode</div>
+                            <div class="input-value">@Customer.CustomerAddressDto.PostalCode</div>
                         </div>
                         <div>
                             <div class="input-title">Huisnummer</div>
+                            <div class="input-value">@Customer.CustomerAddressDto.HouseNumber</div>
                         </div>
                     </div>
 
-                    <div class="input-pair-Container">
+                    <div class="input-pair-Container-3">
                         <div>
                             <div class="input-title">Stad</div>
+                            <div class="input-value"></div>
                         </div>
                         <div>
                             <div class="input-title">Straat</div>
+                            <div class="input-value"></div>
                         </div>
                     </div>
                 </div>
@@ -710,20 +734,31 @@
 
     private async Task GoToNextStep()
     {
-        if (currentStep < 3)
+        if (Customer.Name != null &&
+            Customer.FirstName != null &&
+            Customer.LastName != null &&
+            Customer.KVK != null &&
+            Customer.VAT != null &&
+            Customer.BankAccountNumber != null &&
+            Customer.Email != null &&
+            Customer.PhoneNumber != null &&
+            Customer.CustomerAddressDto.PostalCode != null &&
+            Customer.CustomerAddressDto.HouseNumber != null
+        )
         {
-            currentStep++;
-            if(currentStep == 2)
+            if (currentStep < 3)
             {
-                
-            await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
+                currentStep++;
+                if (currentStep == 2)
+                {
+                    await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
+                }
+                await JSRuntime.InvokeVoidAsync("scrollToTop");
+                // FadeToRight.Run();
             }
-            await JSRuntime.InvokeVoidAsync("scrollToTop");
-
-            
-            // FadeToRight.Run();
         }
     }
+
 
     private async Task GoToPreviousStep()
     {

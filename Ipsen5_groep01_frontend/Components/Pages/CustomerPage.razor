@@ -56,7 +56,7 @@
         {
             <div class="customers">
                 <div>@customer.Name</div>
-                <div>@customer.PONumber</div>
+                <div>@customer.Name</div>
                 <div></div>
                 <div></div>
                 <div></div>
@@ -163,7 +163,6 @@
             var customer = new Customer();
             customer.Id = Guid.Parse((string)jToken["id"]);
             customer.Name = (string)jToken["name"];
-            customer.PONumber = (string)jToken["poNumber"];
 
             customer.CustomerAddressDto = new CustomerAddress();
             customer.CustomerAddressDto.StreetName = (string)jToken["streetName"];

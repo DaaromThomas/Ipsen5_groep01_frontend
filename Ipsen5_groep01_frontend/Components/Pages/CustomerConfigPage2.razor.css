@@ -138,7 +138,7 @@ button {
 .input-title {
     color: #1f262f;
     font-size: 1.5vmin;
-    padding-top: 2vmin;
+    padding-top: 1.2vmin;
     padding-bottom: 0.3vmin;
     font-family: Inter;
     font-weight: 600;
@@ -369,6 +369,13 @@ button {
     
 }
 
+.input-pair-Container-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
 
-
+.input-value {
+    font-family: Inter;
+    font-weight: 400;
+}
 
