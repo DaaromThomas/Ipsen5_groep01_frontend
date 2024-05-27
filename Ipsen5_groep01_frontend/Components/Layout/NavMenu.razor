@@ -124,6 +124,7 @@
         this.role = AuthService.Role;
         Console.WriteLine("Navbar loggedIn: " + loggedIn);
         Console.WriteLine("Navbar Role: " + role);
+        InvokeAsync(() => StateHasChanged());
     }
 
     private void navigateToHome()
