@@ -1,9 +1,11 @@
 ﻿@rendermode InteractiveServer
 @using Services;
 @using Ipsen5_groep01_frontend.Services
+@using Ipsen5_groep01_frontend.Interfaces
 @inject LoginService LoginService
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
+@implements Observer
 
 <div class="navbar">
     <img class="staffingnow_logo" src="images/staffingnow_logo.png" alt="logo" />
@@ -92,8 +94,8 @@
 
 @code {
     private bool isPageInitialized = false;
-    private bool loggedIn = true;
-    private string role = "Admin";
+    private bool loggedIn = false;
+    private string role = "";
 
     protected override async void OnInitialized()
     {
@@ -109,7 +111,20 @@
         }
     }
 
-    
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if(firstRender){
+            this.AuthService.subscribe(this);
+        }
+    }
+
+    public void update(){
+        Console.WriteLine("Update()");
+        this.loggedIn = AuthService.IsLoggedIn;
+        this.role = AuthService.Role;
+        Console.WriteLine("Navbar loggedIn: " + loggedIn);
+        Console.WriteLine("Navbar Role: " + role);
+    }
 
     private void navigateToHome()
     {

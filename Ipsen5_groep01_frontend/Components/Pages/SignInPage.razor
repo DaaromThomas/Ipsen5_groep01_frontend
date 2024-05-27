@@ -92,7 +92,6 @@
 
     protected override void OnInitialized()
     {
-        AuthService.LogOut();
         _requestMakerService = new RequestMakerService(HttpClient);
         base.OnInitialized();
     }
@@ -133,7 +132,6 @@
                     if (roleClaim != null)
                     {
                         var role = roleClaim.Value;
-                        AuthService.LogIn(role);
                         if (role == "Admin" || role == "Employee")
                         {
                             NavigationManager.NavigateTo("/contract");
@@ -142,6 +140,7 @@
                         {
                             NavigationManager.NavigateTo("/LeverancierDossierScherm");
                         }
+                        AuthService.LogIn(role);
                     }
                 }
             }
