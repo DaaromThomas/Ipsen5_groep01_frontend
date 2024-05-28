@@ -4,6 +4,8 @@ namespace Ipsen5_groep01_frontend.Models
 {
     public class CustomerAddress
     {
+
+        public Guid Id { get; set; }
         public string StreetName { get; set; }
 
         [Required(ErrorMessage = "Huisnummer is verplicht")]
