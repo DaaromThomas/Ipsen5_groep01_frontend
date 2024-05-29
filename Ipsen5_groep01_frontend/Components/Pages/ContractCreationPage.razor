@@ -73,7 +73,7 @@
       </div>
       <div class="line" style="background-color: @GetLineColorClass(2);"></div>
     </div>
-    <div class="wizard-title">Documenten</div>
+    <div class="wizard-title">Gegevens</div>
     <div class="wizard-title-status">
       @(currentStep == 2 ? "Bezig" : (currentStep >= 3 ? "Completed" : "In afwachting"))
     </div>
@@ -155,64 +155,106 @@
 }
 else if (currentStep == 2)
 {
-  <div class="input-container-select-documents">
-    <div class="input-description-container-select-documents">
+  <div class="input-container ">
 
-      <div class="description-title">
-        Benodigde Documenten
-      </div>
+    <div class="input-description-container">
+      <EditForm Model="@Customer" FormName="createcustomer">
+        <DataAnnotationsValidator />
 
-      <div class="description">
-        Selecteer hieronder de benodigde documenten om verder te gaan.
-      </div>
+        <div class="description-title">
+          Contact gegevens
+        </div>
 
-      <div class="selected-documents-container">
+        <div class="description">
+          Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+        </div>
 
-        <div class="section-documents">
-          <div class="section-title">Overige documenten</div>
-
-          <div class="uploadtype-container">
-            @foreach (var uploadType in UploadTypes.Where(u => !selectedItems.Contains(u.Id) && !u.Required))
-            {
-              <div class="input-checkbox-container" @onclick="() => ToggleSelection(uploadType.Id)">
-                @uploadType.Type
-              </div>
-            }
+        <div class="section">
+          <div class="section-title">Professional</div>
+          <div class="input-pair-Container">
+          <div>
+            <div class="input-title">Professional</div>
+            <div>
+              <input class="input-field-pair" placeholder="Id" @bind="@ContractModel.JobDescription" />
+              <ValidationMessage For="() => ContractModel.JobDescription"></ValidationMessage>
+            </div>
+          </div>          
+          <div>
+            <div class="input-title">Functie omschrijving</div>
+            <div>
+              <input class="input-field-pair" placeholder="Janitor" @bind="@ContractModel.JobDescription" />
+            </div>
+            <ValidationMessage For="() => ContractModel.JobDescription"></ValidationMessage>
+          </div>
           </div>
         </div>
 
-        <div class="section-documents">
-          <div class="section-title">Standaard documenten</div>
-          <div class="uploadtype-container">
-            @foreach (var uploadType in UploadTypes.Where(u => u.Required))
-            {
-              <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
-                @uploadType.Type
+        
+        
+        <div class="section">
+          <div class="section-title">Duur overeenkomst</div>
+          <div class="input-pair-Container">
+            <div>
+              <div class="input-title">Startdatum</div>
+              <div>
+                <input class="input-field-pair" placeholder="12-9-2024" @bind="@ContractModel.StartDate" />
               </div>
-            }
-          </div>
-
-          <div class="section-title-selected">Geselecteerde documenten</div>
-
-          <div class="uploadtype-container">
-            @foreach (var uploadType in UploadTypes.Where(u => selectedItems.Contains(u.Id) && !u.Required))
-            {
-              <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
-                @uploadType.Type
+              <ValidationMessage For="() => ContractModel.StartDate"></ValidationMessage>
+            </div>
+            <div>
+              <div class="input-title">Einddatum</div>
+              <div>
+                <input class="input-field-pair" placeholder="Vliet" @bind="@ContractModel.EndDate" />
               </div>
-            }
+              <ValidationMessage For="() => ContractModel.EndDate"></ValidationMessage>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+        
+        <div class="section">
+          <div class="section-title">Tarieven</div>
+          <div class="input-pair-Container">
+            <div>
+              <div class="input-title">Inkooptarief</div>
+              <div>
+                <input class="input-field-pair" placeholder="5000" @bind="@ContractModel.PurchaseRate" />
+              </div>
+              <ValidationMessage For="() => ContractModel.PurchaseRate"></ValidationMessage>
+            </div>
+            <div>
+              <div class="input-title">Verkooptarief</div>
+              <div>
+                <input class="input-field-pair" placeholder="7000" @bind="@ContractModel.SellingRate" />
+              </div>
+              <ValidationMessage For="() => ContractModel.SellingRate"></ValidationMessage>
+            </div>
+          </div>
+          <div>
+            <div class="input-title">Betalingstermijn</div>
+            <div>
+              <input class="input-field" placeholder="12-3-2024" @bind="@ContractModel.PaymentTerm" />
+            </div>
+            <ValidationMessage For="() => ContractModel.PaymentTerm"></ValidationMessage>
+          </div>          
+          <div>
+            <div class="input-title">Fee-partij</div>
+            <div>
+              <input class="input-field" placeholder="StaffingNow" @bind="@ContractModel.FeeParty" />
+            </div>
+            <ValidationMessage For="() => ContractModel.FeeParty"></ValidationMessage>
+          </div>
+        </div>
 
-    <div class="button-container-2">
-      <button class="previous-button" @onclick="GoToPreviousStep">
-        Vorige
-      </button>
-      <button class="next-button" @onclick="GoToNextStep">
-        Volgende
-      </button>
+        <div class="button-container">
+          <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
+            Vorige
+          </button>
+          <button type="submit" class="next-button" @onclick="GoToNextStep">
+            Volgende
+          </button>
+        </div>
+      </EditForm>
+
     </div>
   </div>
 }
@@ -220,6 +262,7 @@ else
 {
   @* <Animate Animation="Animations.SlideRight" Duration="TimeSpan.FromSeconds(1)"> *@
   <div class="input-container">
+
 
     <div class="input-description-container">
       <div class="description-title">
@@ -230,6 +273,17 @@ else
         Controleer hieronder de basisgegevens. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
       </div>
 
+      <div class="section-review">
+        <div class="section-title">Geselecteerde klant</div>
+        <div class="uploadtype-container">
+          @foreach (var customer in customerList.Where(u => u.Id == customerId))
+          {
+            <div class="input-checkbox-container selected">
+              @customer.Name
+            </div>
+          }
+        </div>
+      </div>
       <div class="section-review">
         <div class="section-title">Bedrijfs gegevens</div>
         <div>
@@ -310,18 +364,7 @@ else
         </div>
       </div>
 
-      <div class="section-review">
-        <div class="section-title">Geselecteerde documenten</div>
 
-        <div class="uploadtype-container">
-          @foreach (var uploadType in UploadTypes.Where(u => selectedItems.Contains(u.Id)))
-          {
-            <div class="input-checkbox-container selected">
-              @uploadType.Type
-            </div>
-          }
-        </div>
-      </div>
     </div>
 
     <div class="button-container">
@@ -355,20 +398,20 @@ else
   private void SelectItem(Guid customerId)
   {
 
-      var selectedCustomer = customerList.FirstOrDefault(c => c.Id == customerId);
-      if (selectedCustomer != null)
-      {
-        // Handle the selected customer
-        SelectedCustomer = selectedCustomer;
-      }
+    var selectedCustomer = customerList.FirstOrDefault(c => c.Id == customerId);
+    if (selectedCustomer != null)
+    {
+      // Handle the selected customer
+      SelectedCustomer = selectedCustomer;
+    }
   }
 
   private Customer SelectedCustomer { get; set; }
  
   // private List<string> FilteredItems => 
-    // string.IsNullOrEmpty(searchTerm) 
-      // ? customerList 
-      // : customerList.FindAll(item => item.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+  // string.IsNullOrEmpty(searchTerm) 
+  // ? customerList 
+  // : customerList.FindAll(item => item.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
   
   private RequestMakerService _requestMakerService;
 
@@ -691,81 +734,81 @@ else
 
   private async Task GoToNextStep()
   {
-    var template = await GetContractTemplatesByCustomerId();
-    if (Customer.Name != null &&
-        Customer.FirstName != null &&
-        Customer.LastName != null &&
-        Customer.KVK != null &&
-        Customer.VAT != null &&
-        Customer.BankAccountNumber != null &&
-        Customer.Email != null &&
-        Customer.PhoneNumber != null &&
-        Customer.CustomerAddressDto.PostalCode != null &&
-        Customer.CustomerAddressDto.HouseNumber != null
+    // var template = await GetContractTemplatesByCustomerId();
+    // if (Customer.Name != null &&
+    //     Customer.FirstName != null &&
+    //     Customer.LastName != null &&
+    //     Customer.KVK != null &&
+    //     Customer.VAT != null &&
+    //     Customer.BankAccountNumber != null &&
+    //     Customer.Email != null &&
+    //     Customer.PhoneNumber != null &&
+    //     Customer.CustomerAddressDto.PostalCode != null &&
+    //     Customer.CustomerAddressDto.HouseNumber != null
+    //
+    //    )
+    // {
 
-       )
+    // bool founded = await GetAddressInfo();
+
+    // if (founded == true)
+    // {
+    postalCodeValidationMessage = "";
+    houseNumberValidationMessage = "";
+
+    if (currentStep < 3)
     {
-
-      bool founded = await GetAddressInfo();
-
-      if (founded == true)
+      currentStep++;
+      if (currentStep == 2)
       {
-        postalCodeValidationMessage = "";
-        houseNumberValidationMessage = "";
-
-        if (currentStep < 3)
-        {
-          currentStep++;
-          if (currentStep == 2)
-          {
-            await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
-          }
-          await JSRuntime.InvokeVoidAsync("scrollToTop");
-          // FadeToRight.Run();
-        }
-
+        await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
       }
-      else
-      {
-        postalCodeValidationMessage = "Ongeldige Postcode huisnummer combinatie";
-      }
-
+      await JSRuntime.InvokeVoidAsync("scrollToTop");
+      // FadeToRight.Run();
     }
-    else
-    {
-      if (Customer.CustomerAddressDto.HouseNumber == null && Customer.CustomerAddressDto.PostalCode == null)
-      {
-        houseNumberValidationMessage = "Huisnummer is verplicht";
-        postalCodeValidationMessage = "Postcode is verplicht";
-      }
-      else if (Customer.CustomerAddressDto.HouseNumber == null && !Regex.IsMatch(Customer.CustomerAddressDto.PostalCode, @"^\d{4} \w{2}$"))
-      {
-        houseNumberValidationMessage = "Huisnummer is verplicht";
-        postalCodeValidationMessage = "Ongeldige postcode, voorbeeld 1234 AB";
-      }
-      else if (Customer.CustomerAddressDto.HouseNumber == null)
-      {
-        houseNumberValidationMessage = "Huisnummer is verplicht";
-        postalCodeValidationMessage = "";
-      }
-      else if (Customer.CustomerAddressDto.PostalCode == null)
-      {
-        postalCodeValidationMessage = "Postcode is verplicht";
-        houseNumberValidationMessage = "";
-      }
-      else if (!Regex.IsMatch(Customer.CustomerAddressDto.PostalCode, @"^\d{4} \w{2}$"))
-      {
-        postalCodeValidationMessage = "Ongeldige postcode, voorbeeld 1234 AB";
-        houseNumberValidationMessage = "";
-      }
-      else
-      {
-        houseNumberValidationMessage = "";
-        postalCodeValidationMessage = "";
-      }
 
-    }
+    // }
+    // else
+    // {
+    //   postalCodeValidationMessage = "Ongeldige Postcode huisnummer combinatie";
+    // }
+
   }
+  // else
+  // {
+  //   if (Customer.CustomerAddressDto.HouseNumber == null && Customer.CustomerAddressDto.PostalCode == null)
+  //   {
+  //     houseNumberValidationMessage = "Huisnummer is verplicht";
+  //     postalCodeValidationMessage = "Postcode is verplicht";
+  //   }
+  //   else if (Customer.CustomerAddressDto.HouseNumber == null && !Regex.IsMatch(Customer.CustomerAddressDto.PostalCode, @"^\d{4} \w{2}$"))
+  //   {
+  //     houseNumberValidationMessage = "Huisnummer is verplicht";
+  //     postalCodeValidationMessage = "Ongeldige postcode, voorbeeld 1234 AB";
+  //   }
+  //   else if (Customer.CustomerAddressDto.HouseNumber == null)
+  //   {
+  //     houseNumberValidationMessage = "Huisnummer is verplicht";
+  //     postalCodeValidationMessage = "";
+  //   }
+  //   else if (Customer.CustomerAddressDto.PostalCode == null)
+  //   {
+  //     postalCodeValidationMessage = "Postcode is verplicht";
+  //     houseNumberValidationMessage = "";
+  //   }
+  //   else if (!Regex.IsMatch(Customer.CustomerAddressDto.PostalCode, @"^\d{4} \w{2}$"))
+  //   {
+  //     postalCodeValidationMessage = "Ongeldige postcode, voorbeeld 1234 AB";
+  //     houseNumberValidationMessage = "";
+  //   }
+  //   else
+  //   {
+  //     houseNumberValidationMessage = "";
+  //     postalCodeValidationMessage = "";
+  //   }
+
+  // }
+  @* } *@
 
   private async Task GoToPreviousStep()
   {
