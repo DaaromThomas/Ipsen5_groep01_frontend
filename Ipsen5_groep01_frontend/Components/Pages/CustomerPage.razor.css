@@ -9,6 +9,15 @@
     height: 86vmin;
 }
 
+.page-title {
+    display: flex;
+    width: 100%;
+    color: #1f262f;
+    font-size: 3vmin;
+    font-family: Inter;
+    font-weight: 600;
+    padding-bottom: 1vmin;
+}
 
 .filter-container {
     display: flex;
@@ -24,7 +33,7 @@
 .new-customer-button {
     width: 14vmin;
     height: 4vmin;
-    font-family: Ubuntu, sans-serif;
+    font-family: Inter, sans-serif;
     color: white;
     background-color: white;
     border: solid 0.3vmin #1f262f;
@@ -44,7 +53,7 @@
 .search-field {
     width: 45vmin;
     height: 4vmin;
-    font-family: Ubuntu, sans-serif;
+    font-family: Inter, sans-serif;
     font-size: 1.6vmin;
     font-weight: bold;
     transition: background-color 0.3s;
@@ -53,7 +62,7 @@
 .dropdown-field {
     width: 25vmin;
     height: 4vmin;
-    font-family: Ubuntu, sans-serif;
+    font-family: Inter, sans-serif;
     font-size: 1.6vmin;
 }
 

@@ -9,6 +9,16 @@
     height: 86vmin;
 }
 
+.page-title {
+    display: flex;
+    width: 100%;
+    color: #1f262f;
+    font-size: 3vmin;
+    font-family: Inter;
+    font-weight: 600;
+    padding-bottom: 1vmin;
+}
+
 .filter-container {
     display: flex;
     justify-content: space-between;
