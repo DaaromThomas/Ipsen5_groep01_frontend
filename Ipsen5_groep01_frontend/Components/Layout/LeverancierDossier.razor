@@ -5,6 +5,7 @@
 
 @using Services
 @inject LoginService LoginService
+@inject ContractService ContractService
 
 @using Models
 
@@ -154,12 +155,17 @@
     </table>
 </div>
 
+<button @onclick="() => getContract()"></button>
+
 @code {
     private List<Dossier> dossiers = new List<Dossier>();
-
-        private List<Dossier> filteredDossiers = new List<Dossier>();
+    private List<Dossier> filteredDossiers = new List<Dossier>();
     private string searchTerm = "";
 
+
+    public async Task getContract(){
+        await this.ContractService.getContractsByCandidateId("7c7f6adc-3255-43e4-9169-08dc7bcee6c7");
+    }
     protected override void OnInitialized()
     {
         createDossiers();
