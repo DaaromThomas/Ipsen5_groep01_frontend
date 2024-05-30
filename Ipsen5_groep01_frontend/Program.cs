@@ -1,12 +1,8 @@
 using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using Ipsen5_groep01_frontend.Components;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Ipsen5_groep01_frontend.Components.Layout;
 using Ipsen5_groep01_frontend.Services;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Authorization;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +18,7 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<LoginService>();
+builder.Services.AddSingleton<ContractService>();
 builder.Services.AddAuthorizationCore();
 
 
