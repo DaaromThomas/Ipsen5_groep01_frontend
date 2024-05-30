@@ -14,9 +14,7 @@ namespace Ipsen5_groep01_frontend.Services
         {
             string endpoint = $"Contract/contractbycandidateid/{candidateId}";
             HttpResponseMessage response = await _requestMakerService.MakeRequest(HttpMethod.Get, endpoint);
-            if (response.IsSuccessStatusCode)
-            {
-                string jsonResponse = await response.Content.ReadAsStringAsync();
+            string jsonResponse = await response.Content.ReadAsStringAsync();
                 if(string.IsNullOrEmpty(jsonResponse)){
                     Console.WriteLine("Je hebt geen jsonResponse ontvangen");
                 }
@@ -24,12 +22,6 @@ namespace Ipsen5_groep01_frontend.Services
                 if(contracts.Count == 0){
                     Console.WriteLine("Je hebt geen contracten ontvangen");
                 }
-            }
-            else
-            {
-                // Log the error or handle it accordingly
-                Console.WriteLine($"Error: {response.StatusCode}");
-            }
         }
     }
 }
