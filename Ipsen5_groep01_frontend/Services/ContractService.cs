@@ -8,12 +8,19 @@ namespace Ipsen5_groep01_frontend.Services
     {
         private readonly RequestMakerService _requestMakerService;
 
+  
+        public ContractService(RequestMakerService requestMakerService)
+        {
+        _requestMakerService = requestMakerService;
+        }
+
         public List<Contract> contracts = [];
 
         public async Task getContractsByCandidateId(string candidateId)
         {
             string endpoint = $"Contract/contractbycandidateid/{candidateId}";
             HttpResponseMessage response = await _requestMakerService.MakeRequest(HttpMethod.Get, endpoint);
+            Console.WriteLine(response);
             string jsonResponse = await response.Content.ReadAsStringAsync();
                 if(string.IsNullOrEmpty(jsonResponse)){
                     Console.WriteLine("Je hebt geen jsonResponse ontvangen");
