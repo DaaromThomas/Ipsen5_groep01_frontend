@@ -87,9 +87,6 @@
             <img class="profile_pic" src="images/Microsoft_account-Logo.png" alt="logo" />
         </div>
     }
-
-
-
 </div>
 
 @code {
@@ -103,7 +100,6 @@
         {
             isPageInitialized = true;
             await Task.Delay(100);
-
             if (!AuthService.IsLoggedIn || AuthService.Role != "Admin" || AuthService.Role == null || AuthService.Role == "")
             {
                 NavigationManager.NavigateTo("/");
@@ -118,19 +114,17 @@
         }
     }
 
-    public void update(){
-        Console.WriteLine("Update()");
-        this.loggedIn = AuthService.IsLoggedIn;
-        this.role = AuthService.Role;
-        Console.WriteLine("Navbar loggedIn: " + loggedIn);
-        Console.WriteLine("Navbar Role: " + role);
-        InvokeAsync(() => StateHasChanged());
-    }
-
     private void navigateToHome()
     {
         NavigationManager.NavigateTo("/");
         AuthService.LogOut();
+    }
+
+    //Observer implementation
+    public void update(){
+        this.loggedIn = AuthService.IsLoggedIn;
+        this.role = AuthService.Role;
+        InvokeAsync(() => StateHasChanged());
     }
 }
 

@@ -17,19 +17,13 @@ namespace Ipsen5_groep01_frontend.Services
 
         public async Task<string> UploadFileAsync(Stream fileStream, string fileName)
         {
-            // Creëer een MultipartFormDataContent object om het bestand te uploaden
             var formData = new MultipartFormDataContent();
-
-            // Voeg het bestand toe aan de content
             formData.Add(new StreamContent(fileStream), "file", fileName);
 
-            // Verstuur de gegevens naar de server
             var response = await _httpClient.PostAsync("BlobStorage/upload", formData);
 
-            // Controleer of de server een succesvolle response heeft gegeven
             response.EnsureSuccessStatusCode();
 
-            // Lees de response van de server en retourneer deze als een string
             return await response.Content.ReadAsStringAsync();
         }
 

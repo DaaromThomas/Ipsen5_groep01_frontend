@@ -5,6 +5,8 @@
 @inject HttpClient HttpClient
 @inject LoginService LoginService
 @inject AuthService AuthService
+@inject IJSRuntime JSRuntime
+@inject Blazored.SessionStorage.ISessionStorageService sessionStorage
 
 @using Services
 @using Microsoft.AspNetCore.Http;
@@ -72,6 +74,8 @@
     private SignInModel SignInModel { get; set; } = new();
 
     private RequestMakerService _requestMakerService;
+    private readonly IJSRuntime _jsRuntime;
+
     private readonly IConfiguration _configuration;
     private string role { get; set; }
 
@@ -141,6 +145,7 @@
                             NavigationManager.NavigateTo("/LeverancierDossierScherm");
                         }
                         AuthService.LogIn(role);
+                        await sessionStorage.SetItemAsync("JwtToken", Token);
                     }
                 }
             }

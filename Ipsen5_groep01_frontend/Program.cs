@@ -23,6 +23,7 @@ builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<LoginService>();
 builder.Services.AddAuthorizationCore();
+builder.Services.AddBlazoredSessionStorage();
 
 
 builder.Services.AddSingleton<AuthService>();

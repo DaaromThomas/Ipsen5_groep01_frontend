@@ -1,4 +1,8 @@
 ﻿@inherits LayoutComponentBase
+
+@using Ipsen5_groep01_frontend.Services
+
+@inject AuthService AuthService
 <div class="page">
     <div class="top-row">
         <NavMenu />
@@ -10,3 +14,10 @@
         </article>
     </main>
 </div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        this.AuthService.CheckJwtToken();
+    }
+}   
