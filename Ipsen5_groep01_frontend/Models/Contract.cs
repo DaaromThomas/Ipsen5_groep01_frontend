@@ -2,39 +2,39 @@
 {
     public class Contract
     {
-        public Guid id { get; set; } 
+        public Guid Id { get; set; } 
 
-        public Guid candidateId { get; set; } 
+        public Guid CandidateId { get; set; } 
 
-        public Guid customerId { get; set; }
+        public Guid CustomerId { get; set; }
 
-        public string status { get; set; }
+        public string Status { get; set; }
 
-        public DateTime startDate { get; set; }
+        public DateTime StartDate { get; set; }
 
-        public DateTime endDate { get; set; }
+        public DateTime EndDate { get; set; }
 
-        public double purchaseRate { get; set; }
+        public double PurchaseRate { get; set; }
 
-        public double sellingRate { get; set; }
+        public double SellingRate { get; set; }
 
-        public string paymentTerm { get; set; }
+        public string PaymentTerm { get; set; }
 
-        public string feeParty { get; set; }
+        public string FeeParty { get; set; }
 
-        public string jobDescription { get; set; }
+        public string JobDescription { get; set; }
 
-        public string note { get; set; }
+        public string Note { get; set; }
 
-        public bool template { get; set; }
+        public bool Template { get; set; }
 
-        public List<CandidateDocumentModel> candidateDocumentsDto { get; set; }
+        public List<CandidateDocumentModel> CandidateDocumentsDto { get; set; }
 
         public Contract()
         {
-            if(candidateDocumentsDto == null)
+            if(CandidateDocumentsDto == null)
             {
-                candidateDocumentsDto = new List<CandidateDocumentModel>();
+                CandidateDocumentsDto = new List<CandidateDocumentModel>();
             }
         }
 
