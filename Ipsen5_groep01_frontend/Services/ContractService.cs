@@ -17,7 +17,13 @@ namespace Ipsen5_groep01_frontend.Services
             if (response.IsSuccessStatusCode)
             {
                 string jsonResponse = await response.Content.ReadAsStringAsync();
-                contracts = JsonSerializer.Deserialize<List<Contract>>(jsonResponse);
+                if(string.IsNullOrEmpty(jsonResponse)){
+                    Console.WriteLine("Je hebt geen jsonResponse ontvangen");
+                }
+                contracts = JsonSerializer.Deserialize<List<Contract>>(jsonResponse) ?? [];
+                if(contracts.Count == 0){
+                    Console.WriteLine("Je hebt geen contracten ontvangen");
+                }
             }
             else
             {
