@@ -13,7 +13,7 @@ namespace Ipsen5_groep01_frontend.Services
 
     public async Task GetContractsByCandidateId(string candidateId)
     {
-        string endpoint = $"contractbycandidateid/{candidateId}";
+        string endpoint = $"Contract/contractbycandidateid/{candidateId}";
         HttpResponseMessage response = await _requestMakerService.MakeRequest(HttpMethod.Get, endpoint);
         Console.WriteLine(response);
     }
