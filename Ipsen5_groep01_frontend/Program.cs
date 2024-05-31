@@ -21,7 +21,7 @@ builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<LoginService>();
 builder.Services.AddSingleton<ContractService>();
 builder.Services.AddSingleton<RequestMakerService>();
-builder.Services.AddSingleton<JsonKeyConvertor>();
+builder.Services.AddSingleton<JsonKeyConverter>();
 builder.Services.AddAuthorizationCore();
 
 
