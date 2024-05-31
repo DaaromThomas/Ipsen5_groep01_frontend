@@ -3,20 +3,20 @@ namespace Ipsen5_groep01_frontend.Services{
 
         public override string ConvertJson(string json)
         {
-            return ConvertKeysToCamelCase(json);
+            return ConvertKeysToPascalCase(json);
         }
  
-        private static string ConvertKeysToCamelCase(string jsonString)
+        public static string ConvertKeysToPascalCase(string jsonString)
         {
             using (JsonDocument document = JsonDocument.Parse(jsonString))
             {
                 JsonElement root = document.RootElement;
-                JsonElement newRoot = ConvertElementToCamelCase(root);
+                JsonElement newRoot = ConvertElementToPascalCase(root);
                 return JsonSerializer.Serialize(newRoot);
             }
         }
 
-        private static JsonElement ConvertElementToCamelCase(JsonElement element)
+        private static JsonElement ConvertElementToPascalCase(JsonElement element)
         {
             switch (element.ValueKind)
             {
@@ -24,8 +24,8 @@ namespace Ipsen5_groep01_frontend.Services{
                     var dictionary = new Dictionary<string, JsonElement>();
                     foreach (JsonProperty property in element.EnumerateObject())
                     {
-                        string camelCaseKey = ToCamelCase(property.Name);
-                        dictionary[camelCaseKey] = ConvertElementToCamelCase(property.Value);
+                        string pascalCaseKey = ToPascalCase(property.Name);
+                        dictionary[pascalCaseKey] = ConvertElementToPascalCase(property.Value);
                     }
                     return JsonDocument.Parse(JsonSerializer.Serialize(dictionary)).RootElement;
 
@@ -33,7 +33,7 @@ namespace Ipsen5_groep01_frontend.Services{
                     var list = new List<JsonElement>();
                     foreach (JsonElement item in element.EnumerateArray())
                     {
-                        list.Add(ConvertElementToCamelCase(item));
+                        list.Add(ConvertElementToPascalCase(item));
                     }
                     return JsonDocument.Parse(JsonSerializer.Serialize(list)).RootElement;
 
@@ -42,9 +42,9 @@ namespace Ipsen5_groep01_frontend.Services{
             }
         }
 
-        private static string ToCamelCase(string snakeCaseString)
+        private static string ToPascalCase(string snakeCaseString)
         {
-            return Regex.Replace(snakeCaseString, "_[a-z]", match => match.Value[1].ToString().ToUpper());
+            return Regex.Replace(snakeCaseString, "(?:^|_)(.)", match => match.Groups[1].Value.ToUpper());
         }
     }
 }
