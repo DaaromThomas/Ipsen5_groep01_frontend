@@ -27,6 +27,7 @@ namespace Ipsen5_groep01_frontend.Services
             HttpResponseMessage response = await _requestMakerService.MakeRequest(HttpMethod.Get, endpoint);
             Console.WriteLine(response);
             string jsonResponse = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(jsonResponse);
             
             if(string.IsNullOrEmpty(jsonResponse)){
                 Console.WriteLine("Je hebt geen jsonResponse ontvangen");
@@ -38,23 +39,51 @@ namespace Ipsen5_groep01_frontend.Services
             };
 
             var responseWrapper = JsonSerializer.Deserialize<ResponseWrapper>(jsonResponse, options);
+        
             if (responseWrapper?.Result?.Contracts != null){
                 Contracts = responseWrapper.Result.Contracts;
-                if (Contracts.Count == 0){
-                    Console.WriteLine("Je hebt geen contracten ontvangen");
-                }
-                else
-                {
-                    foreach (var contract in Contracts)
+                foreach (var contract in Contracts)
                         {
-                            Console.WriteLine(contract);
+                            if(contract.CandidateDocumentsDto == null){
+                                contract.CandidateDocumentsDto = new List<CandidateDocumentModel>();
+                                foreach(var candidateDocument in contract.CandidateDocumentsDto){
+                                    var CandidateDocumentModel = new CandidateDocumentModel{
+                                        Id = candidateDocument.Id,
+                                        UploadTypeId = candidateDocument.UploadTypeId,
+                                        ContractId = candidateDocument.ContractId,
+                                        DocumentBlob = candidateDocument.DocumentBlob,
+                                        Status = candidateDocument.Status,
+                                        CreatedDate = candidateDocument.CreatedDate,
+                                        UpdatedDate = candidateDocument.UpdatedDate,
+                                        CreatedBy = candidateDocument.CreatedBy,
+                                        UpdatedBy = candidateDocument.UpdatedBy
+                                    };
+                                    contract.CandidateDocumentsDto.Add(CandidateDocumentModel);
+                                }
+                            }
                         }
+
+                        if (Contracts.Count == 0){
+                            Console.WriteLine("Je hebt geen contracten ontvangen");
+                        }
+                        else
+                        {
+                            foreach(var contract in Contracts){
+                                Console.WriteLine($"Contract id: {contract.Id}");
+                                if (contract.CandidateDocumentsDto != null){
+                                    foreach(var candidateDocument in contract.CandidateDocumentsDto){
+                                        Console.WriteLine($"    Candidate Document Id: {candidateDocument.Id}");
+                                        Console.WriteLine($"    Upload Type Id: {candidateDocument.UploadTypeId}");
+                                        Console.WriteLine($"    Status: {candidateDocument.Status}");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("De json response bevat geen geldige content");
+                    }
                 }
             }
-            else
-            {
-                Console.WriteLine("De json response bevat geen geldige content");
-            }
-        }
-    }
-}
+        }   

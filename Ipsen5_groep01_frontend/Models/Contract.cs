@@ -28,7 +28,7 @@
 
         public bool Template { get; set; }
 
-        public List<CandidateDocumentModel> CandidateDocumentsDto { get; set; }
+        public List<CandidateDocumentModel> CandidateDocumentsDto { get; set; } = [];
 
         public Contract()
         {

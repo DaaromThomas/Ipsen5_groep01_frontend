@@ -144,7 +144,7 @@
         <tbody>
             @foreach (var contract in ContractService.Contracts)
             {
-                <tr class="table-row data-row" @onclick="()=>navigate(contract.CandidateId.ToString())">
+                <tr class="table-row data-row" @onclick="()=>navigate(contract.CandidateId)">
                     <td>@contract.Id</td>
                     <td>@contract.Status</td>
                     <td>&#10095;</td>
@@ -196,53 +196,8 @@
         }
     }
 
-
-
-    private List<Document> documents = new List<Document>{
-      new Document
-        {
-            Id = "1",
-            UploadType = new UploadType(type: "", documentType: "", required: true),
-            DocumentPath = "/documents/invoice001.pdf",
-            Status = "Goedgekeurd",
-            CreatedDate = DateTime.Now.AddDays(-10),
-            UpdatedDate = DateTime.Now.AddDays(-5),
-            CreatedBy = "John Doe"
-        },
-        new Document
-        {
-            Id = "2",
-            UploadType = new UploadType(type: "", documentType: "", required: true),
-            DocumentPath = "/documents/contract002.pdf",
-            Status = "Wachten op beoordeling",
-            CreatedDate = DateTime.Now.AddDays(-15),
-            UpdatedDate = DateTime.Now.AddDays(-10),
-            CreatedBy = "Jane Smith"
-        },
-        new Document
-        {
-            Id = "3",
-            UploadType = new UploadType(type: "", documentType: "", required: true),
-            DocumentPath = "/documents/proposal003.pdf",
-            Status = "Afgekeurd",
-            CreatedDate = DateTime.Now.AddDays(-20),
-            UpdatedDate = DateTime.Now.AddDays(-15),
-            CreatedBy = "Alice Johnson"
-        },
-        new Document
-        {
-            Id = "4",
-            UploadType = new UploadType(type: "", documentType: "", required: true),
-            DocumentPath = "/documents/delivery004.pdf",
-            Status = "Nog op te leveren",
-            CreatedDate = DateTime.Now.AddDays(-25),
-            UpdatedDate = DateTime.Now.AddDays(-20),
-            CreatedBy = "Bob Williams"
-        }  
-        
-    };
-    public void navigate(string kandidaatId)
+    public void navigate(Guid candidateId)
     {
-        this.NavigationManager.NavigateTo($"/LeverancierDossierInzien/{kandidaatId}");
+        this.NavigationManager.NavigateTo($"/LeverancierDossierInzien/{candidateId}");
     }
 }
