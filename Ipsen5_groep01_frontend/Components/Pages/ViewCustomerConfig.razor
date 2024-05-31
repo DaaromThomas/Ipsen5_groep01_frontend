@@ -1,0 +1,244 @@
+﻿@page "/customer/{customerId:guid}"
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using Services
+@using Models
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@using Requests;
+@using Microsoft.AspNetCore.Authorization;
+@using BlazorAnimate;
+@using System;
+@using System.Text.RegularExpressions;
+
+@using System.Text.Json;
+
+@inject IJSRuntime JSRuntime
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject AuthService AuthService
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+</style>
+
+<script>
+    function scrollToTop() {
+        window.scrollTo({ top: 0.09 * document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function scrollToTopStep2() {
+        window.scrollTo({ top: 0.08 * document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+</script>
+<script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
+
+
+<div class="containe">
+
+    <div class="input-container">
+
+        <div class="input-description-container">
+            <div class="description-title">
+                Controleren & Oplsaan
+            </div>
+
+            <div class="description">
+                Controleer hieronder de basisgegevens. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+            </div>
+
+            <div class="section-review">
+                <div class="section-title">Bedrijfs gegevens</div>
+                <div>
+                    <div class="input-title">Bedrijfsnaam</div>
+                    <div class="input-value">@CustomerModel.Name</div>
+                </div>
+
+                <div class="input-pair-Container-3">
+                    <div>
+                        <div class="input-title">Kvk</div>
+                        <div class="input-value">@CustomerModel.KVK</div>
+                    </div>
+
+                    <div>
+                        <div class="input-title">Btw-Nummer</div>
+                        <div class="input-value">@CustomerModel.VAT</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="input-title">Rekeningnummer</div>
+                    <div class="input-value">@CustomerModel.BankAccountNumber</div>
+                </div>
+            </div>
+
+
+            <div class="section-review">
+                <div class="section-title">Contact persoon</div>
+                <div class="input-pair-Container-3">
+                    <div>
+                        <div class="input-title">Voornaam</div>
+                        <div class="input-value">@CustomerModel.FirstName</div>
+                    </div>
+                    <div>
+                        <div class="input-title">Achternaam</div>
+                        <div class="input-value">@CustomerModel.LastName</div>
+                    </div>
+                </div>
+
+
+                <div class="input-pair-Container-3">
+                    <div>
+                        <div class="input-title">Email</div>
+                        <div class="input-value">@CustomerModel.Email</div>
+                    </div>
+                    <div>
+                        <div class="input-title">Telefoonnummer</div>
+                        <div class="input-value">@CustomerModel.PhoneNumber</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-review">
+                <div class="section-title">Adres</div>
+                <div class="input-pair-Container-3">
+                    <div>
+                        <div class="input-title">Postcode</div>
+                        <div class="input-value">@CustomerModel.CustomerAddressDto.PostalCode</div>
+                    </div>
+                    <div>
+                        <div class="input-title">Huisnummer</div>
+                        <div class="input-value">@CustomerModel.CustomerAddressDto.HouseNumber</div>
+                    </div>
+                </div>
+
+                <div class="input-pair-Container-3">
+                    <div>
+                        <div class="input-title">Stad</div>
+                        <div class="input-value">@CustomerModel.CustomerAddressDto.City</div>
+                    </div>
+                    <div>
+                        <div class="input-title">Straat</div>
+                        <div class="input-value">@CustomerModel.CustomerAddressDto.StreetName</div>
+                    </div>
+                    <div>
+                        <div class="input-title">Provincie</div>
+                        <div class="input-value">@CustomerModel.CustomerAddressDto.Province</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-review">
+                <div class="section-title">Geselecteerde documenten</div>
+
+                <div class="uploadtype-container">
+                    @foreach (var uploadType in uploadTypeModel)
+                    {
+                        <div class="input-checkbox-container selected">
+                            @uploadType.Type
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    public Guid CustomerId { get; set; }
+
+    private RequestMakerService _requestMakerService;
+
+    private Customer CustomerModel { get; set; } = new();
+    private List<UploadTypeModel> uploadTypeModel = new List<UploadTypeModel>();
+    private Contract ContractModel { get; set; } = new();
+
+
+
+    public ViewCustomerConfig()
+    {
+
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCustomerConfigById(CustomerId);
+        await GetCustomerConfigUploadDocumentsById(CustomerId);
+
+       
+    }
+
+    protected override void OnInitialized()
+    {
+        _requestMakerService = new RequestMakerService(HttpClient);
+        base.OnInitialized();
+    }
+
+
+    public async Task<Customer> GetCustomerConfigById(Guid customerId)
+    {
+        var response = await _requestMakerService.MakeGetRequest($"customer/customerbyid/{customerId}");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var customerArray = outerObject["result"]["customerDto"];
+
+        var customer = new Customer();
+
+        customer.Id = Guid.Parse((string)customerArray["id"]);
+        customer.Name = (string)customerArray["name"];
+        customer.FirstName = (string)customerArray["firstName"];
+        customer.LastName = (string)customerArray["lastName"];
+        customer.PhoneNumber = (string)customerArray["phoneNumber"];
+        customer.KVK = (string)customerArray["kvk"];
+        customer.VAT = (string)customerArray["vat"];
+        customer.BankAccountNumber = (string)customerArray["bankAccountNumber"];
+        customer.Email = (string)customerArray["email"];
+
+
+        customer.CustomerAddressDto = new CustomerAddress();
+        customer.CustomerAddressDto.StreetName = (string)customerArray["customerAddressDto"]["streetName"];
+        customer.CustomerAddressDto.HouseNumber = (string)customerArray["customerAddressDto"]["houseNumber"];
+        customer.CustomerAddressDto.PostalCode = (string)customerArray["customerAddressDto"]["postalCode"];
+        customer.CustomerAddressDto.City = (string)customerArray["customerAddressDto"]["city"];
+        customer.CustomerAddressDto.Country = (string)customerArray["customerAddressDto"]["country"];
+        customer.CustomerAddressDto.Province = (string)customerArray["customerAddressDto"]["province"];
+
+        return CustomerModel = customer;
+    }
+
+    public async Task GetCustomerConfigUploadDocumentsById(Guid customerId)
+    {
+        var response = await _requestMakerService.MakeGetRequest($"uploadtype/customerid/{customerId}");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var customerArray = outerObject["result"]["uploadTypeDto"];
+
+        var uploadTypes = new List<UploadTypeModel>();
+
+        foreach (var Jtoken in customerArray)
+        {
+            var uploadType = new UploadTypeModel();
+
+            uploadType.Id = Guid.Parse((string)Jtoken["id"]);
+            uploadType.Type = (string)Jtoken["type"];
+            uploadType.Required = (bool)Jtoken["required"];
+
+            uploadTypeModel.Add(uploadType);
+        }
+    }
+
+}
+
+
+
+
+
