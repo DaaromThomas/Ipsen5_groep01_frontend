@@ -30,9 +30,11 @@
         <tbody>
             @if(documents != null){
                 @foreach(var document in documents){
-                    <tr class="table-row data row">
+                    <tr class="table-row data row" @onclick="() => UpdateSelectedContractId(document.ContractId.ToString())">
                         <td>@document.UploadTypeId</td>
                         <td>@document.Status</td>
+                        <InputFile class="document-input" OnChange="@(e => file = e)" @onclick:stopPropagation/>
+                        <button class="upload-button" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId)">Uploaden</button>
                     </tr>
                 }
             }
@@ -54,6 +56,9 @@
     private InputFileChangeEventArgs file;
 
     private List<CandidateDocumentModel> documents;
+
+    private string selectedContractId;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -97,9 +102,10 @@
     public void navigate()
     {
         this.NavigationManager.NavigateTo($"/LeverancierDossierScherm");
+        
     }
 
-    private async Task UploadFile(string documentId, InputFileChangeEventArgs e)
+    private async Task UploadFile(string documentId, InputFileChangeEventArgs e, string candidateId)
     {
         var file = e.File;
         if (file == null)
@@ -113,9 +119,13 @@
             await file.OpenReadStream().CopyToAsync(memoryStream);
             memoryStream.Seek(0, SeekOrigin.Begin);
 
-            var result = await FileUploadService.UploadFileAsync(memoryStream, file.Name);
+            var result = await FileUploadService.UploadFileAsync(memoryStream, file.Name, candidateId, selectedContractId);
             Console.WriteLine(result);
         }
+    }
+
+    private void UpdateSelectedContractId(string contractId){
+        selectedContractId = contractId;
     }
 
     public class DocumentOpened
