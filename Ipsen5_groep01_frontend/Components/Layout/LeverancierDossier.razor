@@ -136,17 +136,17 @@
     <table class="table">
         <thead>
         <tr class="table-row table-header">
-            <th>Opdracht</th>
+            <th>Contract Id</th>
             <th>Status</th>
             <th></th>
         </tr>
         </thead>
         <tbody>
-            @foreach (Dossier dossier in filteredDossiers)
+            @foreach (var contract in ContractService.Contracts)
             {
-                <tr class="table-row data-row" @onclick="()=>navigate(dossier.KandidaatId)">
-                    <td>@dossier.KandidaatId</td>
-                    <td>@dossier.Status</td>
+                <tr class="table-row data-row" @onclick="()=>navigate(contract.CandidateId.ToString())">
+                    <td>@contract.Id</td>
+                    <td>@contract.Status</td>
                     <td>&#10095;</td>
                 </tr>
             }
@@ -154,22 +154,22 @@
     </table>
 </div>
 
-<button @onclick="() => getContract()"></button>
-
 @code {
     private List<Dossier> dossiers = new List<Dossier>();
     private List<Dossier> filteredDossiers = new List<Dossier>();
     private string searchTerm = "";
-
+      
+    
+    protected override async Task OnInitializedAsync()
+    {
+        FilterDossiers();
+        await getContract();
+    }
 
     public async Task getContract(){
         await this.ContractService.getContractsByCandidateId("7c7f6adc-3255-43e4-9169-08dc7bcee6c7");
     }
-    protected override void OnInitialized()
-    {
-        createDossiers();
-        FilterDossiers();
-    }
+    
 
     protected override void OnAfterRender(bool firstRender){
         if(firstRender){
@@ -241,82 +241,6 @@
         }  
         
     };
-
-    private void createDossiers()
-    {
-        Dossier newDossier = new Dossier(
-            id: "12345",
-            kandidaatId: "ABCDE",
-            status: "In behandeling",
-            date: DateTime.Now,
-            inkoopTarief: 1000.0,
-            verkoopTarief: 1500.0,
-            betalingstermijn: DateTime.Now.AddDays(30),
-            feepartij: "Voorbeeld Fee Partij",
-            functieOmschrijving: "Een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-        );
-
-        newDossier.Documents.Add(documents[0]);
-
-        dossiers.Add(newDossier);
-
-        Dossier newDossier2 = new Dossier(
-            id: "123456789",
-            kandidaatId: "ABCDEFGHIJ",
-            status: "Afgerond",
-            date: DateTime.Now,
-            inkoopTarief: 2000.0,
-            verkoopTarief: 2500.0,
-            betalingstermijn: DateTime.Now.AddDays(35),
-            feepartij: "Voorbeeld Fee Partij met een spin",
-            functieOmschrijving: "Nog een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-        );
-
-        newDossier2.Documents.Add(documents[1]);
-
-        dossiers.Add(newDossier2);
-
-        Dossier newDossier3 = new Dossier(
-            id: "67890",
-            kandidaatId: "FGHIJK",
-            status: "In behandeling",
-            date: DateTime.Now,
-            inkoopTarief: 1500.0,
-            verkoopTarief: 2000.0,
-            betalingstermijn: DateTime.Now.AddDays(45),
-            feepartij: "Voorbeeld Fee Partij 3",
-            functieOmschrijving: "Nog een andere mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie 3",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 3"
-        );
-
-        newDossier3.Documents.Add(documents[2]);
-
-        dossiers.Add(newDossier3);
-
-        Dossier newDossier4 = new Dossier(
-            id: "13579",
-            kandidaatId: "LMNOP",
-            status: "Afgerond",
-            date: DateTime.Now,
-            inkoopTarief: 1800.0,
-            verkoopTarief: 2300.0,
-            betalingstermijn: DateTime.Now.AddDays(25),
-            feepartij: "Voorbeeld Fee Partij 4",
-            functieOmschrijving: "Nog een andere mooie functieonmschrijving 4",
-            leverancierNotitie: "Voorbeeld leverancier notitie 4",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 4"
-        );
-
-        newDossier4.Documents.Add(documents[3]);
-
-        dossiers.Add(newDossier4);
-    }
-
     public void navigate(string kandidaatId)
     {
         this.NavigationManager.NavigateTo($"/LeverancierDossierInzien/{kandidaatId}");
