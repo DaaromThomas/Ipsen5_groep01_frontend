@@ -10,6 +10,7 @@
 @using BlazorAnimate;
 @using System;
 @using System.Reflection.Metadata
+@using System.Text
 @using System.Text.RegularExpressions;
 
 @using System.Text.Json;
@@ -119,7 +120,7 @@
             <div class="input-title">Zoek klant</div>
             <div>
               <input class="input-field" placeholder="StaffingNow" @bind="@Customer.Name" />
-              <ValidationMessage For="() => Customer.Name"></ValidationMessage>
+              @* <ValidationMessage For="() => Customer.Name"></ValidationMessage> *@
             </div>
           </div>
           
@@ -135,7 +136,7 @@
                 }
               </select>
             </div>
-            <ValidationMessage For="() => Customer.BankAccountNumber"></ValidationMessage>
+            @* <ValidationMessage For="() => Customer.BankAccountNumber"></ValidationMessage> *@
           </div>
         </div>
         
@@ -172,20 +173,20 @@ else if (currentStep == 2)
         <div class="section">
           <div class="section-title">Professional</div>
           <div class="input-pair-Container">
-          <div>
-            <div class="input-title">Professional</div>
             <div>
-              <input class="input-field-pair" placeholder="Id" @bind="@ContractModel.JobDescription" />
-              <ValidationMessage For="() => ContractModel.JobDescription"></ValidationMessage>
-            </div>
-          </div>          
-          <div>
-            <div class="input-title">Functie omschrijving</div>
+              <div class="input-title">Professional</div>
+              <div>
+                <input class="input-field-pair" placeholder="Id" @bind="@ContractModel.CandidateId" />
+                @* <ValidationMessage For="() => ContractModel.JobDescription"></ValidationMessage> *@ 
+              </div>
+            </div>          
             <div>
-              <input class="input-field-pair" placeholder="Janitor" @bind="@ContractModel.JobDescription" />
+              <div class="input-title">Functie omschrijving</div>
+              <div>
+                <input class="input-field-pair" placeholder="Janitor" @bind="@ContractModel.JobDescription" />
+              </div>
+              @* <ValidationMessage For="() => ContractModel.JobDescription"></ValidationMessage> *@
             </div>
-            <ValidationMessage For="() => ContractModel.JobDescription"></ValidationMessage>
-          </div>
           </div>
         </div>
 
@@ -199,19 +200,19 @@ else if (currentStep == 2)
               <div>
                 <input class="input-field-pair" placeholder="12-9-2024" @bind="@ContractModel.StartDate" />
               </div>
-              <ValidationMessage For="() => ContractModel.StartDate"></ValidationMessage>
+              @* <ValidationMessage For="() => ContractModel.StartDate"></ValidationMessage> *@
             </div>
             <div>
               <div class="input-title">Einddatum</div>
               <div>
                 <input class="input-field-pair" placeholder="Vliet" @bind="@ContractModel.EndDate" />
               </div>
-              <ValidationMessage For="() => ContractModel.EndDate"></ValidationMessage>
+              @* <ValidationMessage For="() => ContractModel.EndDate"></ValidationMessage> *@
             </div>
           </div>
         </div>
         
-        <div class="section">
+       <div class="section">
           <div class="section-title">Tarieven</div>
           <div class="input-pair-Container">
             <div>
@@ -219,14 +220,14 @@ else if (currentStep == 2)
               <div>
                 <input class="input-field-pair" placeholder="5000" @bind="@ContractModel.PurchaseRate" />
               </div>
-              <ValidationMessage For="() => ContractModel.PurchaseRate"></ValidationMessage>
+              @* <ValidationMessage For="() => ContractModel.PurchaseRate"></ValidationMessage> *@
             </div>
             <div>
               <div class="input-title">Verkooptarief</div>
               <div>
                 <input class="input-field-pair" placeholder="7000" @bind="@ContractModel.SellingRate" />
               </div>
-              <ValidationMessage For="() => ContractModel.SellingRate"></ValidationMessage>
+              @* <ValidationMessage For="() => ContractModel.SellingRate"></ValidationMessage> *@
             </div>
           </div>
           <div>
@@ -234,14 +235,34 @@ else if (currentStep == 2)
             <div>
               <input class="input-field" placeholder="12-3-2024" @bind="@ContractModel.PaymentTerm" />
             </div>
-            <ValidationMessage For="() => ContractModel.PaymentTerm"></ValidationMessage>
+            @* <ValidationMessage For="() => ContractModel.PaymentTerm"></ValidationMessage> *@
           </div>          
           <div>
             <div class="input-title">Fee-partij</div>
             <div>
               <input class="input-field" placeholder="StaffingNow" @bind="@ContractModel.FeeParty" />
             </div>
-            <ValidationMessage For="() => ContractModel.FeeParty"></ValidationMessage>
+            @* <ValidationMessage For="() => ContractModel.FeeParty"></ValidationMessage> *@
+          </div>
+       </div> 
+       
+        <div class="section">
+          <div class="section-title">Overig</div>
+          <div class="input-pair-Container">
+            <div>
+              <div class="input-title">Note</div>
+              <div>
+                <input class="input-field-pair" placeholder="5000" @bind="@ContractModel.Note" />
+              </div>
+              @* <ValidationMessage For="() => ContractModel.PurchaseRate"></ValidationMessage> *@
+            </div>
+            <div>
+              <div class="input-title">Status</div>
+              <div>
+                <input class="input-field-pair" placeholder="7000" @bind="@ContractModel.Status" />
+              </div>
+              @* <ValidationMessage For="() => ContractModel.SellingRate"></ValidationMessage> *@
+            </div>
           </div>
         </div>
 
@@ -371,7 +392,7 @@ else
       <button class="previous-button" @onclick="GoToPreviousStep">
         Vorige
       </button>
-      <button class="next-button" @onclick="CreateCustomerAsync">
+      <button class="next-button" @onclick="CreateContractAsync">
         Opslaan
       </button>
     </div>
@@ -383,7 +404,7 @@ else
 @code {
   private string searchTerm = string.Empty;
   private Customer selectedCustomer;
-  private List<Customer> customerList = new List<Customer>(); // Assume this gets populated elsewhere
+  private List<Customer> customerList = new List<Customer>(); 
   private List<CandidateDocumentModel> candidateDocumentsList = new List<CandidateDocumentModel>();
 
 
@@ -454,9 +475,7 @@ else
   {
     await GetAllCustomersAsync();
   }
-
-
-
+  
   public async Task<List<Customer>> GetAllCustomersAsync()
   {
     var response = await _requestMakerService.MakeGetRequest("customer/allcustomers");
@@ -496,7 +515,7 @@ else
   }
   
   public async Task<Contract> GetContractTemplatesByCustomerId()
-  {
+  { 
     var response = await _requestMakerService.MakeGetRequest($"Contract/gettemplatebycustomerid/{SelectedCustomer.Id}");
     var json = await response.Content.ReadAsStringAsync();
 
@@ -524,7 +543,7 @@ else
       candidateDocument.Id = Guid.Parse((string)jToken["id"]);
       candidateDocument.UploadTypeId = Guid.Parse((string)jToken["uploadTypeId"]);
       candidateDocument.ContractId = Guid.Parse((string)jToken["contractId"]);
-      candidateDocument.DocumentBlob = (byte[])jToken["documentsBlob"];
+      candidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
       candidateDocument.Status = (string)jToken["status"];
       candidateDocument.CreatedDate = (DateTime)jToken["createdDate"];
       candidateDocument.UpdatedDate = (DateTime)jToken["updatedDate"];
@@ -536,113 +555,46 @@ else
     contract.CandidateDocumentsDto = candidateDocumentsList;
     return contract;
   }
+    
+  
 
-  public async Task CreateCustomerAsync()
+  public async Task CreateContractAsync()
   {
-    CustomerRequest CustomerRequest = new CustomerRequest
+    var contract = await GetContractTemplatesByCustomerId();
+    
+    contract.Status = ContractModel.Status;
+    contract.StartDate = new DateTime();
+    contract.EndDate = new DateTime();
+    contract.PurchaseRate = ContractModel.PurchaseRate;
+    contract.SellingRate = ContractModel.SellingRate;
+    contract.PaymentTerm = ContractModel.PaymentTerm;
+    contract.FeeParty = ContractModel.FeeParty;
+    contract.JobDescription = ContractModel.JobDescription;
+    contract.Note = ContractModel.Note;
+    contract.Template = ContractModel.Template;
+
+    
+    ContractRequest contractRequest = new ContractRequest
     {
-      CustomerDto = Customer
+      ContractDto =  contract
     };
-
-
-    var response = await _requestMakerService.MakePostRequest("customer/customers", CustomerRequest);
+    
+    var jsonPayload = JsonConvert.SerializeObject(contractRequest);
+    Console.WriteLine(jsonPayload);
+    
+    var response = await _requestMakerService.MakePostRequest("Contract/contract", contractRequest);
+    
 
     var json = await response.Content.ReadAsStringAsync();
 
     var outerObject = JObject.Parse(json);
     var resultObject = outerObject["result"];
-
-    customerId = Guid.Parse((string)resultObject["id"]);
-
-    await CreateCustomerTemplateAsync();
   }
 
-  public async Task CreateCustomerTemplateAsync()
-  {
-    ContractModel.CandidateId = Guid.Parse("10000000-0000-0000-0000-000000000000");
-    ContractModel.CustomerId = customerId;
-    ContractModel.Status = $"{customerId} Template";
-    ContractModel.StartDate = DateTime.Now;
-    ContractModel.EndDate = new DateTime();
-    ContractModel.PurchaseRate = 0;
-    ContractModel.SellingRate = 0;
-    ContractModel.PaymentTerm = $"{customerId} Template";
-    ContractModel.FeeParty = $"{customerId} Template";
-    ContractModel.JobDescription = $"{customerId} Template";
-    ContractModel.Note = $"{customerId} Template";
-    ContractModel.Template = true;
-
-    foreach (var uploadTypeId in selectedUploadTypeIds)
-    {
-      CandidateDocumentModel CandidateDocument = new CandidateDocumentModel
-      {
-        UploadTypeId = uploadTypeId,
-        DocumentBlob = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F },
-        Status = $"{customerId} Template",
-        CreatedBy = $"{customerId} Template",
-        UpdatedBy = $"{customerId} Template",
-        CreatedDate = DateTime.Parse("2024-05-20T19:37:39.108Z"),
-        UpdatedDate = DateTime.Parse("2024-05-20T19:37:39.108Z")
-      };
-
-      ContractModel.CandidateDocumentsDto.Add(CandidateDocument);
-    }
-
-
-    ContractRequest contractRequest = new ContractRequest
-    {
-      ContractDto = ContractModel
-    };
-
-
-    var response = await _requestMakerService.MakePostRequest("contract/contract", contractRequest);
-
-    NavigationManager.NavigateTo("/customer");
-  }
-
-
-
-  private string GetSelectedClass(Guid id)
-  {
-    return selectedItems.Contains(id) ? "selected" : string.Empty;
-  }
-
-  private void ToggleSelection(Guid id)
-  {
-    var uploadType = UploadTypes.FirstOrDefault(u => u.Id == id);
-
-    if (uploadType != null)
-    {
-      if (uploadType.Required)
-      {
-        uploadType.Required = false;
-      }
-      if (selectedItems.Contains(id))
-      {
-        selectedItems.Remove(id);
-      }
-      else
-      {
-        selectedItems.Add(id);
-      }
-    }
-  }
-
-  private void UpdateSelectedUploadTypes(ChangeEventArgs e)
-  {
-    var selectedValues = e.Value as IEnumerable<string>;
-    if (selectedValues != null)
-    {
-      selectedUploadTypeIds = selectedValues.Select(Guid.Parse).ToList();
-    }
-  }
-
-
-
+  
   private async Task SubmitForms()
   {
-    await CreateCustomerAsync();
-    await CreateCustomerTemplateAsync();
+    await CreateContractAsync();
     NavigationManager.NavigateTo("/customer");
   }
 
@@ -734,28 +686,6 @@ else
 
   private async Task GoToNextStep()
   {
-    // var template = await GetContractTemplatesByCustomerId();
-    // if (Customer.Name != null &&
-    //     Customer.FirstName != null &&
-    //     Customer.LastName != null &&
-    //     Customer.KVK != null &&
-    //     Customer.VAT != null &&
-    //     Customer.BankAccountNumber != null &&
-    //     Customer.Email != null &&
-    //     Customer.PhoneNumber != null &&
-    //     Customer.CustomerAddressDto.PostalCode != null &&
-    //     Customer.CustomerAddressDto.HouseNumber != null
-    //
-    //    )
-    // {
-
-    // bool founded = await GetAddressInfo();
-
-    // if (founded == true)
-    // {
-    postalCodeValidationMessage = "";
-    houseNumberValidationMessage = "";
-
     if (currentStep < 3)
     {
       currentStep++;
@@ -764,52 +694,13 @@ else
         await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
       }
       await JSRuntime.InvokeVoidAsync("scrollToTop");
-      // FadeToRight.Run();
     }
+    
 
-    // }
-    // else
-    // {
-    //   postalCodeValidationMessage = "Ongeldige Postcode huisnummer combinatie";
-    // }
+    
 
   }
-  // else
-  // {
-  //   if (Customer.CustomerAddressDto.HouseNumber == null && Customer.CustomerAddressDto.PostalCode == null)
-  //   {
-  //     houseNumberValidationMessage = "Huisnummer is verplicht";
-  //     postalCodeValidationMessage = "Postcode is verplicht";
-  //   }
-  //   else if (Customer.CustomerAddressDto.HouseNumber == null && !Regex.IsMatch(Customer.CustomerAddressDto.PostalCode, @"^\d{4} \w{2}$"))
-  //   {
-  //     houseNumberValidationMessage = "Huisnummer is verplicht";
-  //     postalCodeValidationMessage = "Ongeldige postcode, voorbeeld 1234 AB";
-  //   }
-  //   else if (Customer.CustomerAddressDto.HouseNumber == null)
-  //   {
-  //     houseNumberValidationMessage = "Huisnummer is verplicht";
-  //     postalCodeValidationMessage = "";
-  //   }
-  //   else if (Customer.CustomerAddressDto.PostalCode == null)
-  //   {
-  //     postalCodeValidationMessage = "Postcode is verplicht";
-  //     houseNumberValidationMessage = "";
-  //   }
-  //   else if (!Regex.IsMatch(Customer.CustomerAddressDto.PostalCode, @"^\d{4} \w{2}$"))
-  //   {
-  //     postalCodeValidationMessage = "Ongeldige postcode, voorbeeld 1234 AB";
-  //     houseNumberValidationMessage = "";
-  //   }
-  //   else
-  //   {
-  //     houseNumberValidationMessage = "";
-  //     postalCodeValidationMessage = "";
-  //   }
-
-  // }
-  @* } *@
-
+ 
   private async Task GoToPreviousStep()
   {
     if (currentStep == 1)
@@ -829,23 +720,4 @@ else
     await JSRuntime.InvokeVoidAsync("scrollToTop");
   }
 
-  public async Task<bool> GetAddressInfo()
-  {
-
-    try
-    {
-      var response = await _requestMakerService.GetAddressInfoAsync(Customer.CustomerAddressDto.PostalCode, Customer.CustomerAddressDto.HouseNumber);
-      var jsonResponse = JsonDocument.Parse(response);
-      var root = jsonResponse.RootElement;
-
-      Customer.CustomerAddressDto.StreetName = root.GetProperty("street").GetString();
-      Customer.CustomerAddressDto.Province = root.GetProperty("province").GetString();
-      Customer.CustomerAddressDto.City = root.GetProperty("city").GetString();
-      return true;
-    }
-    catch (Exception ex)
-    {
-      return false;
-    }
-  }
 }
