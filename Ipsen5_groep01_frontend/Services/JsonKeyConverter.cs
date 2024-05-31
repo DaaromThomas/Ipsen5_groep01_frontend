@@ -1,7 +1,10 @@
+using System.Text.Json;
+using System.Text.RegularExpressions;
+
 namespace Ipsen5_groep01_frontend.Services{
     public class JsonKeyConverter{
 
-        public override string ConvertJson(string json)
+        public string ConvertJson(string json)
         {
             return ConvertKeysToPascalCase(json);
         }
