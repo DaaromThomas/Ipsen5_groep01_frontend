@@ -144,7 +144,7 @@
         <tbody>
             @foreach (var contract in ContractService.Contracts)
             {
-                <tr class="table-row data-row" @onclick="()=>navigate(contract.CandidateId)">
+                <tr class="table-row data-row" @onclick="()=>navigate(contract.CandidateId, contract.Id)">
                     <td>@contract.Id</td>
                     <td>@contract.Status</td>
                     <td>&#10095;</td>
@@ -196,8 +196,8 @@
         }
     }
 
-    public void navigate(Guid candidateId)
+    public void navigate(Guid candidateId, Guid contractId)
     {
-        this.NavigationManager.NavigateTo($"/LeverancierDossierInzien/{candidateId}");
+        this.NavigationManager.NavigateTo($"/LeverancierDossierInzien/{candidateId}/{contractId}");
     }
 }
