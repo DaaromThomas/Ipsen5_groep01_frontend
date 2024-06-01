@@ -523,7 +523,6 @@
         {
             CandidateDocumentModel CandidateDocument = new CandidateDocumentModel();
 
-
             CandidateDocument.Id = Guid.Parse((string)jToken["id"]);
             CandidateDocument.UploadTypeId = Guid.Parse((string)jToken["uploadTypeId"]);
             CandidateDocument.ContractId = Guid.Parse((string)jToken["contractId"]);
@@ -539,8 +538,16 @@
         }
     }
 
+
+
     public async Task UpdateCustomerTemplateAsync()
     {
+        CustomerRequest customerRequest = new CustomerRequest();
+
+        customerRequest.CustomerDto = CustomerModel;
+
+        await _requestMakerService.MakePatchRequest("customer/updatecustomer", customerRequest);
+        
         foreach (var uploadType in selectedUploadTypeModelList)
         {
             if (!originSelectedUploadTypeModelList.Any(o => o.Id == uploadType.Id))
