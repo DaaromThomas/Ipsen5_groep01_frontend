@@ -33,6 +33,8 @@ namespace Ipsen5_groep01_frontend.Models
         [Required(ErrorMessage = "Telefoonnummer is verplicht")]
         public string PhoneNumber { get; set; }
 
+        public bool Disabled { get; set; }
+
         public CustomerAddress CustomerAddressDto { get; set; }
 
         public Customer()

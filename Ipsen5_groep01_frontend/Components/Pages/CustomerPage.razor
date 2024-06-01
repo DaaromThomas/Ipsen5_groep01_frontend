@@ -3,6 +3,7 @@
 
 @using Services
 @using Models
+@using Requests;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
 
@@ -67,7 +68,7 @@
                 <button class="edit_customer" @onclick="() => NavigateToEditcustomerDetails(customer.Id)">
                     <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
                 </button>
-                <button class="delete_customer">
+                <button class="delete_customer" @onclick="() => UpdateCustomer(customer.Id)">
                     <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
                 </button>
             </div>
@@ -106,10 +107,13 @@
 @code {
     private List<Customer> customers = new List<Customer>();
 
+    private Customer customerToDisable = new Customer();
     private int pageSize = 10;
     private int currentPage = 1;
     private int totalPages => (int)Math.Ceiling((double)customers.Count() / pageSize);
     private string valuetijdelijk = "";
+    private void NotifyStateChanged() => OnChange?.Invoke();
+    public event Action OnChange;
 
     private RequestMakerService _requestMakerService;
 
@@ -132,6 +136,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        OnChange += StateHasChanged;
         await GetCustomers();
     }
 
@@ -145,7 +150,7 @@
         NavigationManager.NavigateTo($"/editcustomerconfig/{customerId}");
     }
 
-    
+
 
     private void NavigateToNewcustomer()
     {
@@ -182,5 +187,67 @@
             customers.Add(customer);
         }
         return customers;
+
+
+    }
+
+    public async Task<Customer> GetCustomerById(Guid customerId)
+    {
+        var response = await _requestMakerService.MakeGetRequest($"customer/customerbyid/{customerId}");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var customerArray = outerObject["result"]["customerDto"];
+
+        customerToDisable = new Customer();
+
+        customerToDisable.Id = Guid.Parse((string)customerArray["id"]);
+        customerToDisable.Name = (string)customerArray["name"];
+        customerToDisable.FirstName = (string)customerArray["firstName"];
+        customerToDisable.LastName = (string)customerArray["lastName"];
+        customerToDisable.PhoneNumber = (string)customerArray["phoneNumber"];
+        customerToDisable.KVK = (string)customerArray["kvk"];
+        customerToDisable.VAT = (string)customerArray["vat"];
+        customerToDisable.BankAccountNumber = (string)customerArray["bankAccountNumber"];
+        customerToDisable.Email = (string)customerArray["email"];
+        customerToDisable.Disabled = (bool)customerArray["disabled"];
+
+        customerToDisable.CustomerAddressDto = new CustomerAddress();
+        customerToDisable.CustomerAddressDto.StreetName = (string)customerArray["customerAddressDto"]["streetName"];
+        customerToDisable.CustomerAddressDto.HouseNumber = (string)customerArray["customerAddressDto"]["houseNumber"];
+        customerToDisable.CustomerAddressDto.PostalCode = (string)customerArray["customerAddressDto"]["postalCode"];
+        customerToDisable.CustomerAddressDto.City = (string)customerArray["customerAddressDto"]["city"];
+        customerToDisable.CustomerAddressDto.Country = (string)customerArray["customerAddressDto"]["country"];
+        customerToDisable.CustomerAddressDto.Province = (string)customerArray["customerAddressDto"]["province"];
+
+        return customerToDisable;
+    }
+
+
+    public async Task UpdateCustomer(Guid customerId)
+    {
+        await GetCustomerById(customerId);
+
+        CustomerRequest customerRequest = new CustomerRequest();
+
+        customerToDisable.Disabled = true;
+
+        customerRequest.CustomerDto = customerToDisable;
+
+        var response = await _requestMakerService.MakePatchRequest("customer/updatecustomer", customerRequest);
+
+        customers.Remove(customerToDisable);
+
+
+
+        await GetCustomers();
+        NotifyStateChanged();
+    }
+
+    
+
+    public void Dispose()
+    {
+        OnChange -= StateHasChanged;
     }
 }
