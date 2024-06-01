@@ -1,4 +1,4 @@
-﻿@page "/LeverancierDossierScherm"
+﻿@page "/LeverancierDossierScherm/{candidateId}"
 @layout MainLayout
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
@@ -158,7 +158,8 @@
     private List<Dossier> dossiers = new List<Dossier>();
     private List<Dossier> filteredDossiers = new List<Dossier>();
     private string searchTerm = "";
-      
+    [Parameter]
+    public string candidateId {get; set;}
     
     protected override async Task OnInitializedAsync()
     {
@@ -167,7 +168,7 @@
     }
 
     public async Task getContract(){
-        await this.ContractService.getContractsByCandidateId("7c7f6adc-3255-43e4-9169-08dc7bcee6c7");
+        await this.ContractService.getContractsByCandidateId(candidateId);
     }
     
 
