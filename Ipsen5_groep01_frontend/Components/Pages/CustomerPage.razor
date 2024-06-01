@@ -64,7 +64,7 @@
                 <button class="view_customer" @onclick="() => NavigateTocustomerDetails(customer.Id)">
                     <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
                 </button>
-                <button class="edit_customer">
+                <button class="edit_customer" @onclick="() => NavigateToEditcustomerDetails(customer.Id)">
                     <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
                 </button>
                 <button class="delete_customer">
@@ -139,6 +139,13 @@
     {
         NavigationManager.NavigateTo($"/customer/{customerId}");
     }
+
+    private void NavigateToEditcustomerDetails(Guid customerId)
+    {
+        NavigationManager.NavigateTo($"/editcustomerconfig/{customerId}");
+    }
+
+    
 
     private void NavigateToNewcustomer()
     {

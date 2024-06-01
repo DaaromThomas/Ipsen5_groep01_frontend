@@ -1,0 +1,714 @@
+﻿@page "/editcustomerconfig/{customerId:guid}"
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using Services
+@using Models
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@using Requests;
+@using Microsoft.AspNetCore.Authorization;
+@using BlazorAnimate;
+@using System;
+@using System.Text.RegularExpressions;
+
+@using System.Text.Json;
+
+@inject IJSRuntime JSRuntime
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject AuthService AuthService
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+</style>
+
+<script>
+    function scrollToTop() {
+        window.scrollTo({ top: 0.09 * document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function scrollToTopStep2() {
+        window.scrollTo({ top: 0.08 * document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+</script>
+<script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
+
+
+<div class="containe ">
+    <div class="page-title"> Klant Configuratie </div>
+
+
+    @if (currentStep == 1)
+    {
+        <div class="input-container ">
+
+            <div class="input-description-container">
+                <EditForm Model="@CustomerModel" FormName="createcustomer">
+                    <DataAnnotationsValidator />
+
+                    <div class="description-title">
+                        Contact gegevens
+                    </div>
+
+                    <div class="description">
+                        Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Bedrijfs gegevens</div>
+                        <div>
+                            <div class="input-title">Bedrijfsnaam</div>
+                            <div>
+                                <input class="input-field" placeholder="StaffingNow" @bind="@CustomerModel.Name" />
+                                <ValidationMessage For="() => CustomerModel.Name"></ValidationMessage>
+                            </div>
+                        </div>
+
+                        <div class="input-pair-Container">
+                            <div>
+                                <div class="input-title">Kvk</div>
+                                <div>
+                                    <input type="number" class="input-field-pair" placeholder="12345678" @bind="@CustomerModel.KVK" />
+                                </div>
+                                <ValidationMessage For="() => CustomerModel.KVK"></ValidationMessage>
+                            </div>
+
+                            <div>
+                                <div class="input-title">Btw-Nummer</div>
+                                <div>
+                                    <input class="input-field-pair" placeholder="NL123456789B01" @bind="@CustomerModel.VAT" />
+
+                                </div>
+                                <ValidationMessage For="() => CustomerModel.VAT"></ValidationMessage>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="input-title">Rekeningnummer</div>
+                            <div>
+                                <input class="input-field" placeholder="NL20INGB0001234567" @bind="@CustomerModel.BankAccountNumber" />
+
+                            </div>
+                            <ValidationMessage For="() => CustomerModel.BankAccountNumber"></ValidationMessage>
+                        </div>
+                    </div>
+
+
+                    <div class="section">
+                        <div class="section-title">Contact persoon</div>
+                        <div class="input-pair-Container">
+                            <div>
+                                <div class="input-title">Voornaam</div>
+                                <div>
+                                    <input class="input-field-pair" placeholder="Holees" @bind="@CustomerModel.FirstName" />
+                                </div>
+                                <ValidationMessage For="() => CustomerModel.FirstName"></ValidationMessage>
+                            </div>
+                            <div>
+                                <div class="input-title">Achternaam</div>
+                                <div>
+                                    <input class="input-field-pair" placeholder="Vliet" @bind="@CustomerModel.LastName" />
+                                </div>
+                                <ValidationMessage For="() => CustomerModel.LastName"></ValidationMessage>
+                            </div>
+                        </div>
+
+
+                        <div class="input-pair-Container">
+                            <div>
+                                <div class="input-title">Email</div>
+                                <div>
+                                    <input class="input-field-pair" placeholder="Voorbeeld@email.com" @bind="@CustomerModel.Email" />
+                                </div>
+                                <ValidationMessage For="() => CustomerModel.Email"></ValidationMessage>
+                            </div>
+                            <div>
+                                <div class="input-title">Telefoonnummer</div>
+                                <div>
+                                    <input type="number" class="input-field-pair" placeholder="0612345678" @bind="@CustomerModel.PhoneNumber" />
+                                </div>
+                                <ValidationMessage For="() => CustomerModel.PhoneNumber"></ValidationMessage>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="section">
+                        <div class="section-title">Adres</div>
+                        <div class="input-pair-Container">
+                            <div>
+                                <div class="input-title">Postcode</div>
+                                <div>
+                                    <input class="input-field-pair" placeholder="1234 AB" @bind="@CustomerModel.CustomerAddressDto.PostalCode" />
+                                </div>
+                                <div style="color: #e50000">@postalCodeValidationMessage</div>
+                            </div>
+                            <div>
+                                <div class="input-title">Huisnummer</div>
+                                <div>
+                                    <input class="input-field-pair" placeholder="12" @bind="@CustomerModel.CustomerAddressDto.HouseNumber" />
+                                </div>
+                                <div style="color: #e50000">@houseNumberValidationMessage</div>
+                            </div>
+                        </div>
+
+                        <div class="input-pair-Container">
+                            <div>
+                                <div class="input-title">Stad</div>
+                                <div>
+                                    <input class="input-field-pair" @bind="@CustomerModel.CustomerAddressDto.City" readonly />
+                                </div>
+                            </div>
+                            <div>
+                                <div class="input-title">Straat</div>
+                                <div>
+                                    <input class="input-field-pair" @bind="@CustomerModel.CustomerAddressDto.StreetName" readonly />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div>
+                            <div class="input-title">Provincie</div>
+                            <div>
+                                <input class="input-field-pair" @bind="@CustomerModel.CustomerAddressDto.Province" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-container">
+                        <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
+                            Vorige
+                        </button>
+                        <button type="submit" class="next-button" @onclick="GoToNextStep">
+                            Volgende
+                        </button>
+                    </div>
+                </EditForm>
+
+            </div>
+        </div>
+
+    }
+    else if (currentStep == 2)
+    {
+        <div class="input-container-select-documents">
+            <div class="input-description-container-select-documents">
+
+                <div class="description-title">
+                    Benodigde Documenten
+                </div>
+
+                <div class="description">
+                    Selecteer hieronder de benodigde documenten om verder te gaan.
+                </div>
+
+                <div class="selected-documents-container">
+                    <div class="section-documents">
+                        <div class="section-title">Overige documenten</div>
+                        <div class="uploadtype-container">
+                            @foreach (var uploadType in uploadTypeModelList)
+                            {
+                                <div class="input-checkbox-container" @onclick="() => ToggleSelection(uploadType.Id)">
+                                    @uploadType.Type
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="section-documents">
+                        <div class="section-title">Geselecteerde documenten</div>
+                        <div class="uploadtype-container">
+                            @foreach (var uploadType in selectedUploadTypeModelList)
+                            {
+                                <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
+                                    @uploadType.Type
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-container-2">
+                <button class="previous-button" @onclick="GoToPreviousStep">
+                    Vorige
+                </button>
+                <button class="next-button" @onclick="GoToNextStep">
+                    Volgende
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        @* <Animate Animation="Animations.SlideRight" Duration="TimeSpan.FromSeconds(1)"> *@
+        <div class="input-container">
+
+            <div class="input-description-container">
+                <div class="description-title">
+                    Controleren & Oplsaan
+                </div>
+
+                <div class="description">
+                    Controleer hieronder de basisgegevens. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+                </div>
+
+                <div class="section-review">
+                    <div class="section-title">Bedrijfs gegevens</div>
+                    <div>
+                        <div class="input-title">Bedrijfsnaam</div>
+                        <div class="input-value">@CustomerModel.Name</div>
+                    </div>
+
+                    <div class="input-pair-Container-3">
+                        <div>
+                            <div class="input-title">Kvk</div>
+                            <div class="input-value">@CustomerModel.KVK</div>
+                        </div>
+
+                        <div>
+                            <div class="input-title">Btw-Nummer</div>
+                            <div class="input-value">@CustomerModel.VAT</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="input-title">Rekeningnummer</div>
+                        <div class="input-value">@CustomerModel.BankAccountNumber</div>
+                    </div>
+                </div>
+
+
+                <div class="section-review">
+                    <div class="section-title">Contact persoon</div>
+                    <div class="input-pair-Container-3">
+                        <div>
+                            <div class="input-title">Voornaam</div>
+                            <div class="input-value">@CustomerModel.FirstName</div>
+                        </div>
+                        <div>
+                            <div class="input-title">Achternaam</div>
+                            <div class="input-value">@CustomerModel.LastName</div>
+                        </div>
+                    </div>
+
+
+                    <div class="input-pair-Container-3">
+                        <div>
+                            <div class="input-title">Email</div>
+                            <div class="input-value">@CustomerModel.Email</div>
+                        </div>
+                        <div>
+                            <div class="input-title">Telefoonnummer</div>
+                            <div class="input-value">@CustomerModel.PhoneNumber</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-review">
+                    <div class="section-title">Adres</div>
+                    <div class="input-pair-Container-3">
+                        <div>
+                            <div class="input-title">Postcode</div>
+                            <div class="input-value">@CustomerModel.CustomerAddressDto.PostalCode</div>
+                        </div>
+                        <div>
+                            <div class="input-title">Huisnummer</div>
+                            <div class="input-value">@CustomerModel.CustomerAddressDto.HouseNumber</div>
+                        </div>
+                    </div>
+
+                    <div class="input-pair-Container-3">
+                        <div>
+                            <div class="input-title">Stad</div>
+                            <div class="input-value">@CustomerModel.CustomerAddressDto.City</div>
+                        </div>
+                        <div>
+                            <div class="input-title">Straat</div>
+                            <div class="input-value">@CustomerModel.CustomerAddressDto.StreetName</div>
+                        </div>
+                        <div>
+                            <div class="input-title">Provincie</div>
+                            <div class="input-value">@CustomerModel.CustomerAddressDto.Province</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-review">
+                    <div class="section-title">Geselecteerde documenten</div>
+
+                    <div class="uploadtype-container">
+                        @foreach (var uploadType in selectedUploadTypeModelList)
+                        {
+                            <div class="input-checkbox-container selected">
+                                @uploadType.Type
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button class="previous-button" @onclick="GoToPreviousStep">
+                    Vorige
+                </button>
+                <button class="next-button" @onclick="SubmitForms">
+                    Opslaan
+                </button>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Guid CustomerId { get; set; }
+    private Guid contractId;
+    private string type;
+    private int currentPage = 1;
+    private int currentStep = 1;
+    private string houseNumberValidationMessage;
+    private string postalCodeValidationMessage;
+
+    private RequestMakerService _requestMakerService;
+
+    private Customer CustomerModel { get; set; } = new();
+    private Contract ContractModel { get; set; } = new();
+    private Contract ContractModelById { get; set; } = new();
+
+
+    private List<UploadTypeModel> uploadTypeModelList = new List<UploadTypeModel>();
+    private List<UploadTypeModel> selectedUploadTypeModelList = new List<UploadTypeModel>();
+    private List<UploadTypeModel> originSelectedUploadTypeModelList = new List<UploadTypeModel>();
+
+
+
+
+
+
+    public EditCustomerConfig()
+    {
+
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCustomerConfigById(CustomerId);
+        await GetCustomerConfigUploadDocumentsById(CustomerId);
+        await GetUploadTypesAsync();
+        await GetContractByIdAsync();
+    }
+
+    protected override void OnInitialized()
+    {
+        _requestMakerService = new RequestMakerService(HttpClient);
+        base.OnInitialized();
+    }
+
+    public async Task<Customer> GetCustomerConfigById(Guid customerId)
+    {
+        var response = await _requestMakerService.MakeGetRequest($"customer/customerbyid/{customerId}");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var customerArray = outerObject["result"]["customerDto"];
+
+        var customer = new Customer();
+
+        customer.Id = Guid.Parse((string)customerArray["id"]);
+        customer.Name = (string)customerArray["name"];
+        customer.FirstName = (string)customerArray["firstName"];
+        customer.LastName = (string)customerArray["lastName"];
+        customer.PhoneNumber = (string)customerArray["phoneNumber"];
+        customer.KVK = (string)customerArray["kvk"];
+        customer.VAT = (string)customerArray["vat"];
+        customer.BankAccountNumber = (string)customerArray["bankAccountNumber"];
+        customer.Email = (string)customerArray["email"];
+
+
+        customer.CustomerAddressDto = new CustomerAddress();
+        customer.CustomerAddressDto.StreetName = (string)customerArray["customerAddressDto"]["streetName"];
+        customer.CustomerAddressDto.HouseNumber = (string)customerArray["customerAddressDto"]["houseNumber"];
+        customer.CustomerAddressDto.PostalCode = (string)customerArray["customerAddressDto"]["postalCode"];
+        customer.CustomerAddressDto.City = (string)customerArray["customerAddressDto"]["city"];
+        customer.CustomerAddressDto.Country = (string)customerArray["customerAddressDto"]["country"];
+        customer.CustomerAddressDto.Province = (string)customerArray["customerAddressDto"]["province"];
+
+        return CustomerModel = customer;
+    }
+
+    public async Task GetCustomerConfigUploadDocumentsById(Guid customerId)
+    {
+        var response = await _requestMakerService.MakeGetRequest($"uploadtype/customerid/{customerId}");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var customerArray = outerObject["result"]["uploadTypeDto"];
+
+        contractId = Guid.Parse((string)outerObject["result"]["contractId"]);
+
+        var uploadTypes = new List<UploadTypeModel>();
+
+        foreach (var Jtoken in customerArray)
+        {
+            var uploadType = new UploadTypeModel();
+
+            uploadType.Id = Guid.Parse((string)Jtoken["id"]);
+            uploadType.Type = (string)Jtoken["type"];
+            uploadType.Required = (bool)Jtoken["required"];
+
+            if (!selectedUploadTypeModelList.Any(u => u.Id == uploadType.Id))
+            {
+                selectedUploadTypeModelList.Add(uploadType);
+                originSelectedUploadTypeModelList.Add(uploadType);
+            }
+        }
+    }
+
+    public async Task<List<UploadTypeModel>> GetUploadTypesAsync()
+    {
+        var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["uploadTypeDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+            var uploadType = new UploadTypeModel();
+            uploadType.Id = Guid.Parse((string)jToken["id"]);
+            uploadType.Type = (string)jToken["type"];
+            uploadType.DocumentType = (string)jToken["documentType"];
+            uploadType.Required = (bool)jToken["required"];
+
+            if (!uploadTypeModelList.Any(u => u.Id == uploadType.Id))
+            {
+                if (!selectedUploadTypeModelList.Any(u => u.Id == uploadType.Id))
+                {
+                    uploadTypeModelList.Add(uploadType);
+                }
+            }
+        }
+        return uploadTypeModelList;
+    }
+
+    public async Task GetContractByIdAsync()
+    {
+        var response = await _requestMakerService.MakeGetRequest($"Contract/contractbyid/{contractId}");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["contractDto"];
+
+        ContractModelById.Id = Guid.Parse((string)contractArray["id"]);
+        ContractModelById.CandidateId = Guid.Parse((string)contractArray["candidateId"]);
+        ContractModelById.CustomerId = Guid.Parse((string)contractArray["customerId"]);
+
+        ContractModelById.Status = (string)contractArray["status"];
+        ContractModelById.EndDate = (DateTime)contractArray["endDate"];
+        ContractModelById.StartDate = (DateTime)contractArray["startDate"];
+        ContractModelById.PurchaseRate = (double)contractArray["purchaseRate"];
+        ContractModelById.SellingRate = (double)contractArray["sellingRate"];
+        ContractModelById.PaymentTerm = (string)contractArray["paymentTerm"];
+        ContractModelById.FeeParty = (string)contractArray["feeParty"];
+        ContractModelById.JobDescription = (string)contractArray["jobDescription"];
+        ContractModelById.Note = (string)contractArray["note"];
+        ContractModelById.Template = (bool)contractArray["template"];
+
+        foreach (var jToken in contractArray["candidateDocumentsDto"])
+        {
+            CandidateDocumentModel CandidateDocument = new CandidateDocumentModel();
+
+
+            CandidateDocument.Id = Guid.Parse((string)jToken["id"]);
+            CandidateDocument.UploadTypeId = Guid.Parse((string)jToken["uploadTypeId"]);
+            CandidateDocument.ContractId = Guid.Parse((string)jToken["contractId"]);
+            CandidateDocument.Status = (string)jToken["status"];
+            CandidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
+            CandidateDocument.CreatedBy = (string)jToken["createdBy"];
+            CandidateDocument.UpdatedBy = (string)jToken["updatedBy"];
+            CandidateDocument.CreatedDate = (DateTime)jToken["createdDate"];
+            CandidateDocument.UpdatedDate = DateTime.Now;
+
+
+            ContractModelById.CandidateDocumentsDto.Add(CandidateDocument);
+        }
+    }
+
+    public async Task UpdateCustomerTemplateAsync()
+    {
+        foreach (var uploadType in selectedUploadTypeModelList)
+        {
+            if (!originSelectedUploadTypeModelList.Any(o => o.Id == uploadType.Id))
+            {
+                var candidateDocument = new CandidateDocumentModel
+                    {
+                        UploadTypeId = uploadType.Id,
+                        DocumentBlob = new byte[] { 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F },
+                        Status = "geupdate",
+                        CreatedBy = "geupadte",
+                        UpdatedBy = "geupadte",
+                        CreatedDate = DateTime.Parse("2024-05-20T19:37:39.108Z"),
+                        UpdatedDate = DateTime.Parse("2024-05-20T19:37:39.108Z")
+                    };
+
+                ContractModelById.CandidateDocumentsDto.Add(candidateDocument);
+            }
+        }
+       
+        ContractRequest contractRequest = new ContractRequest
+            {
+                ContractDto = ContractModelById
+            };
+
+
+        var response = await _requestMakerService.MakePatchRequest("contract/updatecontract", contractRequest);
+
+        NavigationManager.NavigateTo("/customer");
+    }
+
+
+    private async Task SubmitForms()
+    {
+        // await CreateCustomerAsync();
+        await UpdateCustomerTemplateAsync();
+        NavigationManager.NavigateTo("/customer");
+    }
+
+    private void ToggleSelection(Guid id)
+    {
+        var uploadType = uploadTypeModelList.FirstOrDefault(u => u.Id == id);
+        if (uploadType != null)
+        {
+            uploadTypeModelList.Remove(uploadType);
+            selectedUploadTypeModelList.Add(uploadType);
+            return;
+        }
+
+        uploadType = selectedUploadTypeModelList.FirstOrDefault(u => u.Id == id);
+        if (uploadType != null)
+        {
+            selectedUploadTypeModelList.Remove(uploadType);
+            uploadTypeModelList.Add(uploadType);
+        }
+    }
+
+    private async Task GoToNextStep()
+    {
+        if (CustomerModel.Name != null &&
+            CustomerModel.FirstName != null &&
+            CustomerModel.LastName != null &&
+            CustomerModel.KVK != null &&
+            CustomerModel.VAT != null &&
+            CustomerModel.BankAccountNumber != null &&
+            CustomerModel.Email != null &&
+            CustomerModel.PhoneNumber != null &&
+            CustomerModel.CustomerAddressDto.PostalCode != null &&
+            CustomerModel.CustomerAddressDto.HouseNumber != null
+        )
+        {
+
+            bool founded = await GetAddressInfo();
+
+            if (founded == true)
+            {
+                postalCodeValidationMessage = "";
+                houseNumberValidationMessage = "";
+
+                if (currentStep < 3)
+                {
+                    currentStep++;
+                    if (currentStep == 2)
+                    {
+                        await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
+                    }
+                    await JSRuntime.InvokeVoidAsync("scrollToTop");
+                    // FadeToRight.Run();
+                }
+
+            }
+            else
+            {
+                postalCodeValidationMessage = "Ongeldige Postcode huisnummer combinatie";
+            }
+
+        }
+        else
+        {
+            if (CustomerModel.CustomerAddressDto.HouseNumber == null && CustomerModel.CustomerAddressDto.PostalCode == null)
+            {
+                houseNumberValidationMessage = "Huisnummer is verplicht";
+                postalCodeValidationMessage = "Postcode is verplicht";
+            }
+            else if (CustomerModel.CustomerAddressDto.HouseNumber == null && !Regex.IsMatch(CustomerModel.CustomerAddressDto.PostalCode, @"^\d{4} \w{2}$"))
+            {
+                houseNumberValidationMessage = "Huisnummer is verplicht";
+                postalCodeValidationMessage = "Ongeldige postcode, voorbeeld 1234 AB";
+            }
+            else if (CustomerModel.CustomerAddressDto.HouseNumber == null)
+            {
+                houseNumberValidationMessage = "Huisnummer is verplicht";
+                postalCodeValidationMessage = "";
+            }
+            else if (CustomerModel.CustomerAddressDto.PostalCode == null)
+            {
+                postalCodeValidationMessage = "Postcode is verplicht";
+                houseNumberValidationMessage = "";
+            }
+            else if (!Regex.IsMatch(CustomerModel.CustomerAddressDto.PostalCode, @"^\d{4} \w{2}$"))
+            {
+                postalCodeValidationMessage = "Ongeldige postcode, voorbeeld 1234 AB";
+                houseNumberValidationMessage = "";
+            }
+            else
+            {
+                houseNumberValidationMessage = "";
+                postalCodeValidationMessage = "";
+            }
+
+        }
+    }
+
+    private async Task GoToPreviousStep()
+    {
+        if (currentStep == 1)
+        {
+            NavigationManager.NavigateTo("/customer");
+        }
+        else
+        {
+            currentStep--;
+        }
+
+        if (currentStep == 2)
+        {
+            await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
+        }
+
+        await JSRuntime.InvokeVoidAsync("scrollToTop");
+    }
+
+    public async Task<bool> GetAddressInfo()
+    {
+
+        try
+        {
+            var response = await _requestMakerService.GetAddressInfoAsync(CustomerModel.CustomerAddressDto.PostalCode, CustomerModel.CustomerAddressDto.HouseNumber);
+            var jsonResponse = JsonDocument.Parse(response);
+            var root = jsonResponse.RootElement;
+
+            CustomerModel.CustomerAddressDto.StreetName = root.GetProperty("street").GetString();
+            CustomerModel.CustomerAddressDto.Province = root.GetProperty("province").GetString();
+            CustomerModel.CustomerAddressDto.City = root.GetProperty("city").GetString();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
+}
