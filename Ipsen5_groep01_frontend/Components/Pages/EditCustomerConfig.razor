@@ -504,9 +504,9 @@
         var outerObject = JObject.Parse(json);
         var contractArray = outerObject["result"]["contractDto"];
 
-        ContractModelById.Id = Guid.Parse((string)contractArray["id"]);
-        ContractModelById.CandidateId = Guid.Parse((string)contractArray["candidateId"]);
-        ContractModelById.CustomerId = Guid.Parse((string)contractArray["customerId"]);
+        ContractModelById.Id = (Guid)contractArray["id"];
+        ContractModelById.CandidateId = (Guid)contractArray["candidateId"];
+        ContractModelById.CustomerId = (Guid)contractArray["customerId"];
 
         ContractModelById.Status = (string)contractArray["status"];
         ContractModelById.EndDate = (DateTime)contractArray["endDate"];

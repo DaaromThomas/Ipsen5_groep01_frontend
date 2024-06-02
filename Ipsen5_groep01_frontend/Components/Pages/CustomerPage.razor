@@ -39,7 +39,7 @@
         </div>
 
         <div class="new-customer-button-container">
-            <button class="new-customer-button" @onclick="() => NavigateToNewcustomer()">Nieuw Klant</button>
+            <button class="new-customer-button" @onclick="() => NavigateToNewCustomer()">Nieuw Klant</button>
         </div>
     </div>
 
@@ -62,10 +62,10 @@
                 <div></div>
                 <div></div>
                 <div></div>
-                <button class="view_customer" @onclick="() => NavigateTocustomerDetails(customer.Id)">
+                <button class="view_customer" @onclick="() => NavigateToCustomerDetails(customer.Id)">
                     <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
                 </button>
-                <button class="edit_customer" @onclick="() => NavigateToEditcustomerDetails(customer.Id)">
+                <button class="edit_customer" @onclick="() => NavigateToEditCustomerDetails(customer.Id)">
                     <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
                 </button>
                 <button class="delete_customer" @onclick="() => UpdateCustomer(customer.Id)">
@@ -106,7 +106,6 @@
 
 @code {
     private List<Customer> customers = new List<Customer>();
-
     private Customer customerToDisable = new Customer();
     private int pageSize = 10;
     private int currentPage = 1;
@@ -115,7 +114,7 @@
     private void NotifyStateChanged() => OnChange?.Invoke();
     public event Action OnChange;
 
-    private RequestMakerService _requestMakerService;
+    private CustomerService _customerService;
 
     public CustomerPage()
     {
@@ -129,7 +128,8 @@
             NavigationManager.NavigateTo("/signin");
         }
 
-        _requestMakerService = new RequestMakerService(HttpClient);
+        var requestMakerService = new RequestMakerService(HttpClient);
+        _customerService = new CustomerService(requestMakerService);
 
         base.OnInitialized();
     }
@@ -137,114 +137,48 @@
     protected override async Task OnInitializedAsync()
     {
         OnChange += StateHasChanged;
-        await GetCustomers();
+        await LoadCustomers();
     }
 
-    private void NavigateTocustomerDetails(Guid customerId)
+    private void NavigateToCustomerDetails(Guid customerId)
     {
         NavigationManager.NavigateTo($"/customer/{customerId}");
     }
 
-    private void NavigateToEditcustomerDetails(Guid customerId)
+    private void NavigateToEditCustomerDetails(Guid customerId)
     {
         NavigationManager.NavigateTo($"/editcustomerconfig/{customerId}");
     }
 
-
-
-    private void NavigateToNewcustomer()
+    private void NavigateToNewCustomer()
     {
         NavigationManager.NavigateTo("/customerconfigpage");
     }
 
-    void ChangePage(int increment)
+    private void ChangePage(int increment)
     {
         currentPage += increment;
     }
 
-    public async Task<List<Customer>> GetCustomers()
+    private async Task LoadCustomers()
     {
-        var response = await _requestMakerService.MakeGetRequest("customer/allcustomers");
-        var json = await response.Content.ReadAsStringAsync();
-
-        var outerObject = JObject.Parse(json);
-        var customerArray = outerObject["result"]["customerDto"];
-
-
-        foreach (var jToken in customerArray)
-        {
-            var customer = new Customer();
-            customer.Id = Guid.Parse((string)jToken["id"]);
-            customer.Name = (string)jToken["name"];
-
-            customer.CustomerAddressDto = new CustomerAddress();
-            customer.CustomerAddressDto.StreetName = (string)jToken["streetName"];
-            customer.CustomerAddressDto.HouseNumber = (string)jToken["houseNumber"];
-            customer.CustomerAddressDto.PostalCode = (string)jToken["postalCode"];
-            customer.CustomerAddressDto.Country = (string)jToken["country"];
-            customer.CustomerAddressDto.Province = (string)jToken["province"];
-
-            customers.Add(customer);
-        }
-        return customers;
-
-
+        customers = await _customerService.GetCustomers();
     }
 
-    public async Task<Customer> GetCustomerById(Guid customerId)
+    private async Task LoadCustomerById(Guid customerId)
     {
-        var response = await _requestMakerService.MakeGetRequest($"customer/customerbyid/{customerId}");
-        var json = await response.Content.ReadAsStringAsync();
-
-        var outerObject = JObject.Parse(json);
-        var customerArray = outerObject["result"]["customerDto"];
-
-        customerToDisable = new Customer();
-
-        customerToDisable.Id = Guid.Parse((string)customerArray["id"]);
-        customerToDisable.Name = (string)customerArray["name"];
-        customerToDisable.FirstName = (string)customerArray["firstName"];
-        customerToDisable.LastName = (string)customerArray["lastName"];
-        customerToDisable.PhoneNumber = (string)customerArray["phoneNumber"];
-        customerToDisable.KVK = (string)customerArray["kvk"];
-        customerToDisable.VAT = (string)customerArray["vat"];
-        customerToDisable.BankAccountNumber = (string)customerArray["bankAccountNumber"];
-        customerToDisable.Email = (string)customerArray["email"];
-        customerToDisable.Disabled = (bool)customerArray["disabled"];
-
-        customerToDisable.CustomerAddressDto = new CustomerAddress();
-        customerToDisable.CustomerAddressDto.StreetName = (string)customerArray["customerAddressDto"]["streetName"];
-        customerToDisable.CustomerAddressDto.HouseNumber = (string)customerArray["customerAddressDto"]["houseNumber"];
-        customerToDisable.CustomerAddressDto.PostalCode = (string)customerArray["customerAddressDto"]["postalCode"];
-        customerToDisable.CustomerAddressDto.City = (string)customerArray["customerAddressDto"]["city"];
-        customerToDisable.CustomerAddressDto.Country = (string)customerArray["customerAddressDto"]["country"];
-        customerToDisable.CustomerAddressDto.Province = (string)customerArray["customerAddressDto"]["province"];
-
-        return customerToDisable;
+        customerToDisable = await _customerService.GetCustomerById(customerId);
     }
-
 
     public async Task UpdateCustomer(Guid customerId)
     {
-        await GetCustomerById(customerId);
-
-        CustomerRequest customerRequest = new CustomerRequest();
-
+        await LoadCustomerById(customerId);
         customerToDisable.Disabled = true;
-
-        customerRequest.CustomerDto = customerToDisable;
-
-        var response = await _requestMakerService.MakePatchRequest("customer/updatecustomer", customerRequest);
-
+        await _customerService.UpdateCustomer(customerToDisable);
         customers.Remove(customerToDisable);
-
-
-
-        await GetCustomers();
+        await LoadCustomers();
         NotifyStateChanged();
     }
-
-    
 
     public void Dispose()
     {
