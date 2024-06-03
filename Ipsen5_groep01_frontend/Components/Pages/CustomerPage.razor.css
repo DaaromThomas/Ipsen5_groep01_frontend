@@ -4,11 +4,20 @@
     flex: 1;
     margin-left: 6.5vmin;
     margin-right: 6.5vmin;
-    margin-top: 1.5vmin;
+    margin-top: 4vmin;
     flex-direction: column;
     height: 86vmin;
 }
 
+.page-title {
+    display: flex;
+    width: 100%;
+    color: #1f262f;
+    font-size: 3vmin;
+    font-family: Inter;
+    font-weight: 600;
+    padding-bottom: 1vmin;
+}
 
 .filter-container {
     display: flex;
@@ -22,20 +31,21 @@
 
 
 .new-customer-button {
-    width: 18vmin;
+    width: 14vmin;
     height: 4vmin;
-    font-family: Ubuntu, sans-serif;
+    font-family: Inter, sans-serif;
     color: white;
     background-color: white;
-    border: solid 0.3vmin #0a80fe;
-    color: #0a80fe;
+    border: solid 0.3vmin #1f262f;
+    color: #1f262f;
     font-size: 1.6vmin;
     font-weight: bold;
+    border-radius: 1vmin;
     transition: background-color 0.3s;
 }
 
     .new-customer-button:hover {
-        background-color: #0a80fe;
+        background-color: #1f262f;
         color: white;
     }
 
@@ -43,7 +53,7 @@
 .search-field {
     width: 45vmin;
     height: 4vmin;
-    font-family: Ubuntu, sans-serif;
+    font-family: Inter, sans-serif;
     font-size: 1.6vmin;
     font-weight: bold;
     transition: background-color 0.3s;
@@ -52,7 +62,7 @@
 .dropdown-field {
     width: 25vmin;
     height: 4vmin;
-    font-family: Ubuntu, sans-serif;
+    font-family: Inter, sans-serif;
     font-size: 1.6vmin;
 }
 
@@ -70,7 +80,8 @@
     display: grid;
     grid-template-columns: 1.1fr 1.1fr 0.8fr 0.5fr 1.15fr 0.2fr 0.2fr 0.2fr;
     padding: 1.5vmin;
-    background-color: #0a80fe;
+    background-color: #1f262f;
+    border-radius: 1vmin;
 }
 
 .header-title {

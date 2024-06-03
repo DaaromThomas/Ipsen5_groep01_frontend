@@ -12,76 +12,76 @@
 @inject AuthService AuthService
 
 
-        <div class="contract-container-background">
+<div class="contract-container-background">
+    <div class="page-title">Contracten</div>
+    <div class="filter-container">
+        <div class="filters">
+            <div class="search-container">
+                <EditForm Model="contracts" FormName="createCustomerAddressForm">
+                    <DataAnnotationsValidator />
 
-            <div class="filter-container">
-                <div class="filters">
-                    <div class="search-container">
-                        <EditForm Model="contracts" FormName="createCustomerAddressForm">
-                            <DataAnnotationsValidator />
-
-                            <div class="form-group search-field">
-                                <InputText id="name" @bind-Value="tijdelijk" class="form-control" placeholder="Zoeken"></InputText>
-                            </div>
-
-                        </EditForm>
+                    <div class="form-group search-field">
+                        <InputText id="name" @bind-Value="tijdelijk" class="form-control" placeholder="Zoeken"></InputText>
                     </div>
 
-                    <div class="dropdown-container">
-                        <select class="dropdown-field">
-                            <option value="">Selecteer filter</option>
-                            <option value="option1">Optie 1</option>
-                            <option value="option2">Optie 2</option>
-                            <option value="option3">Optie 3</option>
-                        </select>
-                    </div>
-
-                </div>
-
-                <div class="new-contract-button-container">
-                    <button class="new-contract-button" @onclick="() => NavigateToNewContract()">Nieuw Contract</button>
-                </div>
-
+                </EditForm>
             </div>
-            <div class="contract-container">
-                <div class="contract-header">
-                    <div class="header-title">Opdrachtgever</div>
-                    <div class="header-title">Professional</div>
-                    <div class="header-title">Periode</div>
-                    <div class="header-title">Status</div>
-                    <div class="header-title">Functie</div>
-                    <div class="header-title">Acties</div>
-                </div>
 
-                @foreach (var contract in contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
-                {
-                    @if (contract.Template == false)
-                    {
+            <div class="dropdown-container">
+                <select class="dropdown-field">
+                    <option value="">Selecteer filter</option>
+                    <option value="option1">Optie 1</option>
+                    <option value="option2">Optie 2</option>
+                    <option value="option3">Optie 3</option>
+                </select>
+            </div>
 
-                        <div class="contracts">
-                            <div>@contract.CustomerId</div>
-                            <div>@contract.CandidateId</div>
-                            <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
+        </div>
 
-                            <div class="status-container-color">
-                                <div class="status" style="background-color: @(GetBackgroundColor(contract.Status));">
-                                    @contract.Status
-                                </div>
-                            </div>
+        <div class="new-contract-button-container">
+            <button class="new-contract-button" @onclick="() => NavigateToNewContract()">Nieuw Contract</button>
+        </div>
 
-                            <div>@contract.JobDescription</div>
-                            <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id)">
-                                <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
-                            </button>
-                            <button class="edit_contract">
-                                <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
-                            </button>
-                            <button class="delete_contract">
-                                <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
-                            </button>
+    </div>
+    <div class="contract-container">
+        <div class="contract-header">
+            <div class="header-title">Opdrachtgever</div>
+            <div class="header-title">Professional</div>
+            <div class="header-title">Periode</div>
+            <div class="header-title">Status</div>
+            <div class="header-title">Functie</div>
+            <div class="header-title">Acties</div>
+        </div>
+
+        @foreach (var contract in contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
+        {
+            @if (contract.Template == false)
+            {
+
+                <div class="contracts">
+                    <div>@contract.CustomerId</div>
+                    <div>@contract.CandidateId</div>
+                    <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
+
+                    <div class="status-container-color">
+                        <div class="status" style="background-color: @(GetBackgroundColor(contract.Status));">
+                            @contract.Status
                         </div>
-                    }
-                }
+                    </div>
+
+                    <div>@contract.JobDescription</div>
+                    <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id)">
+                        <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
+                    </button>
+                    <button class="edit_contract">
+                        <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
+                    </button>
+                    <button class="delete_contract">
+                        <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
+                    </button>
+                </div>
+            }
+        }
 
         <div class="pagination-container">
             <div class="pagination-buttons">
@@ -107,8 +107,8 @@
             </div>
         </div>
 
-            </div>
-        </div>
+    </div>
+</div>
 
 
 
@@ -134,7 +134,7 @@
 
     protected override void OnInitialized()
     {
-      
+
 
         if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
         {
@@ -150,7 +150,7 @@
 
     protected override void OnAfterRender(bool firstRender)
     {
-        
+
     }
 
     protected override async Task OnInitializedAsync()

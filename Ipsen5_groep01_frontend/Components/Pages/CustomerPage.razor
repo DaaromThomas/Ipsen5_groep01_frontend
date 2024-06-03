@@ -3,6 +3,7 @@
 
 @using Services
 @using Models
+@using Requests;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
 
@@ -12,6 +13,7 @@
 
 <div class="customer-container-background">
 
+    <div class="page-title">Klanten</div>
     <div class="filter-container">
         <div class="filters">
             <div class="search-container">
@@ -37,7 +39,7 @@
         </div>
 
         <div class="new-customer-button-container">
-            <button class="new-customer-button" @onclick="() => NavigateToNewcustomer()">Nieuw Klant</button>
+            <button class="new-customer-button" @onclick="() => NavigateToNewCustomer()">Nieuw Klant</button>
         </div>
     </div>
 
@@ -56,17 +58,17 @@
         {
             <div class="customers">
                 <div>@customer.Name</div>
-                <div>@customer.PONumber</div>
+                <div>@customer.Name</div>
                 <div></div>
                 <div></div>
                 <div></div>
-                <button class="view_customer" @onclick="() => NavigateTocustomerDetails(customer.Id)">
+                <button class="view_customer" @onclick="() => NavigateToCustomerDetails(customer.Id)">
                     <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
                 </button>
-                <button class="edit_customer">
+                <button class="edit_customer" @onclick="() => NavigateToEditCustomerDetails(customer.Id)">
                     <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
                 </button>
-                <button class="delete_customer">
+                <button class="delete_customer" @onclick="() => UpdateCustomer(customer.Id)">
                     <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
                 </button>
             </div>
@@ -104,13 +106,15 @@
 
 @code {
     private List<Customer> customers = new List<Customer>();
-
+    private Customer customerToDisable = new Customer();
     private int pageSize = 10;
     private int currentPage = 1;
     private int totalPages => (int)Math.Ceiling((double)customers.Count() / pageSize);
     private string valuetijdelijk = "";
+    private void NotifyStateChanged() => OnChange?.Invoke();
+    public event Action OnChange;
 
-    private RequestMakerService _requestMakerService;
+    private CustomerService _customerService;
 
     public CustomerPage()
     {
@@ -124,56 +128,60 @@
             NavigationManager.NavigateTo("/signin");
         }
 
-        _requestMakerService = new RequestMakerService(HttpClient);
+        var requestMakerService = new RequestMakerService(HttpClient);
+        _customerService = new CustomerService(requestMakerService);
 
         base.OnInitialized();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        await GetCustomers();
+        OnChange += StateHasChanged;
+        await LoadCustomers();
     }
 
-    private void NavigateTocustomerDetails(Guid customerId)
+    private void NavigateToCustomerDetails(Guid customerId)
     {
         NavigationManager.NavigateTo($"/customer/{customerId}");
     }
 
-    private void NavigateToNewcustomer()
+    private void NavigateToEditCustomerDetails(Guid customerId)
+    {
+        NavigationManager.NavigateTo($"/editcustomerconfig/{customerId}");
+    }
+
+    private void NavigateToNewCustomer()
     {
         NavigationManager.NavigateTo("/customerconfigpage");
     }
 
-    void ChangePage(int increment)
+    private void ChangePage(int increment)
     {
         currentPage += increment;
     }
 
-    public async Task<List<Customer>> GetCustomers()
+    private async Task LoadCustomers()
     {
-        var response = await _requestMakerService.MakeGetRequest("customer/allcustomers");
-        var json = await response.Content.ReadAsStringAsync();
+        customers = await _customerService.GetCustomers();
+    }
 
-        var outerObject = JObject.Parse(json);
-        var customerArray = outerObject["result"]["customerDto"];
+    private async Task LoadCustomerById(Guid customerId)
+    {
+        customerToDisable = await _customerService.GetCustomerById(customerId);
+    }
 
+    public async Task UpdateCustomer(Guid customerId)
+    {
+        await LoadCustomerById(customerId);
+        customerToDisable.Disabled = true;
+        await _customerService.UpdateCustomer(customerToDisable);
+        customers.Remove(customerToDisable);
+        await LoadCustomers();
+        NotifyStateChanged();
+    }
 
-        foreach (var jToken in customerArray)
-        {
-            var customer = new Customer();
-            customer.Id = Guid.Parse((string)jToken["id"]);
-            customer.Name = (string)jToken["name"];
-            customer.PONumber = (string)jToken["poNumber"];
-
-            customer.CustomerAddressDto = new CustomerAddress();
-            customer.CustomerAddressDto.StreetName = (string)jToken["streetName"];
-            customer.CustomerAddressDto.HouseNumber = (string)jToken["houseNumber"];
-            customer.CustomerAddressDto.PostalCode = (string)jToken["postalCode"];
-            customer.CustomerAddressDto.Country = (string)jToken["country"];
-            customer.CustomerAddressDto.Province = (string)jToken["province"];
-
-            customers.Add(customer);
-        }
-        return customers;
+    public void Dispose()
+    {
+        OnChange -= StateHasChanged;
     }
 }

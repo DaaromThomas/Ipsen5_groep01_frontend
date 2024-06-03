@@ -1,10 +1,11 @@
 .navbar {
     width: 100%;
-    
-
+    background-color: white;
     display: flex;
     align-items: center;
-   
+    padding-top: 3vmin;
+    padding-bottom: 1.9vmin;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .staffingnow_logo {

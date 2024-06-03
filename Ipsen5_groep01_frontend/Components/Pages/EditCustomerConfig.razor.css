@@ -1,0 +1,392 @@
+﻿.page-title {
+    display: flex;
+    width: 100%;
+    color: #1f262f;
+    font-size: 3vmin;
+    font-family: Inter;
+    font-weight: 600;
+    padding-left: 45.3vmin;
+    padding-top: 4.5vmin;
+}
+
+
+.wizard-container {
+    display: flex;
+    height: 17vmin;
+    align-items: center;
+    justify-content: center;
+    border: solid;
+    border: 0vmin;
+    border: none; /* Zorgt ervoor dat alle borders behalve de onderkant worden uitgeschakeld */
+    border-bottom: 0.2vmin solid lightgray; /* Stel de border-bottom in */
+}
+
+.wizard-circle-container {
+}
+
+.wizard-circle {
+    display: flex;
+    align-items: center;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.circle {
+    transition: background-color 1s ease;
+    width: 5vmin;
+    height: 5vmin;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .circle.active {
+        background-color: lightgray;
+    }
+
+.line {
+    width: 35vmin;
+    height: 0.4vmin;
+    margin-left: 3vmin;
+    margin-right: 3vmin;
+    border-radius: 5vmin;
+}
+
+.wizard-title {
+    color: #1f262f;
+    font-size: 1.6vmin;
+    padding-top: 1.2vmin;
+    font-family: Inter;
+    font-weight: 600;
+}
+
+.wizard-title-status {
+    color: #4c545c;
+    font-size: 1.3vmin;
+    font-family: Inter;
+    font-weight: 600;
+}
+
+.wizard-step {
+    font-size: 2.5vmin;
+    font-family: Inter;
+    font-weight: 800;
+    color: white;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20vmin;
+    /*background-color: red;*/
+}
+
+.input-description-container {
+    width: 90vmin;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.section {
+    background-color: white;
+    padding: 2vmin;
+    border-radius: 1.5vmin;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    margin-top: 3vmin;
+}
+
+.section-title {
+    font-family: Inter;
+    font-weight: 600;
+}
+
+.description-title {
+    width: 100%;
+    color: #1f262f;
+    font-size: 1.9vmin;
+    padding-top: 5vmin;
+    font-family: Inter;
+    font-weight: 600;
+    animation: fade-up 0.5s;
+}
+
+.description {
+    width: 100%;
+    color: #4c545c;
+    font-size: 1.6vmin;
+    padding-top: 0.8vmin;
+    font-family: Inter;
+    font-weight: 600;
+    padding-bottom: 1.5vmin;
+}
+
+
+
+.input-title {
+    color: #1f262f;
+    font-size: 1.5vmin;
+    padding-top: 1.2vmin;
+    padding-bottom: 0.3vmin;
+    font-family: Inter;
+    font-weight: 600;
+}
+
+.input-field {
+    width: 86vmin;
+    height: 4.5vmin;
+    border-radius: 0.7vmin;
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    background-color: white;
+    font-family: inter;
+    padding-left: 1vmin;
+    transition: border-color 0.3s ease;
+    outline: none;
+}
+
+    .input-field:focus {
+        border-width: 0.2vmin;
+        border-color: #1f262f;
+    }
+
+.input-pair-Container {
+    display: flex;
+    gap: 2vmin;
+}
+
+.input-field-pair {
+    width: 42vmin;
+    height: 4.5vmin;
+    border-radius: 0.7vmin;
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    background-color: white;
+    font-family: inter;
+    padding-left: 1vmin;
+    transition: border-color 0.3s ease;
+    outline: none;
+}
+
+    .input-field-pair:focus {
+        border-width: 0.2vmin;
+        border-color: #1f262f;
+    }
+
+.input-pair-Container-odd {
+    display: flex;
+    gap: 2vmin;
+}
+
+.input-field-pair-odd-first {
+    width: 52vmin;
+    height: 4.5vmin;
+    border-radius: 0.7vmin;
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    background-color: white;
+    font-family: inter;
+    transition: border-color 0.3s ease;
+    padding-left: 1vmin;
+    outline: none;
+}
+
+    .input-field-pair-odd-first:focus {
+        border-width: 0.2vmin;
+        border-color: #1f262f;
+    }
+
+.input-field-pair-odd-second {
+    width: 32vmin;
+    height: 4.5vmin;
+    border-radius: 0.7vmin;
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    background-color: white;
+    font-family: inter;
+    padding-left: 1vmin;
+    outline: none;
+}
+
+    .input-field-pair-odd-second:focus {
+        border-width: 0.2vmin;
+        border-color: #1f262f;
+    }
+
+.button-container {
+    display: flex;
+    justify-content: end;
+    width: 90vmin;
+    padding-top: 7vmin;
+    gap: 3vmin;
+}
+
+.previous-button {
+    background-color: transparent;
+    border: none;
+    font-family: inter;
+    font-weight: 600;
+    color: #1f262f;
+    border-radius: 1vmin;
+    transition: background-color 0.3s ease;
+}
+
+
+    .previous-button:hover {
+        background-color: #E3E7ED;
+    }
+
+.next-button {
+    background-color: #1f262f;
+    border: none;
+    font-family: inter;
+    border-radius: 1vmin;
+    font-weight: 600;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+    .next-button:hover {
+        background-color: #3a4757;
+    }
+
+
+
+/*Page 2*/
+
+.selected-documents-container {
+    display: flex;
+    flex-direction: row;
+    gap: 3vmin;
+}
+
+.section-documents {
+    background-color: white;
+    padding: 2vmin;
+    border-radius: 1.5vmin;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    margin-top: 3vmin;
+    width: 75vmin;
+    min-height: 50vmin;
+}
+
+.section-title-selected {
+    padding-top: 2vmin;
+    font-family: Inter;
+    font-weight: 600;
+}
+
+.uploadtype-container {
+    /*display: flex;*/
+}
+
+.input-checkbox-container {
+    padding: 1.1vmin;
+    background-color: #E3E7ED;
+    margin: 0.7vmin;
+    font-size: 1.5vmin;
+    font-family: Inter;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 0.8vmin;
+    min-width: fit-content;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .input-checkbox-container:hover {
+        background-color: #1f262f;
+        color: white;
+    }
+
+    .input-checkbox-container.selected {
+        background-color: #1f262f;
+        color: white;
+    }
+
+        .input-checkbox-container.selected:hover {
+            background-color: #E3E7ED;
+            color: #1f262f;
+        }
+
+
+.selected-documents-container {
+    display: flex;
+}
+
+
+
+
+.input-container-select-documents {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20vmin;
+    /*background-color: red;*/
+}
+
+.button-container-2 {
+    display: flex;
+    justify-content: end;
+    width: 153vmin;
+    padding-top: 7vmin;
+    gap: 3vmin;
+}
+
+
+/*Page 3*/
+
+.section-review {
+    background-color: white;
+    padding: 2vmin;
+    border-radius: 1.5vmin;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    margin-top: 3vmin;
+    width: 90vmin;
+}
+
+.input-pair-Container-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.input-value {
+    font-family: Inter;
+    font-weight: 450;
+    color: dodgerblue;
+    font-size: 1.5vmin;
+}
