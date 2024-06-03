@@ -1,10 +1,23 @@
 ﻿@rendermode InteractiveServer
+
+
 @using Services;
+
 @using Ipsen5_groep01_frontend.Interfaces
 @inject LoginService LoginService
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
 @implements Observer
+
+@using Ipsen5_groep01_frontend.Services
+
+
+ <style>
+    @@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+</style>
+
+
 
 <div class="navbar">
     <img class="staffingnow_logo" src="images/staffingnow_logo.png" alt="logo" />
@@ -14,46 +27,46 @@
         <div class="admin-buttons">
             <div class="button">
                 <NavLink class="link" href="Professionals" Match="NavLinkMatch.All"
-                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;"
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Inter', sans-serif; letter-spacing: 0.16px;"
                          ActiveClass="active-link"
                          onmouseover="this.style.color='#FF6700';" onmouseout="this.style.color='#1A222D';">
-                    <span class="" aria-hidden="true"></span> PROFESSIONALS
+                    <span class="" aria-hidden="true"></span> Proffesionals
                     <div class="active-indicator"></div>
                 </NavLink>
             </div>
             <div class="button">
                 <NavLink href="Customer" Match="NavLinkMatch.All"
-                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;"
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Inter', sans-serif; letter-spacing: 0.16px;"
                          ActiveClass="active-link"
                          onmouseover="this.style.color='#FF6700';" onmouseout="this.style.color='#1A222D';">
-                    <span class="" aria-hidden="true"></span> KLANTEN
+                    <span class="" aria-hidden="true"></span> Klanten
                     <div class="active-indicator"></div>
                 </NavLink>
             </div>
             <div class="button">
                 <NavLink href="contract" Match="NavLinkMatch.All"
-                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;"
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Inter', sans-serif; letter-spacing: 0.16px;"
                          ActiveClass="active-link"
                          onmouseover="this.style.color='#FF6700';" onmouseout="this.style.color='#1A222D';">
-                    <span class="" aria-hidden="true"></span> DOSSIERS
+                    <span class="" aria-hidden="true"></span> Contracten
                     <div class="active-indicator"></div>
                 </NavLink>
             </div>
             <div class="button">
                 <NavLink href="documentbeheer" Match="NavLinkMatch.All"
-                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;"
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Inter', sans-serif; letter-spacing: 0.16px;"
                          ActiveClass="active-link"
                          onmouseover="this.style.color='#FF6700';" onmouseout="this.style.color='#1A222D';">
-                    <span class="" aria-hidden="true"></span> DOCUMENT BEHEER
+                    <span class="" aria-hidden="true"></span> Documenten
                     <div class="active-indicator"></div>
                 </NavLink>
             </div>
             <div class="button">
                 <NavLink href="AccountBeheer" Match="NavLinkMatch.All"
-                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Ubuntu', sans-serif; letter-spacing: 0.16px;"
+                         style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Inter', sans-serif; letter-spacing: 0.16px;"
                          ActiveClass="active-link"
                          onmouseover="this.style.color='#FF6700';" onmouseout="this.style.color='#1A222D';">
-                    <span class="" aria-hidden="true"></span> ACCOUNT BEHEER
+                    <span class="" aria-hidden="true"></span> Account beheer
                     <div class="active-indicator"></div>
                 </NavLink>
             </div>
@@ -125,6 +138,7 @@
         Console.WriteLine("Navbar Role: " + role);
         InvokeAsync(() => StateHasChanged());
     }
+
 
     private void navigateToHome()
     {

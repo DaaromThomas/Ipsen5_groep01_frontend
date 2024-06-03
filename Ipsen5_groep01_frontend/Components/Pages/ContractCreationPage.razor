@@ -1,0 +1,866 @@
+﻿@page "/ContractCreationPage"
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using Services
+@using Models
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@using Requests;
+@using Microsoft.AspNetCore.Authorization;
+@using BlazorAnimate;
+@using System;
+@using System.Reflection.Metadata
+@using System.Text
+@using System.Text.RegularExpressions;
+
+@using System.Text.Json;
+
+@inject IJSRuntime JSRuntime
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject AuthService AuthService
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+</style>
+
+<script>
+    function scrollToTop() {
+        window.scrollTo({ top: 0.09 * document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function scrollToTopStep2() {
+        window.scrollTo({ top: 0.08 * document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+</script>
+<script src="_content/BlazorAnimate/blazorAnimateInterop.js"></script>
+
+
+<div class="containe ">
+<div class="page-title"> Nieuw Contract </div>
+<div class="wizard-container">
+  <div class="wizard-circle-container">
+    <div class="wizard-circle">
+      <div class="circle" style="background-color: @GetCircleColorClass(1);" id="circle1">
+        @if (currentStep >= 2)
+        {
+          <img src="/icons/checkmark.png" />
+        }
+        else
+        {
+          <div class="wizard-step">1</div>
+        }
+      </div>
+
+      <div class="line" style="background-color: @GetLineColorClass(1);"></div>
+    </div>
+    <div class="wizard-title">Selecteer klant</div>
+    @* <div class="wizard-title-status">@(currentStep >= 2 ? "Afgerond" : "Bezig")</div> *@
+  </div>  
+  
+  <div class="wizard-circle-container">
+    <div class="wizard-circle">
+      <div class="circle" style="background-color: @GetCircleColorClass(2);" id="circle1">
+        @if (currentStep >= 3)
+        {
+          <img src="/icons/checkmark.png" />
+        }
+        else
+        {
+          <div class="wizard-step">2</div>
+        }
+      </div>
+
+      <div class="line" style="background-color: @GetLineColorClass(2);"></div>
+    </div>
+    <div class="wizard-title">Selecteer professional</div>
+    @* <div class="wizard-title-status">@(currentStep >= 3 ? "Afgerond" : "Bezig")</div> *@
+  </div>
+
+  <div class="wizard-circle-container">
+    <div class="wizard-circle">
+      <div class="circle" style="background-color: @GetCircleColorClass(3);" id="circle1">
+        @if (currentStep >= 4)
+        {
+          <img src="/icons/checkmark.png" />
+        }
+        else
+        {
+          <div class="wizard-step">3</div>
+        }
+      </div>
+      <div class="line" style="background-color: @GetLineColorClass(3);"></div>
+    </div>
+    <div class="wizard-title">Gegevens</div>
+    <div class="wizard-title-status">
+      @* @(currentStep == 2 ? "Bezig" : (currentStep >= 4 ? "Afgerond" : "Bezig")) *@
+    </div>
+  </div>
+
+  <div class="wizard-circle-container">
+    <div class="wizard-circle">
+      <div class="circle" style="background-color: @GetCircleColorClass(4);" id="circle3">
+        @if (currentStep >= 5)
+        {
+          <img src="/icons/checkmark.png" />
+        }
+        else
+        {
+          <div class="wizard-step">4</div>
+        }
+      </div>
+    </div>
+    <div class="wizard-title">Controleren & opslaan</div>
+    @* <div class="wizard-title-status">@(currentStep >= 5 ? "Afgerond" : "Bezig")</div> *@
+  </div>  
+</div>
+
+@if (currentStep == 1)
+{
+  <div class="input-container ">
+
+    <div class="input-description-container">
+      <EditForm Model="@Customer" FormName="createcustomer">
+        <DataAnnotationsValidator />
+
+        <div class="description-title">
+          Klant
+        </div>
+
+        <div class="description">
+          Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+        </div>
+
+        <div class="section">
+          <div class="section-title">Klant</div>
+          <div>
+            <div class="input-title">Zoek klant</div>
+            <div>
+              <input class="input-field" placeholder="Philips" @bind="@Customer.Name" />
+              @* <ValidationMessage For="() => Customer.Name"></ValidationMessage> *@
+            </div>
+          </div>
+          
+
+          <div>
+            <div class="input-title">Selecteer klant</div>
+            <div>
+              <select class="input-field" @onchange="OnCustomerChanged">
+                <option value="">-- Selecteer klant --</option>
+                @foreach (var customer in customerList)
+                {
+                  <option value="@customer.Id">@customer.Name</option>
+                }
+              </select>
+            </div>
+            @* <ValidationMessage For="() => Customer.BankAccountNumber"></ValidationMessage> *@
+          </div>
+        </div>
+        
+        <div class="button-container">
+          <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
+            Vorige
+          </button>
+          <button type="submit" class="next-button" @onclick="GoToNextStep">
+            Volgende
+          </button>
+        </div>
+      </EditForm>
+
+    </div>
+  </div>
+}
+@if (currentStep == 2)
+{
+  <div class="input-container ">
+
+    <div class="input-description-container">
+      <EditForm Model="@Customer" FormName="createcustomer">
+        <DataAnnotationsValidator />
+
+        <div class="description-title">
+          Professional
+        </div>
+
+        <div class="description">
+          Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+        </div>
+
+        <div class="section">
+          <div class="section-title">Professional</div>
+          <div>
+            <div class="input-title">Zoek professional</div>
+            <div>
+              <input class="input-field" placeholder="Dirk Jansen" @bind="@Customer.Name" />
+              @* <ValidationMessage For="() => Customer.Name"></ValidationMessage> *@
+            </div>
+          </div>
+          
+
+          <div>
+            <div class="input-title">Selecteer professional</div>
+            <div>
+              <select class="input-field" @onchange="OnCandidateChanged">
+                <option value="">-- Selecteer professional --</option>
+                @foreach (var candidate in candidateList)
+                {
+                  <option value="@candidate.Id">@candidate.FirstName @candidate.LastName</option>
+                }
+              </select>
+            </div>
+            @* <ValidationMessage For="() => Customer.BankAccountNumber"></ValidationMessage> *@
+          </div>
+        </div>
+        
+        <div class="button-container">
+          <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
+            Vorige
+          </button>
+          <button type="submit" class="next-button" @onclick="GoToNextStep">
+            Volgende
+          </button>
+        </div>
+      </EditForm>
+
+    </div>
+  </div>
+
+}
+else if (currentStep == 3)
+{
+  <div class="input-container ">
+
+    <div class="input-description-container">
+      <EditForm Model="@Customer" FormName="createcustomer">
+        <DataAnnotationsValidator />
+
+        <div class="description-title">
+          Contact gegevens
+        </div>
+
+        <div class="description">
+          Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+        </div>
+        
+        <div class="section">
+          <div class="section-title">Overeenkomst</div>
+          <div class="input-pair-Container">
+            <div>
+              <div class="input-title">Startdatum</div>
+              <div>
+                <input class="input-field-pair" placeholder="" @bind="@ContractModel.StartDate" />
+              </div>
+              @* <ValidationMessage For="() => ContractModel.StartDate"></ValidationMessage> *@
+            </div>
+            <div>
+              <div class="input-title">Einddatum</div>
+              <div>
+                <input class="input-field-pair" placeholder="" @bind="@ContractModel.EndDate" />
+              </div>
+              @* <ValidationMessage For="() => ContractModel.EndDate"></ValidationMessage> *@
+            </div>
+          </div>
+          <div class="input-title">Functie omschrijving</div>
+            <div>
+              <input class="input-field" placeholder="Software developer" @bind="@ContractModel.JobDescription" />
+            </div>
+        </div>
+        
+       <div class="section">
+          <div class="section-title">Tarieven</div>
+          <div class="input-pair-Container">
+            <div>
+              <div class="input-title">Inkooptarief</div>
+              <div>
+                <input class="input-field-pair" placeholder="5000" @bind="@ContractModel.PurchaseRate" />
+              </div>
+              @* <ValidationMessage For="() => ContractModel.PurchaseRate"></ValidationMessage> *@
+            </div>
+            <div>
+              <div class="input-title">Verkooptarief</div>
+              <div>
+                <input class="input-field-pair" placeholder="7000" @bind="@ContractModel.SellingRate" />
+              </div>
+              @* <ValidationMessage For="() => ContractModel.SellingRate"></ValidationMessage> *@
+            </div>
+          </div>
+          <div>
+            <div class="input-title">Betalingstermijn</div>
+            <div>
+              <input class="input-field" placeholder="12-3-2024" @bind="@ContractModel.PaymentTerm" />
+            </div>
+            @* <ValidationMessage For="() => ContractModel.PaymentTerm"></ValidationMessage> *@
+          </div>          
+          <div>
+            <div class="input-title">Fee-partij</div>
+            <div>
+              <input class="input-field" placeholder="StaffingNow" @bind="@ContractModel.FeeParty" />
+            </div>
+            @* <ValidationMessage For="() => ContractModel.FeeParty"></ValidationMessage> *@
+          </div>
+       </div> 
+       
+        <div class="section">
+          <div class="section-title">Overig</div>
+          <div class="input-pair-Container">
+            <div>
+              <div class="input-title">Notitie</div>
+              <div>
+                <input class="input-field-pair" placeholder="Algemene notitie" @bind="@ContractModel.Note" />
+              </div>
+              @* <ValidationMessage For="() => ContractModel.PurchaseRate"></ValidationMessage> *@
+            </div>
+            <div>
+              <div class="input-title">Status</div>
+              <div>
+                <input class="input-field-pair" placeholder="Actief" @bind="@ContractModel.Status" />
+              </div>
+              @* <ValidationMessage For="() => ContractModel.SellingRate"></ValidationMessage> *@
+            </div>
+          </div>
+        </div>
+
+        <div class="button-container">
+          <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
+            Vorige
+          </button>
+          <button type="submit" class="next-button" @onclick="GoToNextStep">
+            Volgende
+          </button>
+        </div>
+      </EditForm>
+
+    </div>
+  </div>
+}
+
+else
+{
+  @* <Animate Animation="Animations.SlideRight" Duration="TimeSpan.FromSeconds(1)"> *@
+  <div class="input-container">
+
+
+    <div class="input-description-container">
+      <div class="description-title">
+        Controleren & Oplsaan
+      </div>
+
+      <div class="description">
+        Controleer hieronder de basisgegevens. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+      </div>
+
+      <div class="section-review">
+        <div class="section-title">Geselecteerde klant</div>
+        @if(SelectedCustomer != null)
+        {
+        <div >
+          @SelectedCustomer.Name
+        </div>
+        }
+
+
+      </div>
+      <div class="section-review">
+        <div class="section-title">Geselecteerde professional</div>
+        @if(SelectedCandidate != null)
+        {
+        <div>
+          @SelectedCandidate.FirstName @SelectedCandidate.LastName
+        </div>
+        }
+      </div>
+      <div class="section-review">
+        <div class="section-title">Overeenkomst</div>
+        <div class="input-pair-Container-3"> 
+          <div>
+            <div class="input-title">Startdatum</div>
+            <div class="input-value">@ContractModel.StartDate</div>
+          </div> 
+          
+          <div>
+            <div class="input-title">Einddatum</div>
+            <div class="input-value">@ContractModel.EndDate</div>
+          </div>
+        </div>
+        <div>
+          <div class="input-title">Functieomschrijving</div>
+          <div class="input-value">@ContractModel.JobDescription</div>
+        </div>
+      </div>
+
+
+      <div class="section-review">
+        <div class="section-title">Tarieven</div>
+        <div class="input-pair-Container-3">
+          <div>
+            <div class="input-title">Inkooptarief</div>
+            <div class="input-value">@ContractModel.PurchaseRate</div>
+          </div>
+          <div>
+            <div class="input-title">Verkooptarief</div>
+            <div class="input-value">@ContractModel.SellingRate</div>
+          </div>
+        </div>
+        <div class="input-pair-Container-3">
+          <div>
+            <div class="input-title">Betalingstermijn</div>
+            <div class="input-value">@ContractModel.PaymentTerm</div>
+          </div>
+          <div>
+            <div class="input-title">Fee-partij</div>
+            <div class="input-value">@ContractModel.FeeParty</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-review">
+        <div class="section-title">Overig</div>
+        <div class="input-pair-Container-3">
+          <div>
+            <div class="input-title">Notitie</div>
+            <div class="input-value">@ContractModel.Note</div>
+          </div>
+          <div>
+            <div class="input-title">Status</div>
+            <div class="input-value">@ContractModel.Status</div>
+          </div>
+        </div>
+        
+      </div>
+
+
+    </div>
+
+    <div class="button-container">
+      <button class="previous-button" @onclick="GoToPreviousStep">
+        Vorige
+      </button>
+      <button class="next-button" @onclick="CreateContractAsync">
+        Opslaan
+      </button>
+    </div>
+  </div>
+}
+</div>
+
+
+@code {
+  private string searchTerm = string.Empty;
+  private Customer selectedCustomer;
+  private List<Customer> customerList = new List<Customer>(); 
+  private List<Candidate> candidateList = new List<Candidate>(); 
+  private List<CandidateDocumentModel> candidateDocumentsList = new List<CandidateDocumentModel>();
+  private Customer SelectedCustomer { get; set; }
+  private Candidate SelectedCandidate { get; set; }
+  private RequestMakerService _requestMakerService;
+
+  private Customer Customer { get; set; } = new();
+  private Contract ContractModel { get; set; } = new();
+
+
+  private List<Guid> selectedItems = new List<Guid>();
+  private List<Contract> contracts = new List<Contract>();
+  private List<UploadTypeModel> UploadTypes = new List<UploadTypeModel>();
+  private List<Guid> selectedUploadTypeIds = new List<Guid>();
+
+  private Guid customerId;
+  private string type;
+  private int currentPage = 1;
+  private int currentStep = 1;
+  private string houseNumberValidationMessage;
+  private string postalCodeValidationMessage;
+
+
+  public ContractCreationPage()
+  {
+
+  }
+
+
+  protected override void OnInitialized()
+  {
+    if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+    {
+      NavigationManager.NavigateTo("/signin");
+    }
+
+    _requestMakerService = new RequestMakerService(HttpClient);
+
+    base.OnInitialized();
+  }
+
+  protected override async Task OnInitializedAsync()
+  {
+    await GetAllCustomersAsync();
+    await GetAllCandidatesAsync();
+  }
+  
+  private void OnCustomerChanged(ChangeEventArgs e)
+  {
+    if (Guid.TryParse(e.Value?.ToString(), out var customerId))
+    {
+      SelectCustomerItem(customerId);
+    }
+  }
+
+  private void SelectCustomerItem(Guid customerId)
+  {
+
+    var selectedCustomer = customerList.FirstOrDefault(c => c.Id == customerId);
+    if (selectedCustomer != null)
+    {
+      // Handle the selected customer
+      SelectedCustomer = selectedCustomer;
+    }
+  }
+  
+  // private List<string> FilteredItems => 
+  // string.IsNullOrEmpty(searchTerm) 
+  // ? customerList 
+  // : customerList.FindAll(item => item.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+  
+  private void OnCandidateChanged(ChangeEventArgs e)
+  {
+    if (Guid.TryParse(e.Value?.ToString(), out var candidateId))
+    {
+      SelectCandidateItem(candidateId);
+    }
+  }
+
+  private void SelectCandidateItem(Guid candidateId)
+  {
+
+    var selectedCandidate = candidateList.FirstOrDefault(c => c.Id == candidateId);
+    if (selectedCandidate != null)
+    {
+      SelectedCandidate = selectedCandidate;
+    }
+  }
+  
+  public async Task<List<Customer>> GetAllCustomersAsync()
+  {
+    var response = await _requestMakerService.MakeGetRequest("customer/allcustomers");
+    var json = await response.Content.ReadAsStringAsync();
+
+    var outerObject = JObject.Parse(json);
+    var customerArray = outerObject["result"]["customerDto"];
+
+
+    foreach (var jToken in customerArray)
+    {
+      var customer = new Customer();
+      customer.Id = Guid.Parse((string)jToken["id"]);
+      customer.Name = (string)jToken["name"];
+      customer.FirstName = (string)jToken["firstName"];
+      customer.LastName = (string)jToken["lastName"];
+      customer.KVK = (string)jToken["kvk"];
+      customer.VAT = (string)jToken["vat"];
+      customer.BankAccountNumber = (string)jToken["bankAccountNumber"];
+      customer.Email = (string)jToken["email"];
+      customer.PhoneNumber = (string)jToken["phoneNumber"];
+
+      var customerAddress = new CustomerAddress();
+      customerAddress.Id = Guid.Parse((string)jToken["customerAddressDto"]["id"]);
+      customerAddress.StreetName = (string)jToken["customerAddressDto"]["streetName"];
+      customerAddress.HouseNumber = (string)jToken["customerAddressDto"]["houseNumber"];
+      customerAddress.PostalCode = (string)jToken["customerAddressDto"]["postalCode"];
+      customerAddress.City = (string)jToken["customerAddressDto"]["city"];
+      customerAddress.Province = (string)jToken["customerAddressDto"]["province"];
+
+      customer.CustomerAddressDto = customerAddress;
+      
+      customerList.Add(customer);
+      
+    }
+    return customerList;
+  }
+  
+  public async Task<Contract> GetContractTemplatesByCustomerId()
+  { 
+    var response = await _requestMakerService.MakeGetRequest($"Contract/gettemplatebycustomerid/{SelectedCustomer.Id}");
+    var json = await response.Content.ReadAsStringAsync();
+
+    var outerObject = JObject.Parse(json);
+    var contractArray = outerObject["result"]["contractDto"];
+    var contract = new Contract();
+    
+    contract.Id = Guid.Parse((string)contractArray["id"]);
+    contract.CandidateId = Guid.Parse((string)contractArray["candidateId"]);
+    contract.CustomerId = Guid.Parse((string)contractArray["customerId"]);
+    contract.Status = (string)contractArray["status"];
+    contract.StartDate = (DateTime)contractArray["startDate"];
+    contract.EndDate = (DateTime)contractArray["endDate"];
+    contract.PurchaseRate = (double)contractArray["purchaseRate"];
+    contract.SellingRate = (double)contractArray["sellingRate"];
+    contract.PaymentTerm = (string)contractArray["paymentTerm"];
+    contract.FeeParty = (string)contractArray["feeParty"];
+    contract.JobDescription = (string)contractArray["jobDescription"];
+    contract.Note = (string)contractArray["note"];
+    contract.Template = (bool)contractArray["template"];
+
+    foreach (var jToken in contractArray["candidateDocumentsDto"])
+    {
+      var candidateDocument= new CandidateDocumentModel();
+      candidateDocument.Id = Guid.Parse((string)jToken["id"]);
+      candidateDocument.UploadTypeId = Guid.Parse((string)jToken["uploadTypeId"]);
+      candidateDocument.ContractId = Guid.Parse((string)jToken["contractId"]);
+      candidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
+      candidateDocument.Status = (string)jToken["status"];
+      candidateDocument.CreatedDate = (DateTime)jToken["createdDate"];
+      candidateDocument.UpdatedDate = (DateTime)jToken["updatedDate"];
+      candidateDocument.CreatedBy = (string)jToken["createdBy"];
+      candidateDocument.UpdatedBy = (string)jToken["updatedBy"];
+      
+      candidateDocumentsList.Add(candidateDocument);
+    }
+    contract.CandidateDocumentsDto = candidateDocumentsList;
+    return contract;
+  }
+    
+  public async Task<List<Candidate>> GetAllCandidatesAsync()
+  {
+    var response = await _requestMakerService.MakeGetRequest("Candidate/allcandidates");
+    var json = await response.Content.ReadAsStringAsync();
+
+    var outerObject = JObject.Parse(json);
+    var candidateArray = outerObject["result"]["candidateDto"];
+
+
+    foreach (var jToken in candidateArray)
+    {
+      var candidate = new Candidate();
+      candidate.Id = Guid.Parse((string)jToken["id"]);
+      candidate.FirstName = (string)jToken["firstName"];
+      candidate.LastName = (string)jToken["lastName"];
+      candidate.DateOfBirth = (DateTime)jToken["dateOfBirth"];
+      candidate.BSN = (string)jToken["bsn"];
+      candidate.CreatedDate = (DateTime)jToken["createdDate"];
+      candidate.UpdatedDate = (DateTime)jToken["updatedDate"];
+      
+      candidateList.Add(candidate);
+      
+    }
+    return candidateList;
+  }
+  
+  // public async Task<Candidate> GetCandidateById()
+  // { 
+  //   var response = await _requestMakerService.MakeGetRequest($"Candidate/candidatebyid/{SelectedCandidate.Id}");
+  //   var json = await response.Content.ReadAsStringAsync();
+  //
+  //   var outerObject = JObject.Parse(json);
+  //   var contractArray = outerObject["result"]["contractDto"];
+  //   var contract = new Contract();
+  //   
+  //   contract.Id = Guid.Parse((string)contractArray["id"]);
+  //   contract.CandidateId = Guid.Parse((string)contractArray["candidateId"]);
+  //   contract.CustomerId = Guid.Parse((string)contractArray["customerId"]);
+  //   contract.Status = (string)contractArray["status"];
+  //   contract.StartDate = (DateTime)contractArray["startDate"];
+  //   contract.EndDate = (DateTime)contractArray["endDate"];
+  //   contract.PurchaseRate = (double)contractArray["purchaseRate"];
+  //   contract.SellingRate = (double)contractArray["sellingRate"];
+  //   contract.PaymentTerm = (string)contractArray["paymentTerm"];
+  //   contract.FeeParty = (string)contractArray["feeParty"];
+  //   contract.JobDescription = (string)contractArray["jobDescription"];
+  //   contract.Note = (string)contractArray["note"];
+  //   contract.Template = (bool)contractArray["template"];
+  //
+  //   foreach (var jToken in contractArray["candidateDocumentsDto"])
+  //   {
+  //     var candidateDocument= new CandidateDocumentModel();
+  //     candidateDocument.Id = Guid.Parse((string)jToken["id"]);
+  //     candidateDocument.UploadTypeId = Guid.Parse((string)jToken["uploadTypeId"]);
+  //     candidateDocument.ContractId = Guid.Parse((string)jToken["contractId"]);
+  //     candidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
+  //     candidateDocument.Status = (string)jToken["status"];
+  //     candidateDocument.CreatedDate = (DateTime)jToken["createdDate"];
+  //     candidateDocument.UpdatedDate = (DateTime)jToken["updatedDate"];
+  //     candidateDocument.CreatedBy = (string)jToken["createdBy"];
+  //     candidateDocument.UpdatedBy = (string)jToken["updatedBy"];
+  //     
+  //     candidateDocumentsList.Add(candidateDocument);
+  //   }
+  //   contract.CandidateDocumentsDto = candidateDocumentsList;
+  //   return contract;
+  // }
+
+  public async Task CreateContractAsync()
+  {
+    var contract = await GetContractTemplatesByCustomerId();
+    
+    
+    contract.CandidateId = SelectedCandidate.Id;
+    contract.Status = ContractModel.Status;
+    contract.StartDate = new DateTime();
+    contract.EndDate = new DateTime();
+    contract.PurchaseRate = ContractModel.PurchaseRate;
+    contract.SellingRate = ContractModel.SellingRate;
+    contract.PaymentTerm = ContractModel.PaymentTerm;
+    contract.FeeParty = ContractModel.FeeParty;
+    contract.JobDescription = ContractModel.JobDescription;
+    contract.Note = ContractModel.Note;
+    contract.Template = ContractModel.Template;
+
+    
+    ContractRequest contractRequest = new ContractRequest
+    {
+      ContractDto =  contract
+    };
+    
+    var response = await _requestMakerService.MakePostRequest("Contract/contract", contractRequest);
+    
+
+    var json = await response.Content.ReadAsStringAsync();
+
+    var outerObject = JObject.Parse(json);
+  }
+
+  
+  private async Task SubmitForms()
+  {
+    await CreateContractAsync();
+    NavigationManager.NavigateTo("/customer");
+  }
+
+  private string GetCircleColorClass(int step)
+  {
+    if (currentStep == 1)
+    {
+      if (step == 1)
+      {
+        return "#FF6700";
+      }
+      else
+      {
+        return "grey";
+      }
+    }
+    else if (currentStep == 2)
+    {
+      if (step == 1)
+      {
+        return "#1f262f";
+      }
+      else if (step == 2)
+      {
+        return "#FF6700";
+      }
+      else
+      {
+        return "grey";
+      }
+    }
+    else if (currentStep == 3)
+    {
+      if (step == 1 || step == 2)
+      {
+        return "#1f262f";
+      }
+      else if (step == 3)
+      {
+        return "#FF6700";
+      }
+      else
+      {
+        return "grey";
+      }
+    }    
+    
+    else if (currentStep == 4)
+    {
+      if (step == 1 || step == 2 || step == 3)
+      {
+        return "#1f262f";
+      }
+      else
+      {
+        return "#FF6700";
+      }
+    }
+    else
+    {
+      return "grey";
+    }
+  }
+
+  private string GetLineColorClass(int step)
+  {
+    if (currentStep == 1)
+    {
+      return "grey";
+    }
+    else if (currentStep == 2)
+    {
+      if (step == 1)
+      {
+        return "#FF6700";
+      }
+      else
+      {
+        return "grey";
+      }
+    }
+    else if (currentStep == 3)
+    {
+      if (step == 1)
+      {
+        return "#1f262f";
+
+      }
+      else if (step == 2)
+      {
+        return "#FF6700";
+
+      }
+      else
+      {
+        return "grey";
+      }
+
+    }
+    else
+    {
+      return "grey";
+    }
+  }
+
+  private async Task GoToNextStep()
+  {
+    if (currentStep < 5)
+    {
+      currentStep++;
+      if (currentStep == 2)
+      {
+        await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
+      }
+      await JSRuntime.InvokeVoidAsync("scrollToTop");
+    }
+    
+
+    
+
+  }
+ 
+  private async Task GoToPreviousStep()
+  {
+    if (currentStep == 1)
+    {
+      NavigationManager.NavigateTo("/customer");
+    }
+    else
+    {
+      currentStep--;
+    }
+
+    if (currentStep == 2)
+    {
+      await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
+    }
+
+    await JSRuntime.InvokeVoidAsync("scrollToTop");
+  }
+
+}
