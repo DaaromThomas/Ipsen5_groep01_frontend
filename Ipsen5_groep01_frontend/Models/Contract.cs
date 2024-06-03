@@ -28,7 +28,7 @@
 
         public bool Template { get; set; }
 
-        public List<CandidateDocumentModel> CandidateDocumentsDto { get; set; }
+        public List<CandidateDocumentModel> CandidateDocumentsDto { get; set; } = [];
 
         public Contract()
         {
@@ -37,6 +37,11 @@
                 CandidateDocumentsDto = new List<CandidateDocumentModel>();
             }
         }
+
+        public override string ToString()
+    {
+        return $"Id: {Id}, CandidateId: {CandidateId}, CustomerId: {CustomerId}, Status: {Status}, StartDate: {StartDate}, EndDate: {EndDate}, PurchaseRate: {PurchaseRate}, SellingRate: {SellingRate}, PaymentTerm: {PaymentTerm}, FeeParty: {FeeParty}, JobDescription: {JobDescription}, Note: {Note}, Template: {Template}, CandidateDocumentsDto: {string.Join(", ", CandidateDocumentsDto)}";
+    }
 
     }
 }

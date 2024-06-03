@@ -1,4 +1,4 @@
-﻿@page "/LeverancierDossierInzien/{kandidaatId}"
+﻿@page "/LeverancierDossierInzien/{candidateId}/{contractId}"
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Http
 @using Models
@@ -8,6 +8,8 @@
 @using Ipsen5_groep01_frontend.Services
 @inject LoginService LoginService
 @inject FileUploadService FileUploadService
+@inject ContractService ContractService
+
 @inject IJSRuntime JSRuntime
 
 
@@ -20,67 +22,58 @@
     <table class="table">
         <thead>
             <tr class="table-row table-header">
-                <th>Name</th>
+                <th>Soort document</th>
                 <th>Status</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (DocumentOpened documentOpened in chosenDocuments)
-            {
-                <tr class="table-row data-row @(documentOpened.Opened ? "opened-row" : "closed-row")" style="background-color: @(GetRowColor(documentOpened.Document.Status))" @onclick="() => documentOpened.Opened = !documentOpened.Opened">
-                    <td style="position: relative;">
-                        <div class="name-container">
-                            <p>@documentOpened.Document.UploadType</p>
-                            @if(documentOpened.Opened){
-                                <div class="input-container">
-                                    <InputFile class="document-input" OnChange="@(e => file = e)" @onclick:stopPropagation/>
-                                    <button class="upload-button" @onclick="() => UploadFile(documentOpened.Document.Id, file)">Uploaden</button>
-                                </div>
-                            }
-                        </div>
-                    </td>
-                    <td style="position: relative;">
-                        <div class="name-container">
-                            <p>@documentOpened.Document.Status</p>
-                        </div>
-                    </td>
-                    <td style="position: relative;">
-                        <div class="name-container">
-                            @if (documentOpened.Opened)
-                            {
-                                <p>&#x25B2;</p>
-                            }
-                            else
-                            {
-                                <p>&#x25BC;</p>
-                            }
-                        </div>
-                    </td>
+            @if(candidateDocuments != null){
+                @foreach(var document in candidateDocuments){
+                    <tr class="table-row data row">
+                        <td>@document.UploadTypeId</td>
+                        <td>@document.Status</td>
+                        <InputFile class="document-input" OnChange="@(e => file = e)" @onclick:stopPropagation/>
+                        <button class="upload-button" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString())">Uploaden</button>
+                    </tr>
+                }
+            }
+            else{
+                <tr>
+                    <td colspan="2">Geen documenten gevonden.</td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
 
+
 @code {
     [Parameter]
-    public string kandidaatId { get; set; }
+    public string candidateId { get; set; }
+
+    [Parameter]
+    public string contractId {get; set;}
     private List<DocumentOpened> chosenDocuments = new List<DocumentOpened>();
     private List<Dossier> dossiers = new List<Dossier>();
     private InputFileChangeEventArgs file;
 
-    protected override void OnInitialized()
+    private List<CandidateDocumentModel> candidateDocuments;
+
+
+    protected override async Task OnInitializedAsync()
     {
-        CreateDossiers();
-        Dossier chosenDossier = dossiers.Find(d => d.KandidaatId == kandidaatId);
-        foreach (var dossierDocument in chosenDossier.Documents)
-        {
-            DocumentOpened documentOpened = new DocumentOpened(dossierDocument);
-            if (documentOpened != null)
-            {
-                chosenDocuments.Add(documentOpened);
-            }
+        await LoadDocuments();
+        
+    }
+
+    private async Task LoadDocuments(){
+        var _candidateId = Guid.Parse(candidateId);
+        var _contractId = Guid.Parse(contractId);
+        await ContractService.getContractsByCandidateId(candidateId.ToString());
+        var contract = ContractService.Contracts.FirstOrDefault(c => c.Id.ToString() == contractId.ToString());
+        if (contract != null){
+            candidateDocuments = contract.CandidateDocumentsDto;
         }
     }
 
@@ -110,10 +103,15 @@
 
     public void navigate()
     {
-        this.NavigationManager.NavigateTo($"/LeverancierDossierScherm");
+        this.NavigationManager.NavigateTo($"/LeverancierDossierScherm/{candidateId}");    
+        ResetSelectedContract();
     }
 
-    private async Task UploadFile(string documentId, InputFileChangeEventArgs e)
+    private void ResetSelectedContract(){
+        contractId = null;
+    }
+
+    private async Task UploadFile(string documentId, InputFileChangeEventArgs e, string candidateId, string contractId)
     {
         var file = e.File;
         if (file == null)
@@ -126,13 +124,11 @@
         {
             await file.OpenReadStream().CopyToAsync(memoryStream);
             memoryStream.Seek(0, SeekOrigin.Begin);
-
-            var result = await FileUploadService.UploadFileAsync(memoryStream, file.Name);
-
-            // Handle result as needed
-            Console.WriteLine(result);
+            var result = await FileUploadService.UploadFileAsync(memoryStream, file.Name, candidateId, contractId);
+             Console.WriteLine($"Upload result for document {documentId} to contract {contractId}: {result}");
         }
     }
+
 
     public class DocumentOpened
     {
@@ -145,144 +141,4 @@
             Opened = false;
         }
     } 
-
-    // Test Data
-    private void CreateDossiers()
-    {
-        Dossier newDossier = new Dossier(
-            id: "12345",
-            kandidaatId: "ABCDE",
-            status: "In behandeling",
-            date: DateTime.Now,
-            inkoopTarief: 1000.0,
-            verkoopTarief: 1500.0,
-            betalingstermijn: DateTime.Now.AddDays(30),
-            feepartij: "Voorbeeld Fee Partij",
-            functieOmschrijving: "Een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-        );
-
-        // Add the first document to the new dossier
-        newDossier.Documents.Add(documents[0].Document);
-        newDossier.Documents.Add(documents[3].Document);
-        newDossier.Documents.Add(documents[0].Document);
-
-        // Add the new dossier to the dossiers list
-        dossiers.Add(newDossier);
-
-        // Second Dossier
-        Dossier newDossier2 = new Dossier(
-            id: "123456789",
-            kandidaatId: "ABCDEFGHIJ",
-            status: "Afgerond",
-            date: DateTime.Now,
-            inkoopTarief: 2000.0,
-            verkoopTarief: 2500.0,
-            betalingstermijn: DateTime.Now.AddDays(35),
-            feepartij: "Voorbeeld Fee Partij met een spin",
-            functieOmschrijving: "Nog een mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie"
-        );
-
-        // Add the second document to the new dossier
-        newDossier2.Documents.Add(documents[1].Document);
-        newDossier2.Documents.Add(documents[0].Document);
-        newDossier2.Documents.Add(documents[2].Document);
-        newDossier2.Documents.Add(documents[3].Document);
-
-        // Add the new dossier to the dossiers list
-        dossiers.Add(newDossier2);
-
-        // Third Dossier
-        Dossier newDossier3 = new Dossier(
-            id: "67890",
-            kandidaatId: "FGHIJK",
-            status: "In behandeling",
-            date: DateTime.Now,
-            inkoopTarief: 1500.0,
-            verkoopTarief: 2000.0,
-            betalingstermijn: DateTime.Now.AddDays(45),
-            feepartij: "Voorbeeld Fee Partij 3",
-            functieOmschrijving: "Nog een andere mooie functieonmschrijving",
-            leverancierNotitie: "Voorbeeld leverancier notitie 3",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 3"
-        );
-
-        // Add the third document to the new dossier
-        newDossier3.Documents.Add(documents[2].Document);
-        newDossier3.Documents.Add(documents[3].Document);
-        newDossier3.Documents.Add(documents[0].Document);
-
-        // Add the new dossier to the dossiers list
-        dossiers.Add(newDossier3);
-
-        // Fourth Dossier
-        Dossier newDossier4 = new Dossier(
-            id: "13579",
-            kandidaatId: "LMNOP",
-            status: "Afgerond",
-            date: DateTime.Now,
-            inkoopTarief: 1800.0,
-            verkoopTarief: 2300.0,
-            betalingstermijn: DateTime.Now.AddDays(25),
-            feepartij: "Voorbeeld Fee Partij 4",
-            functieOmschrijving: "Nog een andere mooie functieonmschrijving 4",
-            leverancierNotitie: "Voorbeeld leverancier notitie 4",
-            interneMedewerkerNotitie: "Voorbeeld interne medewerker notitie 4"
-        );
-
-        // Add the third document to the new dossier
-        newDossier4.Documents.Add(documents[3].Document);
-        newDossier4.Documents.Add(documents[0].Document);
-
-        // Add the new dossier to the dossiers list
-        dossiers.Add(newDossier4);
-
-        // Continue adding more dossiers with different combinations of documents...
-    }
-    private List<DocumentOpened> documents = new List<DocumentOpened>
-    {
-        new DocumentOpened(new Document
-        {
-            Id = "1",
-            UploadType = new UploadType(type: "", documentType: "", required: true),
-            DocumentPath = "/documents/invoice001.pdf",
-            Status = "Goedgekeurd",
-            CreatedDate = DateTime.Now.AddDays(-10),
-            UpdatedDate = DateTime.Now.AddDays(-5),
-            CreatedBy = "John Doe"
-        }),
-        new DocumentOpened(new Document
-        {
-            Id = "2",
-            UploadType = new UploadType(type: "", documentType: "", required: true),
-            DocumentPath = "/documents/contract002.pdf",
-            Status = "Wachten op beoordeling",
-            CreatedDate = DateTime.Now.AddDays(-15),
-            UpdatedDate = DateTime.Now.AddDays(-10),
-            CreatedBy = "Jane Smith"
-        }),
-        new DocumentOpened(new Document
-        {
-            Id = "3",
-            UploadType = new UploadType(type: "", documentType: "", required: true),
-            DocumentPath = "/documents/proposal003.pdf",
-            Status = "Afgekeurd",
-            CreatedDate = DateTime.Now.AddDays(-20),
-            UpdatedDate = DateTime.Now.AddDays(-15),
-            CreatedBy = "Alice Johnson"
-        }),
-        new DocumentOpened(new Document
-        {
-            Id = "4",
-            UploadType = new UploadType(type: "", documentType: "", required: true),
-            DocumentPath = "/documents/delivery004.pdf",
-            Status = "Nog op te leveren",
-            CreatedDate = DateTime.Now.AddDays(-25),
-            UpdatedDate = DateTime.Now.AddDays(-20),
-            CreatedBy = "Bob Williams"
-        })
-    };
 }

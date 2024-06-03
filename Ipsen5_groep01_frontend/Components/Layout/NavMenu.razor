@@ -2,12 +2,14 @@
 
 
 @using Services;
-@using Ipsen5_groep01_frontend.Services
 
-
+@using Ipsen5_groep01_frontend.Interfaces
 @inject LoginService LoginService
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
+@implements Observer
+
+@using Ipsen5_groep01_frontend.Services
 
 
  <style>
@@ -16,10 +18,11 @@
 </style>
 
 
+
 <div class="navbar">
     <img class="staffingnow_logo" src="images/staffingnow_logo.png" alt="logo" />
 
-    @if (AuthService.IsLoggedIn || AuthService.Role == "Admin")
+    @if (loggedIn && role == "Admin")
     {
         <div class="admin-buttons">
             <div class="button">
@@ -70,7 +73,7 @@
         </div>
     }
 
-    @if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+    @if (!loggedIn && role != "Admin")
     {
         <div class="home-buttons">
             <div class="signInButton" style="background-color: #10ADE5;">
@@ -90,7 +93,7 @@
 
 
 
-    @if (AuthService.IsLoggedIn || AuthService.Role == "Admin")
+    @if (loggedIn || role == "Admin")
     {
         <div class="profile_pic" @onclick="() => navigateToHome()">
             <img class="profile_pic" src="images/Microsoft_account-Logo.png" alt="logo" />
@@ -103,21 +106,38 @@
 
 @code {
     private bool isPageInitialized = false;
+    private bool loggedIn = false;
+    private string role = "";
 
     protected override async void OnInitialized()
     {
-        // if (!isPageInitialized)
-        // {
-        //     isPageInitialized = true;
-        //     await Task.Delay(100);
+        if (!isPageInitialized)
+        {
+            isPageInitialized = true;
+            await Task.Delay(100);
 
-        //     if (!AuthService.IsLoggedIn || AuthService.Role != "Admin" || AuthService.Role == null || AuthService.Role == "")
-        //     {
-        //         NavigationManager.NavigateTo("/");
-        //     }
-        // }
+            if (!AuthService.IsLoggedIn || AuthService.Role != "Admin" || AuthService.Role == null || AuthService.Role == "")
+            {
+                NavigationManager.NavigateTo("/");
+            }
+        }
     }
 
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if(firstRender){
+            this.AuthService.subscribe(this);
+        }
+    }
+
+    public void update(){
+        Console.WriteLine("Update()");
+        this.loggedIn = AuthService.IsLoggedIn;
+        this.role = AuthService.Role;
+        Console.WriteLine("Navbar loggedIn: " + loggedIn);
+        Console.WriteLine("Navbar Role: " + role);
+        InvokeAsync(() => StateHasChanged());
+    }
 
 
     private void navigateToHome()

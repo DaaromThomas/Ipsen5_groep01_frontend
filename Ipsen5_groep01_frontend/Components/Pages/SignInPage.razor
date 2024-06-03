@@ -7,6 +7,7 @@
 @inject AuthService AuthService
 
 @using Services
+@using System.Text.Json;
 @using Microsoft.AspNetCore.Http;
 @using Microsoft.AspNetCore.Identity;
 @using Microsoft.IdentityModel.Tokens;
@@ -92,7 +93,6 @@
 
     protected override void OnInitialized()
     {
-        AuthService.LogOut();
         _requestMakerService = new RequestMakerService(HttpClient);
         base.OnInitialized();
     }
@@ -107,6 +107,9 @@
 
             if (response.IsSuccessStatusCode)
             {
+                var jsonResponse = await response.Content.ReadAsStreamAsync();
+                var loginApiResponse = JsonSerializer.Deserialize<LoginApiResponse>(jsonResponse, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
+                var candidateId = loginApiResponse?.Result?.CandidateId;
                 if (response.Headers.TryGetValues("Authorization", out var tokens))
                 {
                     var Token = tokens.FirstOrDefault().Substring(7);
@@ -133,15 +136,21 @@
                     if (roleClaim != null)
                     {
                         var role = roleClaim.Value;
-                        AuthService.LogIn(role);
                         if (role == "Admin" || role == "Employee")
                         {
                             NavigationManager.NavigateTo("/contract");
                         }
                         else if (role == "User")
                         {
-                            NavigationManager.NavigateTo("/LeverancierDossierScherm");
+                            if(!string.IsNullOrEmpty(candidateId.ToString()))
+                            {
+                            NavigationManager.NavigateTo($"/LeverancierDossierScherm/{candidateId}");
+                            }
+                            else{
+                                Console.WriteLine("Fout opgetreden bij candidateId");
+                            }
                         }
+                        AuthService.LogIn(role);
                     }
                 }
             }
