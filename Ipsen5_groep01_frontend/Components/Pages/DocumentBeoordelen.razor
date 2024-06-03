@@ -38,7 +38,7 @@
  
         @foreach (CandidateDocumentModel document in _documents.Skip((currentPage - 1) * pageSize).Take(pageSize)){
             <div class="documents">
-                    <div>@document.UploadTypeId</div>
+                    <div>@GetUploadTypeName(document.UploadTypeId)</div>
                     <div class="status-container-color">
                         <div class="status" style="background-color: @(GetBackgroundColor(document.Status));">
                             @document.Status
@@ -91,6 +91,8 @@
     private List<CandidateDocumentModel> _documents = [];
     private Contract _contract = null;
 
+    private List<UploadTypeModel> _uploadTypes = [];
+
      protected override void OnInitialized()
     {
         _requestMakerService = new RequestMakerService(HttpClient);
@@ -99,13 +101,11 @@
     protected override async Task OnInitializedAsync()
     {
         await getCandidateDocumentByContractId(contractId);
+        await GetAllUploadTypesAsync();
     }
  
     private async Task getCandidateDocumentByContractId(string contractId){
         await GetContracts();
-
-        
-        
     }
  
     void ChangePage(int increment)
@@ -121,6 +121,12 @@
             "Completed" => "#AA77FF",
             _ => "lightblue"
         };
+    }
+
+     private string GetUploadTypeName(Guid uploadTypeId)
+    {
+        var uploadType = _uploadTypes.FirstOrDefault(ut => ut.Id == uploadTypeId);
+        return uploadType?.Type ?? "Unknown";
     }
 
     public async Task<List<Contract>> GetContracts()
@@ -181,5 +187,28 @@
         }
 
         return _contracts;
+    }
+
+    public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
+    {
+        var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["uploadTypeDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+            var uploadType = new UploadTypeModel();
+            uploadType.Id = Guid.Parse((string)jToken["id"]);
+            uploadType.Type = (string)jToken["type"];
+            uploadType.DocumentType = (string)jToken["documentType"];
+            uploadType.Required = (bool)jToken["required"];
+
+            _uploadTypes.Add(uploadType);
+        }
+
+        return _uploadTypes;
     }
 }
