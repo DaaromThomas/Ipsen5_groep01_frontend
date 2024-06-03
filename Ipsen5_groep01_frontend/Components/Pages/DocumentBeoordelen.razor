@@ -33,7 +33,7 @@
             <div class="header-title">Document</div>
             <div class="header-title">Status</div>
             <div class="header-title">Upload-datum</div>
-            <div>Download</div>
+            <div class="header-title">Download</div>
         </div>
  
         @foreach (CandidateDocumentModel document in _documents.Skip((currentPage - 1) * pageSize).Take(pageSize)){
@@ -45,6 +45,7 @@
                         </div>
                     </div>
                     <div>@document.UpdatedDate.ToString("dd-MM-yyyy")</div>  
+                    <div @onclick="() => DownloadDocument(GetUploadTypeName(document.UploadTypeId))">Downloaden</div>
                 </div>
         }
  
@@ -127,6 +128,28 @@
     {
         var uploadType = _uploadTypes.FirstOrDefault(ut => ut.Id == uploadTypeId);
         return uploadType?.Type ?? "Unknown";
+    }
+
+    private async Task DownloadDocument(string UploadTypeName){
+        var response = await _requestMakerService.MakeGetRequest($"BlobStorage/downloadFile/{_contract.CustomerId}/{_contract.Id}/{UploadTypeName}");
+        Console.WriteLine(response);
+         var contentDisposition = response.Content.Headers.ContentDisposition;
+        var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? "downloaded_file";
+
+        // Ensure the fileName is correctly decoded if it's URL encoded
+        fileName = Uri.UnescapeDataString(fileName);
+
+        // Get the path to the user's Downloads folder
+        string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+        var filePath = Path.Combine(downloadsPath, fileName);
+
+        using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+        {
+            await response.Content.CopyToAsync(fileStream);
+        }
+
+        Console.WriteLine($"File downloaded successfully and saved to {filePath}");
+        
     }
 
     public async Task<List<Contract>> GetContracts()
