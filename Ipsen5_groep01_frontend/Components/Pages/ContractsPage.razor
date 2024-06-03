@@ -58,7 +58,7 @@
             @if (contract.Template == false)
             {
 
-                <div class="contracts">
+                <div class="contracts" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
                     <div>@contract.CustomerId</div>
                     <div>@contract.CandidateId</div>
                     <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
@@ -70,7 +70,7 @@
                     </div>
 
                     <div>@contract.JobDescription</div>
-                    <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id)">
+                    <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
                         <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
                     </button>
                     <button class="edit_contract">
@@ -201,9 +201,9 @@
         };
     }
 
-    private void NavigateToContractDetails(Guid contractId)
+    private void NavigateToContractDetails(string contractId)
     {
-        NavigationManager.NavigateTo($"/Contract/{contractId}");
+        NavigationManager.NavigateTo($"/DocumentBeoordelen/{contractId}");
     }
 
     private void NavigateToNewContract()

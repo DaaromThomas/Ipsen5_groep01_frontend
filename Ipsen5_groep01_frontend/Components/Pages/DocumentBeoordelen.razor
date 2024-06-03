@@ -1,0 +1,103 @@
+@page "/DocumentBeoordelen/{contractId}"
+@using Ipsen5_groep01_frontend.Models
+@using Ipsen5_groep01_frontend.Services
+@inject ContractService ContractService
+ 
+<div class="document-container-background">
+    <div class="page-title">Document beoordelen</div>
+    <div class="filter-container">
+        <div class="filters">
+            <div class="search-container">
+               
+            </div>
+ 
+            <div class="dropdown-container">
+                <select class="dropdown-field">
+                    <option value="">Selecteer filter</option>
+                    <option value="option1">Optie 1</option>
+                    <option value="option2">Optie 2</option>
+                    <option value="option3">Optie 3</option>
+                </select>
+            </div>
+        </div>
+    </div>
+ 
+ 
+    <div class="document-container">
+        <div class="document-header">
+            <div class="header-title">Document</div>
+            <div class="header-title">Status</div>
+            <div class="header-title">Upload-datum</div>
+            <div>Download</div>
+        </div>
+ 
+        @foreach (CandidateDocumentModel document in documents.Skip((currentPage - 1) * pageSize).Take(pageSize)){
+            <div class="documents">
+                    <div>@document.UploadTypeId</div>
+                    <div class="status-container-color">
+                        <div class="status" style="background-color: @(GetBackgroundColor(document.Status));">
+                            @document.Status
+                        </div>
+                    </div>
+                    <div>@document.UpdatedDate.ToString("dd-MM-yyyy")</div>  
+                </div>
+        }
+ 
+        <div class="pagination-container">
+            <div class="pagination-buttons">
+ 
+                <button class="previous-page-button" @onclick="() => ChangePage(-1)">
+                    @if (currentPage > 1)
+                    {
+                        <img class="rotate-18" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    }
+                </button>
+ 
+                <div class="pagination-info">
+                    @currentPage van @totalPages
+                </div>
+ 
+                <button class="next-page-button" @onclick="() => ChangePage(1)">
+                    @if (documents.Count() > currentPage * pageSize)
+                    {
+                        <img class="rotate-180" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    }
+                </button>
+ 
+            </div>
+        </div>
+ 
+    </div>
+</div>
+ 
+ 
+@code{
+    [Parameter]
+    public string contractId{ get; set; }
+ 
+    private int pageSize = 10;
+    private int currentPage = 1;
+    private int totalPages => (int)Math.Ceiling((double)documents.Count() / pageSize);
+ 
+    private List<CandidateDocumentModel> documents = [];
+    private List<Contract> contracts = [];
+ 
+    private void getCandidateDocumentByContractId(string contractId){
+ 
+    }
+ 
+    void ChangePage(int increment)
+    {
+        currentPage += increment;
+    }
+ 
+    private string GetBackgroundColor(string status)
+    {
+        return status switch
+        {
+            "New" => "lightgreen",
+            "Completed" => "#AA77FF",
+            _ => "lightblue"
+        };
+    }
+}
