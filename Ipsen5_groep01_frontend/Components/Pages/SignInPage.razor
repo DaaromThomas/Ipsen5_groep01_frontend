@@ -107,9 +107,7 @@
 
             if (response.IsSuccessStatusCode)
             {
-                var jsonResponse = await response.Content.ReadAsStreamAsync();
-                var loginApiResponse = JsonSerializer.Deserialize<LoginApiResponse>(jsonResponse, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
-                var candidateId = loginApiResponse?.Result?.CandidateId;
+                
                 if (response.Headers.TryGetValues("Authorization", out var tokens))
                 {
                     var Token = tokens.FirstOrDefault().Substring(7);
@@ -142,6 +140,9 @@
                         }
                         else if (role == "User")
                         {
+                            var jsonResponse = await response.Content.ReadAsStreamAsync();
+                            var loginApiResponse = JsonSerializer.Deserialize<LoginApiResponse>(jsonResponse, new JsonSerializerOptions{PropertyNameCaseInsensitive = true});
+                            var candidateId = loginApiResponse?.Result?.CandidateId;
                             if(!string.IsNullOrEmpty(candidateId.ToString()))
                             {
                             NavigationManager.NavigateTo($"/LeverancierDossierScherm/{candidateId}");
