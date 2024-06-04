@@ -127,7 +127,7 @@ button {
 }
 
 .description-title {
-    width: 100%;
+    width: 80vmin;
     color: #1f262f;
     font-size: 1.9vmin;
     padding-top: 5vmin;
@@ -137,7 +137,7 @@ button {
 }
 
 .description {
-    width: 100%;
+    width: 80vmin;
     color: #4c545c;
     font-size: 1.6vmin;
     padding-top: 0.8vmin;
@@ -249,6 +249,7 @@ button {
     width: 90vmin;
     padding-top: 7vmin;
     gap: 3vmin;
+    margin-right: 10vmin;
 }
 
 .previous-button {
@@ -280,11 +281,18 @@ button {
         background-color: #3a4757;
     }
 
+.requierdcheckbox {
+    width: 2.5vmin;
+    height: 2.5vmin;
+    margin-top: 0.2vmin;
+}
 
+.checkbox-container {
+
+}
 
 
 .documentType-container {
-   
     gap: 1vmin;
     margin-top: 1.3vmin;
     align-items: center;
@@ -297,7 +305,6 @@ button {
     padding: 0.6vmin;
     width: 8vmin;
     border-radius: 1vmin;
-
     display: flex;
     align-items: center;
     gap: 1vmin;
@@ -323,6 +330,7 @@ button {
     height: 2.1vmin;
     transition: opacity 0.3s ease;
 }
+
     .add-close-icon:hover {
         opacity: 0.7;
     }
