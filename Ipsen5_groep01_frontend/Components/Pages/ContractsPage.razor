@@ -55,32 +55,35 @@
 
         @foreach (var contract in contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
         {
-            @if (contract.Template == false)
-            {
+            Customer customer = null;
+            customers.TryGetValue(contract.CustomerId, out customer);
 
-                <div class="contracts">
-                    <div>@contract.CustomerId</div>
-                    <div>@contract.CandidateId</div>
-                    <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
+            @* Candidate candidate = null;
+            candidates.TryGetValue(contract.CandidateId, out candidate); *@
 
-                    <div class="status-container-color">
-                        <div class="status" style="background-color: @(GetBackgroundColor(contract.Status));">
-                            @contract.Status
-                        </div>
+            <div class="contracts">
+                <div>@customer?.Name</div>
+                <div>@contract.CandidateId</div>
+                <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
+
+                <div class="status-container-color">
+                    <div class="status" style="background-color: @(GetBackgroundColor(contract.Status));">
+                        @contract.Status
                     </div>
-
-                    <div>@contract.JobDescription</div>
-                    <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id)">
-                        <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
-                    </button>
-                    <button class="edit_contract">
-                        <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
-                    </button>
-                    <button class="delete_contract">
-                        <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
-                    </button>
                 </div>
-            }
+
+                <div>@contract.JobDescription</div>
+                <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id)">
+                    <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
+                </button>
+                <button class="edit_contract">
+                    <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
+                </button>
+                <button class="delete_contract">
+                    <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
+                </button>
+            </div>
+
         }
 
         <div class="pagination-container">
@@ -121,6 +124,7 @@
     private string tijdelijk = "";
 
     private RequestMakerService _requestMakerService;
+    private CustomerService _customerService;
 
     public ContractsPage()
     {
@@ -142,21 +146,43 @@
         }
 
 
-
         _requestMakerService = new RequestMakerService(HttpClient);
+        _customerService = new CustomerService(_requestMakerService);
 
         base.OnInitialized();
     }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
 
+    private async Task<Customer> GetCustomerById(Guid customerId)
+    {
+        var customer = await _customerService.GetCustomerById(customerId);
+        return customer;
     }
+
+    private Dictionary<Guid, Customer> customers = new Dictionary<Guid, Customer>();
+    private Dictionary<Guid, Candidate> candidates = new Dictionary<Guid, Candidate>();
+
 
     protected override async Task OnInitializedAsync()
     {
         await GetContracts();
+        // Voorbeeld contracts, vervang dit door je werkelijke data bron
+        var customerIds = contracts.Select(c => c.CustomerId).Distinct();
+        foreach (var customerId in customerIds)
+        {
+            customers[customerId] = await _customerService.GetCustomerById(customerId);
+        }
+
+        // var candidateIds = contracts.Select(c => c.CandidateId).Distinct();
+        // foreach (var candidateId in candidateIds)
+        // {
+        //     candidates[candidateId] = await _candidateService.GetCandidateById(candidateId);
+        // }
     }
+
+    
+
+   
 
     public async Task<List<Contract>> GetContracts()
     {
