@@ -13,38 +13,49 @@
 @inject IJSRuntime JSRuntime
 
 
-<div class="decorative-bar"></div>
 
-<div class="main">
-    <div class="button-container">
-        <button class="navigate-button" @onclick="()=>navigate()">Terug</button>
-    </div>
-    <table class="table">
-        <thead>
-            <tr class="table-row table-header">
-                <th>Soort document</th>
-                <th>Status</th>
-                <th></th>
+<div class="customer-container-background">
+    <div class="page-title">@contractId</div>
+    <div class="customer-container">
+        <div class="customer-header">
+            <div class="header-title">Naam</div>
+            <div class="header-title"></div>
+            <div class="header-title">Geupload op</div>
+            <div class="header-title">Status</div>
+            <div class="header-title">Kies Bestand</div>
+            <div class="header-title">Uploaden</div>
+        </div>
+
+
+
+
+        @if (candidateDocuments != null)
+        {
+            @foreach (var document in candidateDocuments)
+            {
+                <div class="customers">
+                    <div>@document.UploadTypeId</div>
+                    <div></div>
+                    <div>@document.UpdatedBy</div>
+                    <div>@document.Status</div>
+
+                    <InputFile class="eye_icon" OnChange="@(e => file = e)" @onclick:stopPropagation>
+                        <img class="eye_icon" src="/icons/upload.png" />
+                    </InputFile>
+                    <button class="view_customer" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString())">
+                        <img class="eye_icon" src="/icons/upload.png"/>
+                    </button>
+                </div>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2">Geen documenten gevonden.</td>
             </tr>
-        </thead>
-        <tbody>
-            @if(candidateDocuments != null){
-                @foreach(var document in candidateDocuments){
-                    <tr class="table-row data row">
-                        <td>@document.UploadTypeId</td>
-                        <td>@document.Status</td>
-                        <InputFile class="document-input" OnChange="@(e => file = e)" @onclick:stopPropagation/>
-                        <button class="upload-button" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString())">Uploaden</button>
-                    </tr>
-                }
-            }
-            else{
-                <tr>
-                    <td colspan="2">Geen documenten gevonden.</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        }
+
+    </div>
 </div>
 
 
@@ -53,7 +64,7 @@
     public string candidateId { get; set; }
 
     [Parameter]
-    public string contractId {get; set;}
+    public string contractId { get; set; }
     private List<DocumentOpened> chosenDocuments = new List<DocumentOpened>();
     private List<Dossier> dossiers = new List<Dossier>();
     private InputFileChangeEventArgs file;
@@ -64,21 +75,25 @@
     protected override async Task OnInitializedAsync()
     {
         await LoadDocuments();
-        
+
     }
 
-    private async Task LoadDocuments(){
+    private async Task LoadDocuments()
+    {
         var _candidateId = Guid.Parse(candidateId);
         var _contractId = Guid.Parse(contractId);
         await ContractService.getContractsByCandidateId(candidateId.ToString());
         var contract = ContractService.Contracts.FirstOrDefault(c => c.Id.ToString() == contractId.ToString());
-        if (contract != null){
+        if (contract != null)
+        {
             candidateDocuments = contract.CandidateDocumentsDto;
         }
     }
 
-    protected override void OnAfterRender(bool firstRender){
-        if(firstRender){
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
             LoginService.setIsAdmin(false);
             LoginService.setLoggedIn(true);
         }
@@ -103,11 +118,12 @@
 
     public void navigate()
     {
-        this.NavigationManager.NavigateTo($"/LeverancierDossierScherm/{candidateId}");    
+        this.NavigationManager.NavigateTo($"/LeverancierDossierScherm/{candidateId}");
         ResetSelectedContract();
     }
 
-    private void ResetSelectedContract(){
+    private void ResetSelectedContract()
+    {
         contractId = null;
     }
 
@@ -125,7 +141,7 @@
             await file.OpenReadStream().CopyToAsync(memoryStream);
             memoryStream.Seek(0, SeekOrigin.Begin);
             var result = await FileUploadService.UploadFileAsync(memoryStream, file.Name, candidateId, contractId);
-             Console.WriteLine($"Upload result for document {documentId} to contract {contractId}: {result}");
+            Console.WriteLine($"Upload result for document {documentId} to contract {contractId}: {result}");
         }
     }
 
@@ -140,5 +156,5 @@
             Document = document;
             Opened = false;
         }
-    } 
+    }
 }
