@@ -138,11 +138,8 @@
             await file.OpenReadStream().CopyToAsync(memoryStream);
             memoryStream.Seek(0, SeekOrigin.Begin);
             var result = await FileUploadService.UploadFileAsync(memoryStream, file.Name, candidateId, contractId, uploadTypeName);
-            Console.WriteLine($"Upload result for document {documentId} to contract {contractId}: {result}");
-
 
             document.Status = "Wachten op beoordeling";
-            Console.WriteLine("Document: " + document);
 
             CandidateDocumentModelRequest request = new CandidateDocumentModelRequest();
             request.CandidateDocumentDto = document;

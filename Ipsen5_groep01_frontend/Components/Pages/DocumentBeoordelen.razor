@@ -163,7 +163,6 @@
 
     private async Task DownloadDocument(string UploadTypeName){
         var response = await _requestMakerService.MakeGetRequest($"BlobStorage/downloadFile/{_contract.CustomerId}/{_contract.Id}/{UploadTypeName}");
-        Console.WriteLine(response);
          var contentDisposition = response.Content.Headers.ContentDisposition;
         var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? "downloaded_file";
 
@@ -179,9 +178,7 @@
             await response.Content.CopyToAsync(fileStream);
         }
 
-        Console.WriteLine($"File downloaded successfully and saved to {filePath}");
         var downloadUrl = $"https://staffingnowdocuments.blob.core.windows.net/myfiles/{_contract.CustomerId}/{_contract.Id}/{UploadTypeName}/{fileName}";
-        Console.WriteLine(fileName);
         
         await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
 
@@ -193,7 +190,6 @@
         } else if(!statusBoolean){
             document.Status = "Afgekeurd";
         }
-        Console.WriteLine("Document: " + document);
 
         CandidateDocumentModelRequest request = new CandidateDocumentModelRequest();
         request.CandidateDocumentDto = document;

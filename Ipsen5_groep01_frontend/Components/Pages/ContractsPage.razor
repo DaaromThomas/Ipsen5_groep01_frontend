@@ -283,10 +283,6 @@
             customer.PhoneNumber = (string)jToken["phoneNumber"];
             customer.Disabled = (bool)jToken["disabled"];
 
-            Console.WriteLine(customer.Name);
-            Console.WriteLine("Customer id: " + customer.Id);
-
-
             _customers.Add(customer);
         }
 
