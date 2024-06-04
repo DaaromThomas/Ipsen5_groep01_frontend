@@ -49,7 +49,7 @@
     <div class="upload-type-container">
         <div class="upload-type-header">
             <div class="header-title">Naam</div>
-            <div class="header-title">Verplicht</div>
+            <div class="header-title">Standaard</div>
             <div class="header-title"></div>
             <div class="header-title"></div>
             <div class="header-title"></div>
@@ -59,7 +59,16 @@
         {
             <div class="upload-types">
                 <div>@uploadtype.Type</div>
-                <div>@uploadtype.Required</div>
+                <div>
+                    @if (uploadtype.Required)
+                    {
+                        @:Ja
+                    }
+                    else
+                    {
+                        @:Nee
+                    }
+                </div>
                 <div>@uploadtype.DocumentType</div>
 
                 <div class="status-container-color">
