@@ -17,47 +17,11 @@
 <EditForm Model="UploadTypeModel" OnValidSubmit="CreateUploadTypesAsync" FormName="createUploadType">
     <DataAnnotationsValidator />
 
-    @*   <div class="center-screen">
-
-
-
-    <div class="form-group">
-    <label for="streetName">Naam:</label>
-    <InputText id="type" @bind-Value="UploadTypeModel.Type" class="form-control"></InputText>
-    </div>
-
-    <div class="form-group check-box">
-    <label for="required">Verplicht:</label>
-    <input @bind="UploadTypeModel.Required" class="document-checkbox" type="checkbox" />
-    </div>
-
-
-    <div class="form-group">
-    <label for="type">Selecteer:</label>
-    <select id="type" @onchange="UpdateSelectedUploadTypes" multiple class="form-control dropdownlist">
-    @foreach (var documentType in DocumentTypes)
-    {
-    <option value="@documentType.Id">@documentType.Type</option>
-    }
-    </select>
-    </div>
-
-    <button type="submit" class="next-button">
-    Opslaan
-    </button>
-    </div> *@
-
-
     <div class="input-container ">
-
         <div class="input-description-container">
-
-
             <div class="description-title">
                 Documenten
             </div>
-
-
 
             <div class="description">
                 Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
