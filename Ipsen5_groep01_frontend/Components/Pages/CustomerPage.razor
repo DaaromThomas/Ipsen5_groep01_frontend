@@ -47,10 +47,10 @@
 
         <div class="customer-header">
             <div class="header-title">Klant</div>
-            <div class="header-title">PONummer</div>
-            <div class="header-title">-</div>
-            <div class="header-title">-</div>
-            <div class="header-title">-</div>
+            <div class="header-title">Contact persoon</div>
+            <div class="header-title">KVK</div>
+            <div class="header-title">Telefoonnummer</div>
+            <div class="header-title">Stad</div>
             <div class="header-title">Acties</div>
         </div>
 
@@ -58,10 +58,11 @@
         {
             <div class="customers">
                 <div>@customer.Name</div>
-                <div>@customer.Name</div>
-                <div></div>
-                <div></div>
-                <div></div>
+                <div>@customer.FirstName @customer.LastName</div>
+                <div>@customer.KVK</div>
+                <div>@customer.PhoneNumber</div>
+                <div>@customer.CustomerAddressDto.City</div>
+
                 <button class="view_customer" @onclick="() => NavigateToCustomerDetails(customer.Id)">
                     <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
                 </button>

@@ -49,7 +49,7 @@
     <div class="upload-type-container">
         <div class="upload-type-header">
             <div class="header-title">Naam</div>
-            <div class="header-title">Verplicht</div>
+            <div class="header-title">Standaard</div>
             <div class="header-title"></div>
             <div class="header-title"></div>
             <div class="header-title"></div>
@@ -59,7 +59,16 @@
         {
             <div class="upload-types">
                 <div>@uploadtype.Type</div>
-                <div>@uploadtype.Required</div>
+                <div>
+                    @if (uploadtype.Required)
+                    {
+                        @:Ja
+                    }
+                    else
+                    {
+                        @:Nee
+                    }
+                </div>
                 <div>@uploadtype.DocumentType</div>
 
                 <div class="status-container-color">
@@ -121,7 +130,7 @@
     private int totalPages => (int)Math.Ceiling((double)UploadTypes.Count() / pageSize);
     private string valuetijdelijk = "";
 
-    private RequestMakerService _requestMakerService;
+    private UploadService _uploadService;
 
     public UploadTypeManagementPage()
     {
@@ -130,13 +139,12 @@
 
     protected override void OnInitialized()
     {
-        if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
-        {
-            NavigationManager.NavigateTo("/signin");
-        }
+        // if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+        // {
+        //     NavigationManager.NavigateTo("/signin");
+        // }
 
-
-        _requestMakerService = new RequestMakerService(HttpClient);
+        _uploadService = new UploadService(new RequestMakerService(HttpClient));
 
         base.OnInitialized();
     }
@@ -161,37 +169,24 @@
         NavigationManager.NavigateTo($"/uploadtype/{uploadtypeId}");
     }
 
-
     private void NavigateToNewuploadtype()
     {
         NavigationManager.NavigateTo("/NewUploadtype");
     }
-
 
     void ChangePage(int increment)
     {
         currentPage += increment;
     }
 
-    public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
+    private async Task GetAllUploadTypesAsync()
     {
-        var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
-        var json = await response.Content.ReadAsStringAsync();
-
-        var outerObject = JObject.Parse(json);
-        var contractArray = outerObject["result"]["uploadTypeDto"];
+        var allUploadTypes = await _uploadService.GetAllUploadTypesAsync();
 
 
-        foreach (var jToken in contractArray)
-        {
-            var uploadType = new UploadTypeModel();
-            uploadType.Id = Guid.Parse((string)jToken["id"]);
-            uploadType.Type = (string)jToken["type"];
-            uploadType.DocumentType = (string)jToken["documentType"];
-            uploadType.Required = (bool)jToken["required"];
-
-            UploadTypes.Add(uploadType);
-        }
-        return UploadTypes;
+        UploadTypes = allUploadTypes
+            .GroupBy(ut => ut.Type)
+            .Select(g => g.First())
+            .ToList();
     }
 }

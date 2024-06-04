@@ -55,8 +55,6 @@
 
         @foreach (var contract in contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
         {
-            @if (contract.Template == false)
-            {
 
                 <div class="contracts" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
                     <div>@getCustomerNameById(@contract.CustomerId)</div>
@@ -79,8 +77,8 @@
                     <button class="delete_contract">
                         <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
                     </button>
+
                 </div>
-            }
         }
 
         <div class="pagination-container">
@@ -121,9 +119,13 @@
     private string tijdelijk = "";
 
     private RequestMakerService _requestMakerService;
+    private CustomerService _customerService;
+    private CandidateService _candidateService;
+
 
     private List<Candidate> _candidates = [];
     private List<Customer> _customers = [];
+
 
     public ContractsPage()
     {
@@ -145,16 +147,23 @@
         }
 
 
-
         _requestMakerService = new RequestMakerService(HttpClient);
+        _customerService = new CustomerService(_requestMakerService);
+        _candidateService = new CandidateService(_requestMakerService);
 
         base.OnInitialized();
     }
 
-    protected override void OnAfterRender(bool firstRender)
-    {
 
+    private async Task<Customer> GetCustomerById(Guid customerId)
+    {
+        var customer = await _customerService.GetCustomerById(customerId);
+        return customer;
     }
+
+    private Dictionary<Guid, Customer> customers = new Dictionary<Guid, Customer>();
+    private Dictionary<Guid, Candidate> candidates = new Dictionary<Guid, Candidate>();
+
 
     protected override async Task OnInitializedAsync()
     {

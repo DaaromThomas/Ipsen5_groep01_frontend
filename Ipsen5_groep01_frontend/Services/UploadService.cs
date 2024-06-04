@@ -27,6 +27,30 @@ namespace Ipsen5_groep01_frontend.Services
                 Required = (bool)jToken["required"]
             }).ToList();
         }
+
+        public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
+        {
+            var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+            var json = await response.Content.ReadAsStringAsync();
+
+            var outerObject = JObject.Parse(json);
+            var contractArray = outerObject["result"]["uploadTypeDto"];
+
+            var uploadTypes = new List<UploadTypeModel>();
+            foreach (var jToken in contractArray)
+            {
+                var uploadType = new UploadTypeModel
+                {
+                    Id = Guid.Parse((string)jToken["id"]),
+                    Type = (string)jToken["type"],
+                    DocumentType = (string)jToken["documentType"],
+                    Required = (bool)jToken["required"]
+                };
+
+                uploadTypes.Add(uploadType);
+            }
+            return uploadTypes;
+        }
     }
 
 }
