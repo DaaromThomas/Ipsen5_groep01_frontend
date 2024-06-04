@@ -6,6 +6,8 @@
 @using Newtonsoft.Json.Linq;
 @inject RequestMakerService RequestMakerService
 @inject HttpClient HttpClient
+@inject IJSRuntime JSRuntime
+
 
  
 <div class="document-container-background">
@@ -75,6 +77,24 @@
  
     </div>
 </div>
+<script>
+    window.downloadFile = function (url, fileName) {
+        // Maak een verborgen link aan
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName); // Voeg het 'download' attribuut toe om het bestand te downloaden
+        link.style.display = 'none';
+
+        // Voeg de link toe aan de DOM
+        document.body.appendChild(link);
+
+        // Simuleer een klik op de link
+        link.click();
+
+        // Verwijder de link uit de DOM
+        document.body.removeChild(link);
+    };
+</script>
  
  
 @code{
@@ -149,7 +169,11 @@
         }
 
         Console.WriteLine($"File downloaded successfully and saved to {filePath}");
+        var downloadUrl = $"https://staffingnowdocuments.blob.core.windows.net/myfiles/{_contract.CustomerId}/{_contract.Id}/{UploadTypeName}/{fileName}";
+        Console.WriteLine(fileName);
         
+        await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
+
     }
 
     public async Task<List<Contract>> GetContracts()
