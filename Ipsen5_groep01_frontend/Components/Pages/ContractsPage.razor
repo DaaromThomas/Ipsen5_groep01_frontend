@@ -55,35 +55,30 @@
 
         @foreach (var contract in contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
         {
-            Customer customer = null;
-            customers.TryGetValue(contract.CustomerId, out customer);
 
-            Candidate candidate = null;
-            candidates.TryGetValue(contract.CandidateId, out candidate);
+                <div class="contracts" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
+                    <div>@getCustomerNameById(@contract.CustomerId)</div>
+                    <div>@getCandidateNameById(@contract.CandidateId)</div>
+                    <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
 
-            <div class="contracts">
-                <div>@customer?.Name</div>
-                <div>@candidate?.FirstName @candidate?.LastName</div>
-                <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
-
-                <div class="status-container-color">
-                    <div class="status" style="background-color: @(GetBackgroundColor(contract.Status));">
-                        @contract.Status
+                    <div class="status-container-color">
+                        <div class="status" style="background-color: @(GetBackgroundColor(contract.Status));">
+                            @contract.Status
+                        </div>
                     </div>
+
+                    <div>@contract.JobDescription</div>
+                    <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
+                        <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
+                    </button>
+                    <button class="edit_contract">
+                        <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
+                    </button>
+                    <button class="delete_contract">
+                        <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
+                    </button>
+
                 </div>
-
-                <div>@contract.JobDescription</div>
-                <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id)">
-                    <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
-                </button>
-                <button class="edit_contract">
-                    <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
-                </button>
-                <button class="delete_contract">
-                    <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
-                </button>
-            </div>
-
         }
 
         <div class="pagination-container">
@@ -126,6 +121,12 @@
     private RequestMakerService _requestMakerService;
     private CustomerService _customerService;
     private CandidateService _candidateService;
+
+
+    private List<Candidate> _candidates = [];
+    private List<Customer> _customers = [];
+
+
     public ContractsPage()
     {
 
@@ -167,23 +168,22 @@
     protected override async Task OnInitializedAsync()
     {
         await GetContracts();
-        // Voorbeeld contracts, vervang dit door je werkelijke data bron
-        var customerIds = contracts.Select(c => c.CustomerId).Distinct();
-        foreach (var customerId in customerIds)
-        {
-            customers[customerId] = await _customerService.GetCustomerById(customerId);
-        }
-
-        var candidateIds = contracts.Select(c => c.CandidateId).Distinct();
-        foreach (var candidateId in candidateIds)
-        {
-            candidates[candidateId] = await _candidateService.GetCandidateById(candidateId);
-        }
+        await GetAllCandidates();
+        await GetAllCustomers();
     }
 
-    
+    private string getCandidateNameById(Guid id){
+        var Candidate = _candidates.FirstOrDefault(ut => ut.Id == id);
+        return Candidate?.FirstName + " " + Candidate?.LastName ?? "Unknown";
+    }
 
-   
+    private string getCustomerNameById(Guid id)
+    {
+        var customer = _customers.FirstOrDefault(ut => ut.Id == id);
+
+        return customer.Name ?? "Unknown";
+    }
+
 
     public async Task<List<Contract>> GetContracts()
     {
@@ -214,7 +214,6 @@
 
             contracts.Add(contract);
         }
-
         return contracts;
     }
 
@@ -228,9 +227,9 @@
         };
     }
 
-    private void NavigateToContractDetails(Guid contractId)
+    private void NavigateToContractDetails(string contractId)
     {
-        NavigationManager.NavigateTo($"/Contract/{contractId}");
+        NavigationManager.NavigateTo($"/DocumentBeoordelen/{contractId}");
     }
 
     private void NavigateToNewContract()
@@ -241,5 +240,61 @@
     void ChangePage(int increment)
     {
         currentPage += increment;
+    }
+
+    public async Task<List<Candidate>> GetAllCandidates()
+    {
+        var response = await _requestMakerService.MakeGetRequest("Candidate/allCandidates");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["candidateDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+            var candidate = new Candidate();
+            candidate.Id = Guid.Parse((string)jToken["id"]);
+            candidate.FirstName = (string)jToken["firstName"];
+            candidate.LastName = (string)jToken["lastName"];
+            candidate.DateOfBirth = (DateTime)jToken["dateOfBirth"];
+            candidate.BSN = (string)jToken["bsn"];
+            candidate.CreatedDate = (DateTime)jToken["createdDate"];
+            candidate.UpdatedDate = (DateTime)jToken["updatedDate"];
+
+            _candidates.Add(candidate);
+        }
+
+        return _candidates;
+    }
+
+    public async Task<List<Customer>> GetAllCustomers()
+    {
+        var response = await _requestMakerService.MakeGetRequest("Customer/allcustomers");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["customerDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+            var customer = new Customer();
+            customer.Id = Guid.Parse((string)jToken["id"]);
+            customer.Name = (string)jToken["name"];
+            customer.CustomerAddressDto = new CustomerAddress();
+            customer.FirstName = (string)jToken["firstName"];
+            customer.LastName = (string)jToken["lastName"];
+            customer.KVK = (string)jToken["kvk"];
+            customer.VAT = (string)jToken["vat"];
+            customer.BankAccountNumber = (string)jToken["bankAccountNumber"];
+            customer.Email = (string)jToken["email"];
+            customer.PhoneNumber = (string)jToken["phoneNumber"];
+            customer.Disabled = (bool)jToken["disabled"];
+
+            _customers.Add(customer);
+        }
+
+        return _customers;
     }
 }

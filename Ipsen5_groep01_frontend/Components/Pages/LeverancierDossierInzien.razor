@@ -6,15 +6,23 @@
 
 @using Services;
 @using Ipsen5_groep01_frontend.Services
+@using Ipsen5_groep01_frontend.Requests
+
 @inject LoginService LoginService
 @inject FileUploadService FileUploadService
 @inject ContractService ContractService
 
 @inject IJSRuntime JSRuntime
-
+@inject RequestMakerService RequestMakerService
+@inject HttpClient HttpClient
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
 
 
 <div class="customer-container-background">
+<div class="button-container">
+        <button class="navigate-button" @onclick="()=>navigate()">Terug</button>
+    </div>
     <div class="page-title">@contractId</div>
     <div class="customer-container">
         <div class="customer-header">
@@ -26,9 +34,6 @@
             <div class="header-title">Uploaden</div>
         </div>
 
-
-
-
         @if (candidateDocuments != null)
         {
             @foreach (var document in candidateDocuments)
@@ -39,13 +44,12 @@
                     <div>@document.UpdatedBy</div>
                     <div>@document.Status</div>
 
-                    <InputFile class="eye_icon" OnChange="@(e => file = e)" @onclick:stopPropagation>
-                        <img class="eye_icon" src="/icons/upload.png" />
-                    </InputFile>
-                    <button class="view_customer" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString())">
+                    <InputFile class="eye_icon" OnChange="@(e => file = e)" @onclick:stopPropagation/>
+                    <button class="view_customer" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
                         <img class="eye_icon" src="/icons/upload.png"/>
                     </button>
                 </div>
+
             }
         }
         else
@@ -60,6 +64,8 @@
 
 
 @code {
+    private RequestMakerService _requestMakerService;
+
     [Parameter]
     public string candidateId { get; set; }
 
@@ -70,11 +76,17 @@
     private InputFileChangeEventArgs file;
 
     private List<CandidateDocumentModel> candidateDocuments;
+    private List<UploadTypeModel> _uploadTypes = [];
 
+    protected override void OnInitialized()
+    {
+        _requestMakerService = new RequestMakerService(HttpClient);
+    }
 
     protected override async Task OnInitializedAsync()
     {
         await LoadDocuments();
+        await GetAllUploadTypesAsync();
 
     }
 
@@ -127,7 +139,7 @@
         contractId = null;
     }
 
-    private async Task UploadFile(string documentId, InputFileChangeEventArgs e, string candidateId, string contractId)
+    private async Task UploadFile(string documentId, InputFileChangeEventArgs e, string candidateId, string contractId, string uploadTypeName, CandidateDocumentModel document)
     {
         var file = e.File;
         if (file == null)
@@ -140,9 +152,23 @@
         {
             await file.OpenReadStream().CopyToAsync(memoryStream);
             memoryStream.Seek(0, SeekOrigin.Begin);
-            var result = await FileUploadService.UploadFileAsync(memoryStream, file.Name, candidateId, contractId);
-            Console.WriteLine($"Upload result for document {documentId} to contract {contractId}: {result}");
+            var result = await FileUploadService.UploadFileAsync(memoryStream, file.Name, candidateId, contractId, uploadTypeName);
+
+            document.Status = "Wachten op beoordeling";
+
+            CandidateDocumentModelRequest request = new CandidateDocumentModelRequest();
+            request.CandidateDocumentDto = document;
+
+            await _requestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
         }
+
+        
+    }
+
+    private string GetUploadTypeName(Guid uploadTypeId)
+    {
+        var uploadType = _uploadTypes.FirstOrDefault(ut => ut.Id == uploadTypeId);
+        return uploadType?.Type ?? "Unknown";
     }
 
 
@@ -156,5 +182,29 @@
             Document = document;
             Opened = false;
         }
+
+    } 
+
+    public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
+    {
+        var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["uploadTypeDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+            var uploadType = new UploadTypeModel();
+            uploadType.Id = Guid.Parse((string)jToken["id"]);
+            uploadType.Type = (string)jToken["type"];
+            uploadType.DocumentType = (string)jToken["documentType"];
+            uploadType.Required = (bool)jToken["required"];
+
+            _uploadTypes.Add(uploadType);
+        }
+
+        return _uploadTypes;
     }
 }
