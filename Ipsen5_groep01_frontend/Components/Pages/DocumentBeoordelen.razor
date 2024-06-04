@@ -1,0 +1,282 @@
+@page "/DocumentBeoordelen/{contractId}"
+@using Ipsen5_groep01_frontend.Models
+@using Ipsen5_groep01_frontend.Services
+@using Ipsen5_groep01_frontend.Requests
+
+@inject ContractService ContractService
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@inject RequestMakerService RequestMakerService
+@inject HttpClient HttpClient
+@inject IJSRuntime JSRuntime
+
+
+ 
+<div class="document-container-background">
+    <div class="page-title">Document beoordelen</div>
+    <div class="filter-container">
+        <div class="filters">
+            <div class="search-container">
+               
+            </div>
+ 
+            <div class="dropdown-container">
+                <select class="dropdown-field">
+                    <option value="">Selecteer filter</option>
+                    <option value="option1">Optie 1</option>
+                    <option value="option2">Optie 2</option>
+                    <option value="option3">Optie 3</option>
+                </select>
+            </div>
+        </div>
+    </div>
+ 
+ 
+    <div class="document-container">
+        <div class="document-header">
+            <div class="header-title">Document</div>
+            <div class="header-title">Status</div>
+            <div class="header-title">Upload-datum</div>
+            <div class="header-title">Download</div>
+        </div>
+ 
+        @foreach (CandidateDocumentModel document in _documents.Skip((currentPage - 1) * pageSize).Take(pageSize)){
+            <div class="documents">
+                    <div>@GetUploadTypeName(document.UploadTypeId)</div>
+                    <div class="status-container-color">
+                        <div class="status" style="background-color: @(GetBackgroundColor(document.Status));">
+                            @document.Status
+                        </div>
+                    </div>
+                    <div>@document.UpdatedDate.ToString("dd-MM-yyyy")</div>  
+                    <div @onclick="() => DownloadDocument(GetUploadTypeName(document.UploadTypeId))">Downloaden</div>
+                    @if(document.Status == "Wachten op beoordeling"){
+                        <div class="buttons">
+                            <button class="button ok-button" @onclick="() => UpdateDocumentStatus(true, document)">✔</button>
+                            <button class="button no-button" @onclick="() => UpdateDocumentStatus(false, document)">X</button> 
+                        </div>
+                    }
+                </div>
+        }
+ 
+        <div class="pagination-container">
+            <div class="pagination-buttons">
+ 
+                <button class="previous-page-button" @onclick="() => ChangePage(-1)">
+                    @if (currentPage > 1)
+                    {
+                        <img class="rotate-18" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    }
+                </button>
+ 
+                <div class="pagination-info">
+                    @currentPage van @totalPages
+                </div>
+ 
+                <button class="next-page-button" @onclick="() => ChangePage(1)">
+                    @if (_documents.Count() > currentPage * pageSize)
+                    {
+                        <img class="rotate-180" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    }
+                </button>
+ 
+            </div>
+        </div>
+ 
+    </div>
+</div>
+<script>
+    window.downloadFile = function (url, fileName) {
+        // Maak een verborgen link aan
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName); // Voeg het 'download' attribuut toe om het bestand te downloaden
+        link.style.display = 'none';
+
+        // Voeg de link toe aan de DOM
+        document.body.appendChild(link);
+
+        // Simuleer een klik op de link
+        link.click();
+
+        // Verwijder de link uit de DOM
+        document.body.removeChild(link);
+    };
+</script>
+ 
+ 
+@code{
+    private RequestMakerService _requestMakerService;
+
+
+    [Parameter]
+    public string contractId{ get; set; }
+    private List<Contract> _contracts = new List<Contract>();
+ 
+    private int pageSize = 10;
+    private int currentPage = 1;
+    private int totalPages => (int)Math.Ceiling((double)_documents.Count() / pageSize);
+ 
+    private List<CandidateDocumentModel> _documents = [];
+    private Contract _contract = null;
+
+    private List<UploadTypeModel> _uploadTypes = [];
+
+     protected override void OnInitialized()
+    {
+        _requestMakerService = new RequestMakerService(HttpClient);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await getCandidateDocumentByContractId(contractId);
+        await GetAllUploadTypesAsync();
+    }
+ 
+    private async Task getCandidateDocumentByContractId(string contractId){
+        await GetContracts();
+    }
+ 
+    void ChangePage(int increment)
+    {
+        currentPage += increment;
+    }
+ 
+    private string GetBackgroundColor(string status)
+    {
+        return status switch
+        {
+            "New" => "lightgreen",
+            "Completed" => "#AA77FF",
+            "Wachten op beoordeling" => "#FFFDD0",
+            "Goedgekeurd" => "#3CB371",
+            "Afgekeurd" => "#FF3131",
+            _ => "lightblue"
+        };
+    }
+
+     private string GetUploadTypeName(Guid uploadTypeId)
+    {
+        var uploadType = _uploadTypes.FirstOrDefault(ut => ut.Id == uploadTypeId);
+        return uploadType?.Type ?? "Unknown";
+    }
+
+    private async Task DownloadDocument(string UploadTypeName){
+        var response = await _requestMakerService.MakeGetRequest($"BlobStorage/downloadFile/{_contract.CustomerId}/{_contract.Id}/{UploadTypeName}");
+         var contentDisposition = response.Content.Headers.ContentDisposition;
+        var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? "downloaded_file";
+
+        // Ensure the fileName is correctly decoded if it's URL encoded
+        fileName = Uri.UnescapeDataString(fileName);
+
+        // Get the path to the user's Downloads folder
+        string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+        var filePath = Path.Combine(downloadsPath, fileName);
+
+        using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+        {
+            await response.Content.CopyToAsync(fileStream);
+        }
+
+        var downloadUrl = $"https://staffingnowdocuments.blob.core.windows.net/myfiles/{_contract.CustomerId}/{_contract.Id}/{UploadTypeName}/{fileName}";
+        
+        await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
+
+    }
+
+    private async Task UpdateDocumentStatus(bool statusBoolean, CandidateDocumentModel document){
+        if(statusBoolean){
+            document.Status = "Goedgekeurd";
+        } else if(!statusBoolean){
+            document.Status = "Afgekeurd";
+        }
+
+        CandidateDocumentModelRequest request = new CandidateDocumentModelRequest();
+        request.CandidateDocumentDto = document;
+
+        await _requestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
+    }
+
+    public async Task<List<Contract>> GetContracts()
+    {
+        try
+        {
+            var response = await _requestMakerService.MakeGetRequest("contract/allcontracts");
+            var json = await response.Content.ReadAsStringAsync();
+
+            var outerObject = JObject.Parse(json);
+            var contractArray = outerObject["result"]?["contractDto"] as JArray;
+
+            if (contractArray == null)
+            {
+                throw new Exception("No contracts found in the response.");
+            }
+
+            foreach (var jToken in contractArray)
+            {
+                var contract = new Contract
+                {
+                    Id = Guid.Parse((string)jToken["id"]),
+                    CandidateId = Guid.Parse((string)jToken["candidateId"]),
+                    CustomerId = Guid.Parse((string)jToken["customerId"]),
+                    Status = (string)jToken["status"],
+                    StartDate = (DateTime)jToken["startDate"],
+                    EndDate = (DateTime)jToken["endDate"],
+                    PurchaseRate = (double)jToken["purchaseRate"],
+                    SellingRate = (double)jToken["sellingRate"],
+                    PaymentTerm = (string)jToken["paymentTerm"],
+                    FeeParty = (string)jToken["feeParty"],
+                    JobDescription = (string)jToken["jobDescription"],
+                    Note = (string)jToken["note"],
+                    Template = (bool)jToken["template"],
+                    CandidateDocumentsDto = jToken["candidateDocumentsDto"]?.ToObject<List<CandidateDocumentModel>>() ?? new List<CandidateDocumentModel>()
+                };
+
+                _contracts.Add(contract);
+            }
+
+            _contract = _contracts.FirstOrDefault(c => c.Id.ToString() == contractId);
+
+            if (_contract != null)
+            {
+                _documents = _contract.CandidateDocumentsDto ?? new List<CandidateDocumentModel>();
+            }
+            else
+            {
+                Console.WriteLine($"No contract found with ID {contractId}");
+                _documents = new List<CandidateDocumentModel>();
+            }
+
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+
+        return _contracts;
+    }
+
+    public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
+    {
+        var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["uploadTypeDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+            var uploadType = new UploadTypeModel();
+            uploadType.Id = Guid.Parse((string)jToken["id"]);
+            uploadType.Type = (string)jToken["type"];
+            uploadType.DocumentType = (string)jToken["documentType"];
+            uploadType.Required = (bool)jToken["required"];
+
+            _uploadTypes.Add(uploadType);
+        }
+
+        return _uploadTypes;
+    }
+}

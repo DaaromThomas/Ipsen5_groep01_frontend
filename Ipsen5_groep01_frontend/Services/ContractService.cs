@@ -84,6 +84,32 @@ namespace Ipsen5_groep01_frontend.Services
                     {
                         Console.WriteLine("De json response bevat geen geldige content");
                     }
+        }
+
+        public async Task getAllContracts(){
+                string endpoint = $"Contract/allcontracts";
+                HttpResponseMessage response = await _requestMakerService.MakeRequest(HttpMethod.Get, endpoint);
+                Console.WriteLine(response);
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(jsonResponse);
+                
+                if(string.IsNullOrEmpty(jsonResponse)){
+                    Console.WriteLine("Je hebt geen jsonResponse ontvangen");
                 }
-            }
-        }   
+
+                var options = new JsonSerializerOptions{
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = true
+                };
+
+                var responseWrapper = JsonSerializer.Deserialize<ResponseWrapper>(jsonResponse, options);
+            
+                if (responseWrapper?.Result?.Contracts != null){
+                    Contracts = responseWrapper.Result.Contracts;
+                }
+                Console.WriteLine("Aantal contracten: " + Contracts.Count());
+                Console.WriteLine("Done Getting the contracts");
+        }
+    }
+} 
+  

@@ -55,6 +55,7 @@
 
         @foreach (var contract in contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
         {
+
             Customer customer = null;
             customers.TryGetValue(contract.CustomerId, out customer);
 
@@ -70,6 +71,7 @@
                     <div class="status" style="background-color: @(GetBackgroundColor(contract.Status));">
                         @contract.Status
                     </div>
+
                 </div>
 
                 <div>@contract.JobDescription</div>
@@ -126,6 +128,7 @@
     private RequestMakerService _requestMakerService;
     private CustomerService _customerService;
     private CandidateService _candidateService;
+
     public ContractsPage()
     {
 
@@ -167,7 +170,8 @@
     protected override async Task OnInitializedAsync()
     {
         await GetContracts();
-        // Voorbeeld contracts, vervang dit door je werkelijke data bron
+
+
         var customerIds = contracts.Select(c => c.CustomerId).Distinct();
         foreach (var customerId in customerIds)
         {
@@ -184,6 +188,7 @@
     
 
    
+
 
     public async Task<List<Contract>> GetContracts()
     {
@@ -214,7 +219,6 @@
 
             contracts.Add(contract);
         }
-
         return contracts;
     }
 
@@ -228,9 +232,9 @@
         };
     }
 
-    private void NavigateToContractDetails(Guid contractId)
+    private void NavigateToContractDetails(string contractId)
     {
-        NavigationManager.NavigateTo($"/Contract/{contractId}");
+        NavigationManager.NavigateTo($"/DocumentBeoordelen/{contractId}");
     }
 
     private void NavigateToNewContract()
@@ -241,5 +245,61 @@
     void ChangePage(int increment)
     {
         currentPage += increment;
+    }
+
+    public async Task<List<Candidate>> GetAllCandidates()
+    {
+        var response = await _requestMakerService.MakeGetRequest("Candidate/allCandidates");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["candidateDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+            var candidate = new Candidate();
+            candidate.Id = Guid.Parse((string)jToken["id"]);
+            candidate.FirstName = (string)jToken["firstName"];
+            candidate.LastName = (string)jToken["lastName"];
+            candidate.DateOfBirth = (DateTime)jToken["dateOfBirth"];
+            candidate.BSN = (string)jToken["bsn"];
+            candidate.CreatedDate = (DateTime)jToken["createdDate"];
+            candidate.UpdatedDate = (DateTime)jToken["updatedDate"];
+
+            _candidates.Add(candidate);
+        }
+
+        return _candidates;
+    }
+
+    public async Task<List<Customer>> GetAllCustomers()
+    {
+        var response = await _requestMakerService.MakeGetRequest("Customer/allcustomers");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["customerDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+            var customer = new Customer();
+            customer.Id = Guid.Parse((string)jToken["id"]);
+            customer.Name = (string)jToken["name"];
+            customer.CustomerAddressDto = new CustomerAddress();
+            customer.FirstName = (string)jToken["firstName"];
+            customer.LastName = (string)jToken["lastName"];
+            customer.KVK = (string)jToken["kvk"];
+            customer.VAT = (string)jToken["vat"];
+            customer.BankAccountNumber = (string)jToken["bankAccountNumber"];
+            customer.Email = (string)jToken["email"];
+            customer.PhoneNumber = (string)jToken["phoneNumber"];
+            customer.Disabled = (bool)jToken["disabled"];
+
+            _customers.Add(customer);
+        }
+
+        return _customers;
     }
 }

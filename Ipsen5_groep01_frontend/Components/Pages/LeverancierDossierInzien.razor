@@ -1,4 +1,4 @@
-﻿@page "/LeverancierDossierInzien/{candidateId}/{contractId}"
+@page "/LeverancierDossierInzien/{candidateId}/{contractId}"
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Http
 @using Models
@@ -15,6 +15,12 @@
 
 
 <div class="customer-container-background">
+
+    <div class="button-container">
+        <button type="submit" class="previous-button" @onclick="navigate">
+            Vorige
+        </button>
+    </div>
     <div class="page-title">@contractId</div>
     <div class="customer-container">
         <div class="customer-header">
