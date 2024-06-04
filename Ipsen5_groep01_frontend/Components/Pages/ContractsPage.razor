@@ -58,12 +58,12 @@
             Customer customer = null;
             customers.TryGetValue(contract.CustomerId, out customer);
 
-            @* Candidate candidate = null;
-            candidates.TryGetValue(contract.CandidateId, out candidate); *@
+            Candidate candidate = null;
+            candidates.TryGetValue(contract.CandidateId, out candidate);
 
             <div class="contracts">
                 <div>@customer?.Name</div>
-                <div>@contract.CandidateId</div>
+                <div>@candidate?.FirstName @candidate?.LastName</div>
                 <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
 
                 <div class="status-container-color">
@@ -125,7 +125,7 @@
 
     private RequestMakerService _requestMakerService;
     private CustomerService _customerService;
-
+    private CandidateService _candidateService;
     public ContractsPage()
     {
 
@@ -148,6 +148,7 @@
 
         _requestMakerService = new RequestMakerService(HttpClient);
         _customerService = new CustomerService(_requestMakerService);
+        _candidateService = new CandidateService(_requestMakerService);
 
         base.OnInitialized();
     }
@@ -173,11 +174,11 @@
             customers[customerId] = await _customerService.GetCustomerById(customerId);
         }
 
-        // var candidateIds = contracts.Select(c => c.CandidateId).Distinct();
-        // foreach (var candidateId in candidateIds)
-        // {
-        //     candidates[candidateId] = await _candidateService.GetCandidateById(candidateId);
-        // }
+        var candidateIds = contracts.Select(c => c.CandidateId).Distinct();
+        foreach (var candidateId in candidateIds)
+        {
+            candidates[candidateId] = await _candidateService.GetCandidateById(candidateId);
+        }
     }
 
     
