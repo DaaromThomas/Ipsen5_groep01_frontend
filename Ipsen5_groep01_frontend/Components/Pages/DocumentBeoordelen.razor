@@ -1,6 +1,8 @@
 @page "/DocumentBeoordelen/{contractId}"
 @using Ipsen5_groep01_frontend.Models
 @using Ipsen5_groep01_frontend.Services
+@using Ipsen5_groep01_frontend.Requests
+
 @inject ContractService ContractService
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
@@ -48,6 +50,12 @@
                     </div>
                     <div>@document.UpdatedDate.ToString("dd-MM-yyyy")</div>  
                     <div @onclick="() => DownloadDocument(GetUploadTypeName(document.UploadTypeId))">Downloaden</div>
+                    @if(document.Status == "Wachten op beoordeling"){
+                        <div class="buttons">
+                            <button class="button ok-button" @onclick="() => UpdateDocumentStatus(true, document)">✔</button>
+                            <button class="button no-button" @onclick="() => UpdateDocumentStatus(false, document)">X</button> 
+                        </div>
+                    }
                 </div>
         }
  
@@ -140,6 +148,9 @@
         {
             "New" => "lightgreen",
             "Completed" => "#AA77FF",
+            "Wachten op beoordeling" => "#FFFDD0",
+            "Goedgekeurd" => "#3CB371",
+            "Afgekeurd" => "#FF3131",
             _ => "lightblue"
         };
     }
@@ -174,6 +185,20 @@
         
         await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
 
+    }
+
+    private async Task UpdateDocumentStatus(bool statusBoolean, CandidateDocumentModel document){
+        if(statusBoolean){
+            document.Status = "Goedgekeurd";
+        } else if(!statusBoolean){
+            document.Status = "Afgekeurd";
+        }
+        Console.WriteLine("Document: " + document);
+
+        CandidateDocumentModelRequest request = new CandidateDocumentModelRequest();
+        request.CandidateDocumentDto = document;
+
+        await _requestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
     }
 
     public async Task<List<Contract>> GetContracts()

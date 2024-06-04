@@ -162,3 +162,25 @@
 .rotate-180 {
     transform: rotate(180deg);
 }
+
+.buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button{
+    height: 25px;
+    border-radius: 45px;
+    border: none;
+    width: 50px;
+}
+
+.ok-button{
+    background-color: #3DBD00;
+    margin-left: 50px;
+}
+
+.no-button{
+    background-color: #FF4545;
+}
