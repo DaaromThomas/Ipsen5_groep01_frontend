@@ -15,7 +15,7 @@ namespace Ipsen5_groep01_frontend.Services
             httpClient.BaseAddress = new Uri("http://localhost:5196/api/");
         }
 
-        public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string candidateId, string contractId)
+        public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string candidateId, string contractId, string uploadTypeName)
         {
             
             var formData = new MultipartFormDataContent();
@@ -24,7 +24,7 @@ namespace Ipsen5_groep01_frontend.Services
             formData.Add(new StringContent(contractId), "contractId");
 
             Console.WriteLine(formData);
-            var response = await _httpClient.PostAsync($"BlobStorage/upload/{candidateId}/{contractId}", formData);
+            var response = await _httpClient.PostAsync($"BlobStorage/upload/{candidateId}/{contractId}/{uploadTypeName}", formData);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();
         }

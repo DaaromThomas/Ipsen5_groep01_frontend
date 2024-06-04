@@ -607,7 +607,7 @@ else
       candidateDocument.UploadTypeId = Guid.Parse((string)jToken["uploadTypeId"]);
       candidateDocument.ContractId = Guid.Parse((string)jToken["contractId"]);
       candidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
-      candidateDocument.Status = (string)jToken["status"];
+      candidateDocument.Status = (string)jToken["status"]; //Dit zorgt niet voor de goede response, fix in andere branch
       candidateDocument.CreatedDate = (DateTime)jToken["createdDate"];
       candidateDocument.UpdatedDate = (DateTime)jToken["updatedDate"];
       candidateDocument.CreatedBy = (string)jToken["createdBy"];
