@@ -107,11 +107,10 @@
     private int pageSize = 10;
     private int currentPage = 1;
     private int totalPages => (int)Math.Ceiling((double)dossiers.Count() / pageSize);
-    private CandidateService _candidateService;
     private List<Candidate> _candidates = [];
 
     [Parameter]
-    public string candidateId {get; set;}
+    public required string candidateId {get; set;}
     
     protected override async Task OnInitializedAsync()
     {
@@ -130,9 +129,13 @@
 
      public string GetCandidateNameById(Guid id){
         var Candidate = _candidates.FirstOrDefault(ut => ut.Id == id);
-        Console.WriteLine(Candidate.FirstName);
-        return Candidate?.FirstName + " " + Candidate?.LastName ?? "Unknown";
+
+        if(Candidate == null){
+            return "Unknown";
         }
+
+        return Candidate.FirstName + " " + Candidate?.LastName;
+    }
     
 
     protected override void OnAfterRender(bool firstRender){
@@ -144,8 +147,15 @@
 
     private void HandleInput(ChangeEventArgs e)
     {
-        searchTerm = e.Value.ToString().ToUpper();
-        FilterDossiers();
+        if (e.Value != null)
+        {
+            string tempSearchTerm = e.Value.ToString()?.ToUpper() ?? string.Empty;
+            if (tempSearchTerm != null)
+            {
+                searchTerm = tempSearchTerm;
+                FilterDossiers();
+            }
+        }
     }
 
    

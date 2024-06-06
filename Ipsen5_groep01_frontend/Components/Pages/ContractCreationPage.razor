@@ -475,6 +475,7 @@ else
 
   public ContractCreationPage()
   {
+     _requestMakerService = new RequestMakerService(HttpClient);
 
   }
 
@@ -486,7 +487,6 @@ else
       NavigationManager.NavigateTo("/signin");
     }
 
-    _requestMakerService = new RequestMakerService(HttpClient);
 
     base.OnInitialized();
   }
@@ -545,29 +545,32 @@ else
     var json = await response.Content.ReadAsStringAsync();
 
     var outerObject = JObject.Parse(json);
-    var customerArray = outerObject["result"]["customerDto"];
+    var customerArray = outerObject?["result"]?["customerDto"];
 
+    if(customerArray == null){
+      return [];
+    }
 
     foreach (var jToken in customerArray)
     {
       var customer = new Customer();
-      customer.Id = Guid.Parse((string)jToken["id"]);
-      customer.Name = (string)jToken["name"];
-      customer.FirstName = (string)jToken["firstName"];
-      customer.LastName = (string)jToken["lastName"];
-      customer.KVK = (string)jToken["kvk"];
-      customer.VAT = (string)jToken["vat"];
-      customer.BankAccountNumber = (string)jToken["bankAccountNumber"];
-      customer.Email = (string)jToken["email"];
-      customer.PhoneNumber = (string)jToken["phoneNumber"];
+      customer.Id = ParseGuid(jToken, "id");
+      customer.Name = ParseString(jToken, "name");
+      customer.FirstName = ParseString(jToken, "firstName");
+      customer.LastName = ParseString(jToken, "lastName");
+      customer.KVK = ParseString(jToken, "kvk");
+      customer.VAT = ParseString(jToken, "vat");
+      customer.BankAccountNumber = ParseString(jToken, "bankAccountNumber");
+      customer.Email = ParseString(jToken, "email");
+      customer.PhoneNumber = ParseString(jToken, "phoneNumber");
 
       var customerAddress = new CustomerAddress();
-      customerAddress.Id = Guid.Parse((string)jToken["customerAddressDto"]["id"]);
-      customerAddress.StreetName = (string)jToken["customerAddressDto"]["streetName"];
-      customerAddress.HouseNumber = (string)jToken["customerAddressDto"]["houseNumber"];
-      customerAddress.PostalCode = (string)jToken["customerAddressDto"]["postalCode"];
-      customerAddress.City = (string)jToken["customerAddressDto"]["city"];
-      customerAddress.Province = (string)jToken["customerAddressDto"]["province"];
+      customerAddress.Id = ParseNestedGuid(jToken, "customerAddressDto", "id");
+      customerAddress.StreetName = ParseNestedString(jToken, "customerAddressDto", "streetName");
+      customerAddress.HouseNumber = ParseNestedString(jToken, "customerAddressDto", "houseNumber");
+      customerAddress.PostalCode = ParseNestedString(jToken, "customerAddressDto", "postalCode");
+      customerAddress.City = ParseNestedString(jToken, "customerAddressDto", "city");
+      customerAddress.Province = ParseNestedString(jToken, "customerAddressDto", "province");
 
       customer.CustomerAddressDto = customerAddress;
       
@@ -583,38 +586,47 @@ else
     var json = await response.Content.ReadAsStringAsync();
 
     var outerObject = JObject.Parse(json);
-    var contractArray = outerObject["result"]["contractDto"];
+    var contractArray = outerObject?["result"]?["contractDto"];
+
+    if(contractArray == null){
+      return null;
+    }
+
     var contract = new Contract();
     
-    contract.Id = Guid.Parse((string)contractArray["id"]);
-    contract.CandidateId = Guid.Parse((string)contractArray["candidateId"]);
-    contract.CustomerId = Guid.Parse((string)contractArray["customerId"]);
-    contract.Status = (string)contractArray["status"];
-    contract.StartDate = (DateTime)contractArray["startDate"];
-    contract.EndDate = (DateTime)contractArray["endDate"];
-    contract.PurchaseRate = (double)contractArray["purchaseRate"];
-    contract.SellingRate = (double)contractArray["sellingRate"];
-    contract.PaymentTerm = (string)contractArray["paymentTerm"];
-    contract.FeeParty = (string)contractArray["feeParty"];
-    contract.JobDescription = (string)contractArray["jobDescription"];
-    contract.Note = (string)contractArray["note"];
-    contract.Template = (bool)contractArray["template"];
+    contract.Id = ParseGuid(contractArray, "id");
+    contract.CandidateId = ParseGuid(contractArray, "candidateId");
+    contract.CustomerId = ParseGuid(contractArray, "customerId");
+    contract.Status = ParseString(contractArray, "status");
+    contract.StartDate = ParseDateTime(contractArray, "startDate");
+    contract.EndDate = ParseDateTime(contractArray, "endDate");
+    contract.PurchaseRate = ParseDouble(contractArray, "purchaseRate");
+    contract.SellingRate = ParseDouble(contractArray, "sellingRate");
+    contract.PaymentTerm = ParseString(contractArray, "paymentTerm");
+    contract.FeeParty = ParseString(contractArray, "feeParty");
+    contract.JobDescription = ParseString(contractArray, "jobDescription");
+    contract.Note = ParseString(contractArray, "note");
+    contract.Template = ParseBool(contractArray, "template");
 
-    foreach (var jToken in contractArray["candidateDocumentsDto"])
-    {
-      var candidateDocument= new CandidateDocumentModel();
-      candidateDocument.Id = Guid.Parse((string)jToken["id"]);
-      candidateDocument.UploadTypeId = Guid.Parse((string)jToken["uploadTypeId"]);
-      candidateDocument.ContractId = Guid.Parse((string)jToken["contractId"]);
-      candidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
-      candidateDocument.Status = "New"; 
-      candidateDocument.CreatedDate = (DateTime)jToken["createdDate"];
-      candidateDocument.UpdatedDate = (DateTime)jToken["updatedDate"];
-      candidateDocument.CreatedBy = (string)jToken["createdBy"];
-      candidateDocument.UpdatedBy = (string)jToken["updatedBy"];
-      
-      candidateDocumentsList.Add(candidateDocument);
+    if(contractArray["candidateDocumentsDto"] != null){
+      foreach (var jToken in contractArray["candidateDocumentsDto"])
+      {
+        var candidateDocument= new CandidateDocumentModel();
+        candidateDocument.Id = Guid.Parse((string)jToken["id"]);
+        candidateDocument.UploadTypeId = Guid.Parse((string)jToken["uploadTypeId"]);
+        candidateDocument.ContractId = Guid.Parse((string)jToken["contractId"]);
+        candidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
+        candidateDocument.Status = "New"; 
+        candidateDocument.CreatedDate = (DateTime)jToken["createdDate"];
+        candidateDocument.UpdatedDate = (DateTime)jToken["updatedDate"];
+        candidateDocument.CreatedBy = (string)jToken["createdBy"];
+        candidateDocument.UpdatedBy = (string)jToken["updatedBy"];
+        
+        candidateDocumentsList.Add(candidateDocument);
+      }
     }
+
+    
     contract.CandidateDocumentsDto = candidateDocumentsList;
     return contract;
   }
@@ -875,4 +887,43 @@ else
     await JSRuntime.InvokeVoidAsync("scrollToTop");
   }
 
+  private Guid ParseGuid(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && Guid.TryParse(valueToken.ToString(), out Guid parsedId) ? parsedId : Guid.Empty;
+    }
+
+    private string ParseString(JToken token, string key)
+    {
+        return token[key]?.ToString() ?? string.Empty;
+    }
+
+    private bool ParseBool(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && bool.TryParse(valueToken.ToString(), out bool parsedBool) ? parsedBool : false;
+    }
+
+    private DateTime ParseDateTime(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && DateTime.TryParse(valueToken.ToString(), out DateTime parsedDate) ? parsedDate : DateTime.MinValue;
+    }
+
+    private double ParseDouble(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && double.TryParse(valueToken.ToString(), out double parsedDouble) ? parsedDouble : 0.0;
+    }
+
+    private Guid ParseNestedGuid(JToken token, string parentKey, string nestedKey)
+    {
+        var nestedToken = token[parentKey]?[nestedKey];
+        return nestedToken != null && Guid.TryParse(nestedToken.ToString(), out Guid parsedId) ? parsedId : Guid.Empty;
+    }
+
+    private string ParseNestedString(JToken token, string parentKey, string nestedKey)
+    {
+        return token[parentKey]?[nestedKey]?.ToString() ?? string.Empty;
+    }
 }
