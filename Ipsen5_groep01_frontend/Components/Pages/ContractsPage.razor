@@ -10,6 +10,7 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
+@inject CandidateService CandidateService
 
 
 <div class="contract-container-background">
@@ -133,7 +134,9 @@
     }
 
 
-
+    private async Task GetAllCandidates(){
+    _candidateService.GetAllCandidates();
+    }
 
 
 
@@ -168,13 +171,17 @@
     protected override async Task OnInitializedAsync()
     {
         await GetContracts();
-        await GetAllCandidates();
+        await GetAllCandidatesFromService();
         await GetAllCustomers();
     }
 
     private string getCandidateNameById(Guid id){
         var Candidate = _candidates.FirstOrDefault(ut => ut.Id == id);
         return Candidate?.FirstName + " " + Candidate?.LastName ?? "Unknown";
+    }
+
+    private async Task GetAllCandidatesFromService(){
+        _candidates = await this.CandidateService.GetAllCandidates();
     }
 
     private string getCustomerNameById(Guid id)
@@ -242,31 +249,7 @@
         currentPage += increment;
     }
 
-    public async Task<List<Candidate>> GetAllCandidates()
-    {
-        var response = await _requestMakerService.MakeGetRequest("Candidate/allCandidates");
-        var json = await response.Content.ReadAsStringAsync();
-
-        var outerObject = JObject.Parse(json);
-        var contractArray = outerObject["result"]["candidateDto"];
-
-
-        foreach (var jToken in contractArray)
-        {
-            var candidate = new Candidate();
-            candidate.Id = Guid.Parse((string)jToken["id"]);
-            candidate.FirstName = (string)jToken["firstName"];
-            candidate.LastName = (string)jToken["lastName"];
-            candidate.DateOfBirth = (DateTime)jToken["dateOfBirth"];
-            candidate.BSN = (string)jToken["bsn"];
-            candidate.CreatedDate = (DateTime)jToken["createdDate"];
-            candidate.UpdatedDate = (DateTime)jToken["updatedDate"];
-
-            _candidates.Add(candidate);
-        }
-
-        return _candidates;
-    }
+    
 
     public async Task<List<Customer>> GetAllCustomers()
     {
