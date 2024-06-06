@@ -344,7 +344,7 @@ else
 
     <div class="input-description-container">
       <div class="description-title">
-        Controleren & Oplsaan
+        Controleren & Opslaan
       </div>
 
       <div class="description">
@@ -437,7 +437,7 @@ else
       <button class="previous-button" @onclick="GoToPreviousStep">
         Vorige
       </button>
-      <button class="next-button" @onclick="CreateContractAsync">
+      <button class="next-button" @onclick="HandleClick">
         Opslaan
       </button>
     </div>
@@ -689,6 +689,10 @@ else
 
   public async Task CreateContractAsync()
   {
+    
+  }
+
+  private async Task HandleClick(){
     var contract = await GetContractTemplatesByCustomerId();
     
     
@@ -711,12 +715,20 @@ else
     };
     
     var response = await _requestMakerService.MakePostRequest("Contract/contract", contractRequest);
-    
-
+    if (response.IsSuccessStatusCode)
+    {
     var json = await response.Content.ReadAsStringAsync();
-
     var outerObject = JObject.Parse(json);
+    navigate();
+    }
+
   }
+
+  private void navigate()
+    {
+        this.NavigationManager.NavigateTo($"/contract");
+    }
+
 
   
   private async Task SubmitForms()
