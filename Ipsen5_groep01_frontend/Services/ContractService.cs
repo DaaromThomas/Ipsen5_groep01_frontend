@@ -91,7 +91,7 @@ namespace Ipsen5_groep01_frontend.Services
                 HttpResponseMessage response = await _requestMakerService.MakeRequest(HttpMethod.Get, endpoint);
                 Console.WriteLine(response);
                 string jsonResponse = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(jsonResponse);
+
                 
                 if(string.IsNullOrEmpty(jsonResponse)){
                     Console.WriteLine("Je hebt geen jsonResponse ontvangen");

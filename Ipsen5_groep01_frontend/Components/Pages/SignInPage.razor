@@ -5,6 +5,8 @@
 @inject HttpClient HttpClient
 @inject LoginService LoginService
 @inject AuthService AuthService
+@inject RequestMakerService RequestMakerService
+@inject IConfiguration Configuration;
 
 @using Services
 @using System.Text.Json;
@@ -20,7 +22,6 @@
 @using System.ComponentModel.DataAnnotations;
 @using Microsoft.AspNetCore.Components.Forms;
 @using Ipsen5_groep01_frontend.Models;
-@using Ipsen5_groep01_frontend.Services;
 
 @rendermode InteractiveAuto
 
@@ -71,19 +72,16 @@
 @code {
     [SupplyParameterFromForm]
     private SignInModel SignInModel { get; set; } = new();
+    
+    private string? role { get; set; }
 
-    private RequestMakerService _requestMakerService;
-    private readonly IConfiguration _configuration;
-    private string role { get; set; }
-
-    public SignInPage()
-    {
-
+    public SignInPage(){
+        
     }
 
     public SignInPage(IConfiguration configuration)
     {
-        _configuration = configuration;
+        Configuration = configuration;
     }
 
     public void NavigateToHome()
@@ -93,7 +91,7 @@
 
     protected override void OnInitialized()
     {
-        _requestMakerService = new RequestMakerService(HttpClient);
+        RequestMakerService = new RequestMakerService(new HttpClient());
         base.OnInitialized();
     }
 
@@ -103,7 +101,7 @@
     {
         if (!string.IsNullOrEmpty(SignInModel.Email) && !string.IsNullOrEmpty(SignInModel.Password))
         {
-            var response = await _requestMakerService.MakePostRequest("user/signIn", SignInModel);
+            var response = await RequestMakerService.MakePostRequest("user/signIn", SignInModel);
 
             if (response.IsSuccessStatusCode)
             {

@@ -3,7 +3,8 @@
 @using Services;
 
 @inject AuthService AuthService;
-@inject NavigationManager NavigationManager;
+@inject NavigationManager NavigationManager
+@inject RenderFragment ChildContent
 
 @if (!AuthService.IsLoggedIn)
 {
@@ -15,9 +16,6 @@ else
 }
 
 @code {
-    [Parameter]
-    public RenderFragment ChildContent { get; set; }
-
     protected override void OnInitialized()
     {
         if (!AuthService.IsLoggedIn)
@@ -30,7 +28,7 @@ else
 @code {
     private class RedirectToLogin : ComponentBase
     {
-        [Inject] private NavigationManager NavigationManager { get; set; }
+        private NavigationManager NavigationManager { get; set; }
 
         protected override void OnInitialized()
         {

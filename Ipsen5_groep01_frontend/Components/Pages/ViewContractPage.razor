@@ -11,7 +11,8 @@
 @inject NavigationManager NavigationManager
 @inject HttpClient HttpClient
 @inject AuthService AuthService
-
+@inject RequestMakerService RequestMakerService
+@inject Contract contractDetails
 
 <div class="container">
     <div class="button-container">
@@ -33,12 +34,10 @@
     public Guid ContractId { get; set; }
     private int page = 1;
 
-    private RequestMakerService _requestMakerService;
-    public Contract contractDetails;
 
     public ViewContractPage()
     {
-
+        RequestMakerService = new RequestMakerService(new HttpClient());
     }
 
     protected override void OnInitialized()
@@ -47,8 +46,6 @@
         {
             NavigationManager.NavigateTo("/signin");
         }
-
-        _requestMakerService = new RequestMakerService(HttpClient);
 
         base.OnInitialized();
     }
@@ -63,26 +60,30 @@
 
     public async Task<Contract> GetContractById(string contractId)
     {
-        var response = await _requestMakerService.MakeGetRequest($"contract/contractbyid/{contractId}");
+        var response = await RequestMakerService.MakeGetRequest($"contract/contractbyid/{contractId}");
         var json = await response.Content.ReadAsStringAsync();
 
-        var jToken = JObject.Parse(json)["result"]["contractDto"];
+        var jToken = JObject.Parse(json)?["result"]?["contractDto"];
+
+        if(jToken == null){
+            return new Contract();
+        }
 
         contractDetails = new Contract
         {
-            Id = Guid.Parse((string)jToken["id"]),
-            CandidateId = Guid.Parse((string)jToken["candidateId"]),
-            CustomerId = Guid.Parse((string)jToken["customerId"]),
-            Status = (string)jToken["status"],
-            StartDate = (DateTime)jToken["startDate"],
-            EndDate = (DateTime)jToken["endDate"],
-            PurchaseRate = (double)jToken["purchaseRate"],
-            SellingRate = (double)jToken["sellingRate"],
-            PaymentTerm = (string)jToken["paymentTerm"],
-            FeeParty = (string)jToken["feeParty"],
-            JobDescription = (string)jToken["jobDescription"],
-            Note = (string)jToken["note"],
-            Template = (bool)jToken["template"]
+            Id = ParseGuid(jToken, "id"),
+            CandidateId = ParseGuid(jToken, "candidateId"),
+            CustomerId = ParseGuid(jToken, "customerId"),
+            Status = ParseString(jToken, "status"),
+            StartDate = ParseDateTime(jToken, "startDate"),
+            EndDate = ParseDateTime(jToken, "endDate"),
+            PurchaseRate = ParseDouble(jToken, "purchaseRate"),
+            SellingRate = ParseDouble(jToken, "sellingRate"),
+            PaymentTerm = ParseString(jToken, "paymentTerm"),
+            FeeParty = ParseString(jToken, "feeParty"),
+            JobDescription = ParseString(jToken, "jobDescription"),
+            Note = ParseString(jToken, "note"),
+            Template = ParseBool(jToken, "template")
         };
 
         return contractDetails;
@@ -92,4 +93,34 @@
     {
         NavigationManager.NavigateTo("/Contract");
     }
+
+    private Guid ParseGuid(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && Guid.TryParse(valueToken.ToString(), out Guid parsedId) ? parsedId : Guid.Empty;
+    }
+
+    private string ParseString(JToken token, string key)
+    {
+        return token[key]?.ToString() ?? string.Empty;
+    }
+
+    private DateTime ParseDateTime(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && DateTime.TryParse(valueToken.ToString(), out DateTime parsedDate) ? parsedDate : DateTime.MinValue;
+    }
+
+    private double ParseDouble(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && double.TryParse(valueToken.ToString(), out double parsedDouble) ? parsedDouble : 0.0;
+    }
+
+    private bool ParseBool(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && bool.TryParse(valueToken.ToString(), out bool parsedBool) ? parsedBool : false;
+    }
+
 }

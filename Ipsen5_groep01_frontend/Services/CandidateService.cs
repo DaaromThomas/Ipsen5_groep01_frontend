@@ -6,12 +6,41 @@ namespace Ipsen5_groep01_frontend.Services
     public class CandidateService
     {
         private readonly RequestMakerService _requestMakerService;
+        private readonly List<Candidate> _candidates = [];
 
         public CandidateService(RequestMakerService requestMakerService)
         {
             _requestMakerService = requestMakerService;
         }
 
+
+        public async Task<List<Candidate>> GetAllCandidates()
+    {
+        var response = await _requestMakerService.MakeGetRequest("Candidate/allCandidates");
+        var json = await response.Content.ReadAsStringAsync();
+
+        var outerObject = JObject.Parse(json);
+        var contractArray = outerObject["result"]["candidateDto"];
+
+
+        foreach (var jToken in contractArray)
+        {
+            var candidate = new Candidate();
+            candidate.Id = Guid.Parse((string)jToken["id"]);
+            candidate.FirstName = (string)jToken["firstName"];
+            candidate.LastName = (string)jToken["lastName"];
+            candidate.DateOfBirth = (DateTime)jToken["dateOfBirth"];
+            candidate.BSN = (string)jToken["bsn"];
+            candidate.CreatedDate = (DateTime)jToken["createdDate"];
+            candidate.UpdatedDate = (DateTime)jToken["updatedDate"];
+
+            _candidates.Add(candidate);
+        }
+
+        return _candidates;
+        }
+
+       
 
         public async Task<Candidate> GetCandidateById(Guid candidateId)
         {
