@@ -1,0 +1,136 @@
+﻿@page "/candidate/{CandidateId:guid}"
+
+@rendermode InteractiveServer
+
+
+@using Models
+@using Services
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+@inject AuthService AuthService
+@inject RequestMakerService RequestMakerService
+
+
+<div class="containe">
+
+    <div class="input-container">
+
+        <div class="input-description-container">
+            <div class="description-title">
+                Controleren & Oplsaan
+            </div>
+
+            <div class="description">
+                Controleer hieronder de basisgegevens. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+            </div>
+            @if (candidate != null)
+            {
+                <div class="section-review">
+                    <div class="section-title">@candidate.FirstName @candidate.LastName</div>
+                  
+
+                    <div class="input-pair-Container-3">
+                        <div>
+                            <div class="input-title">Achternaam</div>
+                            <div class="input-value">@candidate.LastName</div>
+                        </div>
+
+                        <div>
+                            <div class="input-title">Voornaam</div>
+                            <div class="input-value">@candidate.FirstName</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="input-title">BSN</div>
+                        <div class="input-value">@candidate.BSN</div>
+                    </div>
+                    <div>
+                        <div class="input-title">Geboortedatum</div>
+                        <div class="input-value">@candidate.DateOfBirth</div>
+                    </div>
+                    <div>
+                        <div class="input-title">Aangemaakt op</div>
+                        <div class="input-value">@candidate.CreatedDate</div>
+                    </div>
+                </div>
+
+
+            }
+
+
+
+        </div>
+
+
+    </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Guid CandidateId { get; set; }
+    private int page = 1;
+    private Candidate candidate;
+    private CandidateService _candidateService;
+
+    public ViewProffesionalPage()
+    {
+        _candidateService = new CandidateService(new RequestMakerService(new HttpClient()));
+    }
+
+    protected override void OnInitialized()
+    {
+        if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
+        {
+            NavigationManager.NavigateTo("/signin");
+        }
+
+        base.OnInitialized();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        candidate = await _candidateService.GetCandidateById(CandidateId);
+    }
+
+
+    private void navigate()
+    {
+        NavigationManager.NavigateTo("/Proffesional");
+    }
+
+
+    private Guid ParseGuid(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && Guid.TryParse(valueToken.ToString(), out Guid parsedId) ? parsedId : Guid.Empty;
+    }
+
+    private string ParseString(JToken token, string key)
+    {
+        return token[key]?.ToString() ?? string.Empty;
+    }
+
+    private DateTime ParseDateTime(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && DateTime.TryParse(valueToken.ToString(), out DateTime parsedDate) ? parsedDate : DateTime.MinValue;
+    }
+
+    private double ParseDouble(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && double.TryParse(valueToken.ToString(), out double parsedDouble) ? parsedDouble : 0.0;
+    }
+
+    private bool ParseBool(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && bool.TryParse(valueToken.ToString(), out bool parsedBool) ? parsedBool : false;
+    }
+
+}
