@@ -134,7 +134,7 @@
 
     public UploadTypeManagementPage()
     {
-         _uploadService = new UploadService(new RequestMakerService(HttpClient));
+         _uploadService = new UploadService(new RequestMakerService(new HttpClient()));
     }
 
     protected override void OnInitialized()
