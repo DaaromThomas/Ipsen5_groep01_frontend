@@ -162,15 +162,15 @@
 
     public ViewCustomerConfig()
     {
+        var requestMakerService = new RequestMakerService(HttpClient);
+        _customerService = new CustomerService(requestMakerService);
+        _uploadService = new UploadService(requestMakerService);
 
     }
 
     protected override void OnInitialized()
     {
-        var requestMakerService = new RequestMakerService(HttpClient);
-        _customerService = new CustomerService(requestMakerService);
-        _uploadService = new UploadService(requestMakerService);
-
+        
         base.OnInitialized();
     }
 

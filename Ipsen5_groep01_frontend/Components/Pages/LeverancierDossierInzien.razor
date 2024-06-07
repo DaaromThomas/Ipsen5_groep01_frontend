@@ -5,7 +5,6 @@
 @inject NavigationManager NavigationManager
 
 @using Services;
-@using Ipsen5_groep01_frontend.Services
 @using Ipsen5_groep01_frontend.Requests
 
 @inject LoginService LoginService
@@ -67,10 +66,10 @@
     private RequestMakerService _requestMakerService;
 
     [Parameter]
-    public string candidateId { get; set; }
+    public required string candidateId { get; set; }
 
     [Parameter]
-    public string contractId { get; set; }
+    public required string contractId { get; set; }
     private List<DocumentOpened> chosenDocuments = new List<DocumentOpened>();
     private List<Dossier> dossiers = new List<Dossier>();
     private InputFileChangeEventArgs file;
@@ -191,20 +190,58 @@
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
-        var contractArray = outerObject["result"]["uploadTypeDto"];
+        var contractArray = outerObject?["result"]?["uploadTypeDto"];
 
+        if(contractArray == null){
+            return [];
+        }
 
         foreach (var jToken in contractArray)
         {
             var uploadType = new UploadTypeModel();
-            uploadType.Id = Guid.Parse((string)jToken["id"]);
-            uploadType.Type = (string)jToken["type"];
-            uploadType.DocumentType = (string)jToken["documentType"];
-            uploadType.Required = (bool)jToken["required"];
+            uploadType.Id = ParseGuid(jToken, "id");
+            uploadType.Type = ParseString(jToken, "type");
+            uploadType.DocumentType = ParseString(jToken, "documentType");
+            uploadType.Required = ParseBool(jToken, "required");
 
             _uploadTypes.Add(uploadType);
         }
 
         return _uploadTypes;
     }
+
+    private Guid ParseGuid(JToken token, string key)
+{
+    var valueToken = token[key];
+    return valueToken != null && Guid.TryParse(valueToken.ToString(), out Guid parsedId) ? parsedId : Guid.Empty;
+}
+
+private string ParseString(JToken token, string key)
+{
+    return token[key]?.ToString() ?? string.Empty;
+}
+
+private bool ParseBool(JToken token, string key)
+{
+    var valueToken = token[key];
+    return valueToken != null && bool.TryParse(valueToken.ToString(), out bool parsedBool) ? parsedBool : false;
+}
+
+private DateTime ParseDateTime(JToken token, string key)
+{
+    var valueToken = token[key];
+    return valueToken != null && DateTime.TryParse(valueToken.ToString(), out DateTime parsedDate) ? parsedDate : DateTime.MinValue;
+}
+
+private double ParseDouble(JToken token, string key)
+{
+    var valueToken = token[key];
+    return valueToken != null && double.TryParse(valueToken.ToString(), out double parsedDouble) ? parsedDouble : 0.0;
+}
+
+private byte[] ParseByteArray(JToken token, string key)
+{
+    var valueToken = token[key];
+    return valueToken != null ? Convert.FromBase64String(valueToken.ToString()) : Array.Empty<byte>();
+}
 }

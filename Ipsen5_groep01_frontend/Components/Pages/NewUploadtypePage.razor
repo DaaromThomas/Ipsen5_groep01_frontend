@@ -114,7 +114,11 @@
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
-        var documentExtension = outerObject["result"]["documentTypeDto"]["documentExtension"];
+        var documentExtension = outerObject?["result"]?["documentTypeDto"]["documentExtension"];
+
+        if(documentExtension == null){
+            return [];
+        }
 
         foreach (JProperty property in documentExtension)
         {

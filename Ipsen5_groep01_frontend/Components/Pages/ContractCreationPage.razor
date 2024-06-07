@@ -608,23 +608,25 @@ else
     contract.Note = ParseString(contractArray, "note");
     contract.Template = ParseBool(contractArray, "template");
 
-    if(contractArray["candidateDocumentsDto"] != null){
-      foreach (var jToken in contractArray["candidateDocumentsDto"])
-      {
-        var candidateDocument= new CandidateDocumentModel();
-        candidateDocument.Id = Guid.Parse((string)jToken["id"]);
-        candidateDocument.UploadTypeId = Guid.Parse((string)jToken["uploadTypeId"]);
-        candidateDocument.ContractId = Guid.Parse((string)jToken["contractId"]);
-        candidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
-        candidateDocument.Status = "New"; 
-        candidateDocument.CreatedDate = (DateTime)jToken["createdDate"];
-        candidateDocument.UpdatedDate = (DateTime)jToken["updatedDate"];
-        candidateDocument.CreatedBy = (string)jToken["createdBy"];
-        candidateDocument.UpdatedBy = (string)jToken["updatedBy"];
-        
-        candidateDocumentsList.Add(candidateDocument);
-      }
+    if(contractArray["candidateDocumentsDto"] == null){
+      return new Contract();
     }
+    foreach (var jToken in contractArray["candidateDocumentsDto"])
+    {
+      var candidateDocument= new CandidateDocumentModel();
+      candidateDocument.Id = ParseGuid(jToken, "id");
+      candidateDocument.UploadTypeId = ParseGuid(jToken, "uploadTypeId");
+      candidateDocument.ContractId = ParseGuid(jToken, "contractId");
+      candidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
+      candidateDocument.Status = "New"; 
+      candidateDocument.CreatedDate = ParseDateTime(jToken, "createdDate");
+      candidateDocument.UpdatedDate = ParseDateTime(jToken, "updatedDate");
+      candidateDocument.CreatedBy = ParseString(jToken, "createdBy");
+      candidateDocument.UpdatedBy = ParseString(jToken, "updatedBy");
+       
+      candidateDocumentsList.Add(candidateDocument);
+    }
+    
 
     
     contract.CandidateDocumentsDto = candidateDocumentsList;
@@ -637,19 +639,22 @@ else
     var json = await response.Content.ReadAsStringAsync();
 
     var outerObject = JObject.Parse(json);
-    var candidateArray = outerObject["result"]["candidateDto"];
+    var candidateArray = outerObject?["result"]?["candidateDto"];
 
+    if(candidateArray == null){
+      return [];
+    }
 
     foreach (var jToken in candidateArray)
     {
       var candidate = new Candidate();
-      candidate.Id = Guid.Parse((string)jToken["id"]);
-      candidate.FirstName = (string)jToken["firstName"];
-      candidate.LastName = (string)jToken["lastName"];
-      candidate.DateOfBirth = (DateTime)jToken["dateOfBirth"];
-      candidate.BSN = (string)jToken["bsn"];
-      candidate.CreatedDate = (DateTime)jToken["createdDate"];
-      candidate.UpdatedDate = (DateTime)jToken["updatedDate"];
+      candidate.Id = ParseGuid(jToken, "id");
+      candidate.FirstName = ParseString(jToken, "firstName");
+      candidate.LastName = ParseString(jToken, "lastName");
+      candidate.DateOfBirth = ParseDateTime(jToken, "dateOfBirth");
+      candidate.BSN = ParseString(jToken, "bsn");
+      candidate.CreatedDate = ParseDateTime(jToken, "createdDate");
+      candidate.UpdatedDate = ParseDateTime(jToken, "updatedDate");
       
       candidateList.Add(candidate);
       
@@ -699,11 +704,6 @@ else
   //   return contract;
   // }
 
-  public async Task CreateContractAsync()
-  {
-    
-  }
-
   private async Task HandleClick(){
     var contract = await GetContractTemplatesByCustomerId();
     
@@ -740,14 +740,6 @@ else
     {
         this.NavigationManager.NavigateTo($"/contract");
     }
-
-
-  
-  private async Task SubmitForms()
-  {
-    await CreateContractAsync();
-    NavigationManager.NavigateTo("/customer");
-  }
 
   private string GetCircleColorClass(int step)
   {
