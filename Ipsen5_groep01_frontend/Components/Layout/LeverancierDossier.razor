@@ -20,14 +20,6 @@
     <div class="filter-container">
         <div class="filters">
             <div class="search-container">
-                <EditForm Model="dossiers" FormName="createCustomerAddressForm">
-                    <DataAnnotationsValidator />
-
-                    <div class="form-group search-field">
-                        <InputText id="name" @bind-Value="searchTerm" @oninput="HandleInput" class=" form-control" placeholder="Zoeken"></InputText>
-                    </div>
-
-                </EditForm>
             </div>
 
            @*  <div class="dropdown-container">
@@ -83,14 +75,10 @@
                 </button>
 
                 <div class="pagination-info">
-                    @currentPage van @totalPages
+                    @currentPage
                 </div>
 
                 <button class="next-page-button" @onclick="() => ChangePage(1)">
-                    @if (dossiers.Count() > currentPage * pageSize)
-                    {
-                        <img class="rotate-180" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
-                    }
                 </button>
 
             </div>
@@ -101,12 +89,10 @@
  
 
 @code {
-    private List<Dossier> dossiers = new List<Dossier>();
-    private List<Dossier> filteredDossiers = new List<Dossier>();
+
     private string searchTerm = "";
     private int pageSize = 10;
     private int currentPage = 1;
-    private int totalPages => (int)Math.Ceiling((double)dossiers.Count() / pageSize);
     private List<Candidate> _candidates = [];
 
     [Parameter]
@@ -114,7 +100,7 @@
     
     protected override async Task OnInitializedAsync()
     {
-        FilterDossiers();
+
         await getContract();
         await GetAllCandidatesFromService();
     }
@@ -153,24 +139,14 @@
             if (tempSearchTerm != null)
             {
                 searchTerm = tempSearchTerm;
-                FilterDossiers();
+            
             }
         }
     }
 
    
 
-    private void FilterDossiers()
-    {
-        if (searchTerm == null)
-        {
-            filteredDossiers = dossiers;
-        }
-        else
-        {
-            filteredDossiers = dossiers.Where(t => t.KandidaatId.ToUpper().Contains(searchTerm)).ToList<Dossier>();
-        }
-    }
+
 
     private void ChangePage(int increment)
     {

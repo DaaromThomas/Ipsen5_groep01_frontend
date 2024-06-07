@@ -69,8 +69,6 @@
 
     [Parameter]
     public required string contractId { get; set; }
-    private List<DocumentOpened> chosenDocuments = new List<DocumentOpened>();
-    private List<Dossier> dossiers = new List<Dossier>();
     private InputFileChangeEventArgs? file;
 
     private List<CandidateDocumentModel>? candidateDocuments;
@@ -169,19 +167,6 @@
         return uploadType?.Type ?? "Unknown";
     }
 
-
-    public class DocumentOpened
-    {
-        public Document Document { get; set; }
-        public bool Opened { get; set; }
-
-        public DocumentOpened(Document document)
-        {
-            Document = document;
-            Opened = false;
-        }
-
-    } 
 
     public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
     {

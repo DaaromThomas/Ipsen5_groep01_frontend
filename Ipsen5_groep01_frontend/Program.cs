@@ -27,8 +27,6 @@ builder.Services.AddAuthorizationCore();
  
 builder.Services.AddSingleton<AuthService>();
  
- 
-builder.Services.AddSingleton<DossiersService>();
 builder.Services.AddSingleton<UploadTypeService>();
 builder.Services.AddSingleton<LoginService>();
 builder.Services.AddSingleton<FileUploadService>();

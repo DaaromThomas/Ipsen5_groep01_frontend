@@ -2,14 +2,14 @@
 @using Ipsen5_groep01_frontend.Models
 @using Ipsen5_groep01_frontend.Services
 @using Ipsen5_groep01_frontend.Requests
-
-@inject ContractService ContractService
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
+
+@inject ContractService ContractService
 @inject RequestMakerService RequestMakerService
 @inject HttpClient HttpClient
 @inject IJSRuntime JSRuntime
-@inject Contract _contract
+
 
 
  
@@ -112,6 +112,8 @@
     [Parameter]
     public required string contractId{ get; set; }
     private List<Contract> _contracts = new List<Contract>();
+
+    private Contract _contract;
  
     private int pageSize = 10;
     private int currentPage = 1;
@@ -208,7 +210,7 @@
             var json = await response.Content.ReadAsStringAsync();
 
             var outerObject = JObject.Parse(json);
-            var contractArray = outerObject["result"]?["contractDto"] as JArray;
+            var contractArray = outerObject?["result"]?["contractDto"] as JArray;
 
             if (contractArray == null)
             {
@@ -231,11 +233,12 @@
                 contract.JobDescription = ParseString(jToken, "jobDescription");
                 contract.Note = ParseString(jToken, "note");
                 contract.Template = ParseBool(jToken, "template");
-
+                contract.CandidateDocumentsDto = jToken["candidateDocumentsDto"]?.ToObject<List<CandidateDocumentModel>>() ?? new List<CandidateDocumentModel>();
                 _contracts.Add(contract);
             }
 
             _contract = _contracts.FirstOrDefault(c => c.Id.ToString() == contractId);
+            Console.WriteLine(_contract);
 
             if (_contract != null)
             {
@@ -259,8 +262,6 @@
 
     public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
     {
-        if (RequestMakerService != null)
-        {
         var response = await RequestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
         var json = await response.Content.ReadAsStringAsync();
 
@@ -283,11 +284,6 @@
         }
 
         return _uploadTypes;
-        } 
-        else
-        {
-            return null;
-        }
         
     }
 
