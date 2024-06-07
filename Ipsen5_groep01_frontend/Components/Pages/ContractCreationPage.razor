@@ -19,6 +19,8 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
+@inject RequestMakerService RequestMakerService;
+@inject Customer SelectedCustomer 
 
 <style>
     @@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
@@ -448,13 +450,10 @@ else
 
 @code {
   private string searchTerm = string.Empty;
-  private Customer selectedCustomer;
   private List<Customer> customerList = new List<Customer>(); 
   private List<Candidate> candidateList = new List<Candidate>(); 
   private List<CandidateDocumentModel> candidateDocumentsList = new List<CandidateDocumentModel>();
-  private Customer SelectedCustomer { get; set; }
-  private Candidate SelectedCandidate { get; set; }
-  private RequestMakerService _requestMakerService;
+  private Candidate? SelectedCandidate { get; set; }
 
   private Customer Customer { get; set; } = new();
   private Contract ContractModel { get; set; } = new();
@@ -465,17 +464,12 @@ else
   private List<UploadTypeModel> UploadTypes = new List<UploadTypeModel>();
   private List<Guid> selectedUploadTypeIds = new List<Guid>();
 
-  private Guid customerId;
-  private string type;
-  private int currentPage = 1;
   private int currentStep = 1;
-  private string houseNumberValidationMessage;
-  private string postalCodeValidationMessage;
 
 
   public ContractCreationPage()
   {
-     _requestMakerService = new RequestMakerService(HttpClient);
+     RequestMakerService = new RequestMakerService(new HttpClient());
 
   }
 
@@ -541,7 +535,7 @@ else
   
   public async Task<List<Customer>> GetAllCustomersAsync()
   {
-    var response = await _requestMakerService.MakeGetRequest("customer/allcustomers");
+    var response = await RequestMakerService.MakeGetRequest("customer/allcustomers");
     var json = await response.Content.ReadAsStringAsync();
 
     var outerObject = JObject.Parse(json);
@@ -582,7 +576,7 @@ else
   
   public async Task<Contract> GetContractTemplatesByCustomerId()
   { 
-    var response = await _requestMakerService.MakeGetRequest($"Contract/gettemplatebycustomerid/{SelectedCustomer.Id}");
+    var response = await RequestMakerService.MakeGetRequest($"Contract/gettemplatebycustomerid/{SelectedCustomer.Id}");
     var json = await response.Content.ReadAsStringAsync();
 
     var outerObject = JObject.Parse(json);
@@ -624,7 +618,6 @@ else
       candidateDocument.UpdatedDate = ParseDateTime(jToken, "updatedDate");
       candidateDocument.CreatedBy = ParseString(jToken, "createdBy");
       candidateDocument.UpdatedBy = ParseString(jToken, "updatedBy");
-       
       candidateDocumentsList.Add(candidateDocument);
     }
     
@@ -636,7 +629,7 @@ else
     
   public async Task<List<Candidate>> GetAllCandidatesAsync()
   {
-    var response = await _requestMakerService.MakeGetRequest("Candidate/allcandidates");
+    var response = await RequestMakerService.MakeGetRequest("Candidate/allcandidates");
     var json = await response.Content.ReadAsStringAsync();
 
     var outerObject = JObject.Parse(json);
@@ -665,7 +658,7 @@ else
   
   // public async Task<Candidate> GetCandidateById()
   // { 
-  //   var response = await _requestMakerService.MakeGetRequest($"Candidate/candidatebyid/{SelectedCandidate.Id}");
+  //   var response = await RequestMakerService.MakeGetRequest($"Candidate/candidatebyid/{SelectedCandidate.Id}");
   //   var json = await response.Content.ReadAsStringAsync();
   //
   //   var outerObject = JObject.Parse(json);
@@ -727,7 +720,7 @@ else
       ContractDto =  contract
     };
     
-    var response = await _requestMakerService.MakePostRequest("Contract/contract", contractRequest);
+    var response = await RequestMakerService.MakePostRequest("Contract/contract", contractRequest);
     if (response.IsSuccessStatusCode)
     {
     var json = await response.Content.ReadAsStringAsync();

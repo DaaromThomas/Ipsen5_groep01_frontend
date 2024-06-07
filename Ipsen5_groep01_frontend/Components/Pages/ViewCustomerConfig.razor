@@ -162,7 +162,7 @@
 
     public ViewCustomerConfig()
     {
-        var requestMakerService = new RequestMakerService(HttpClient);
+        var requestMakerService = new RequestMakerService(new HttpClient());
         _customerService = new CustomerService(requestMakerService);
         _uploadService = new UploadService(requestMakerService);
 

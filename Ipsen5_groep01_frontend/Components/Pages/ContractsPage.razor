@@ -134,7 +134,7 @@
 
     public ContractsPage()
     {
-        _requestMakerService = new RequestMakerService(HttpClient);
+        _requestMakerService = new RequestMakerService(new HttpClient());
         _customerService = new CustomerService(_requestMakerService);
         _candidateService = new CandidateService(_requestMakerService);
     }

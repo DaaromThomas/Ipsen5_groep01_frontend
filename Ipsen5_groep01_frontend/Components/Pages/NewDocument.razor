@@ -5,7 +5,6 @@
 @inject NavigationManager NavigationManager
 
 @using Ipsen5_groep01_frontend.Models
-@using Services
 @inject LoginService LoginService
 
 
@@ -34,8 +33,8 @@
 </div>
 
 @code {
-    private string documentName;
-    private string DocumentType;
+    private string? documentName;
+    private string? DocumentType;
     private bool Required;
 
     protected override void OnAfterRender(bool firstRender){

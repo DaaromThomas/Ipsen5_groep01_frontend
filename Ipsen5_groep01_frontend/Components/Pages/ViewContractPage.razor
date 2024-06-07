@@ -11,7 +11,8 @@
 @inject NavigationManager NavigationManager
 @inject HttpClient HttpClient
 @inject AuthService AuthService
-
+@inject RequestMakerService RequestMakerService
+@inject Contract contractDetails
 
 <div class="container">
     <div class="button-container">
@@ -33,12 +34,10 @@
     public Guid ContractId { get; set; }
     private int page = 1;
 
-    private RequestMakerService _requestMakerService;
-    public Contract contractDetails;
 
     public ViewContractPage()
     {
-        _requestMakerService = new RequestMakerService(HttpClient);
+        RequestMakerService = new RequestMakerService(new HttpClient());
     }
 
     protected override void OnInitialized()
@@ -61,7 +60,7 @@
 
     public async Task<Contract> GetContractById(string contractId)
     {
-        var response = await _requestMakerService.MakeGetRequest($"contract/contractbyid/{contractId}");
+        var response = await RequestMakerService.MakeGetRequest($"contract/contractbyid/{contractId}");
         var json = await response.Content.ReadAsStringAsync();
 
         var jToken = JObject.Parse(json)?["result"]?["contractDto"];

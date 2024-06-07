@@ -9,6 +9,7 @@
 @inject RequestMakerService RequestMakerService
 @inject HttpClient HttpClient
 @inject IJSRuntime JSRuntime
+@inject Contract _contract
 
 
  
@@ -106,7 +107,6 @@
  
  
 @code{
-    private RequestMakerService _requestMakerService;
 
 
     [Parameter]
@@ -118,13 +118,13 @@
     private int totalPages => (int)Math.Ceiling((double)_documents.Count() / pageSize);
  
     private List<CandidateDocumentModel> _documents = [];
-    private Contract _contract = null;
+   
 
     private List<UploadTypeModel> _uploadTypes = [];
 
      protected override void OnInitialized()
     {
-        _requestMakerService = new RequestMakerService(HttpClient);
+        RequestMakerService = new RequestMakerService(new HttpClient());
     }
 
     protected override async Task OnInitializedAsync()
@@ -162,7 +162,7 @@
     }
 
     private async Task DownloadDocument(string UploadTypeName){
-        var response = await _requestMakerService.MakeGetRequest($"BlobStorage/downloadFile/{_contract.CustomerId}/{_contract.Id}/{UploadTypeName}");
+        var response = await RequestMakerService.MakeGetRequest($"BlobStorage/downloadFile/{_contract.CustomerId}/{_contract.Id}/{UploadTypeName}");
          var contentDisposition = response.Content.Headers.ContentDisposition;
         var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? "downloaded_file";
 
@@ -194,14 +194,17 @@
         CandidateDocumentModelRequest request = new CandidateDocumentModelRequest();
         request.CandidateDocumentDto = document;
 
-        await _requestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
+        if (RequestMakerService != null)
+        {
+            await RequestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
+        }
     }
 
     public async Task<List<Contract>> GetContracts()
     {
         try
         {
-            var response = await _requestMakerService.MakeGetRequest("contract/allcontracts");
+            var response = await RequestMakerService.MakeGetRequest("contract/allcontracts");
             var json = await response.Content.ReadAsStringAsync();
 
             var outerObject = JObject.Parse(json);
@@ -256,7 +259,9 @@
 
     public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
     {
-        var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        if (RequestMakerService != null)
+        {
+        var response = await RequestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
@@ -278,6 +283,12 @@
         }
 
         return _uploadTypes;
+        } 
+        else
+        {
+            return null;
+        }
+        
     }
 
     private Guid ParseGuid(JToken token, string key)

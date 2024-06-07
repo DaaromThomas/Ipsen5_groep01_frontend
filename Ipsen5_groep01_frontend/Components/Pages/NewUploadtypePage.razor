@@ -13,6 +13,7 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
+@inject RequestMakerService RequestMakerService
 
 <EditForm Model="UploadTypeModel" OnValidSubmit="CreateUploadTypesAsync" FormName="createUploadType">
     <DataAnnotationsValidator />
@@ -76,8 +77,6 @@
 </EditForm>
 
 @code {
-
-    private RequestMakerService _requestMakerService;
     private List<DocumentTypeModel> DocumentTypes = new List<DocumentTypeModel>();
     private UploadTypeModel UploadTypeModel = new UploadTypeModel();
     private List<Guid> selectedDocumentTypeIds = new List<Guid>();
@@ -89,7 +88,7 @@
             NavigationManager.NavigateTo("/signin");
         }
 
-        _requestMakerService = new RequestMakerService(HttpClient);
+        RequestMakerService = new RequestMakerService(new HttpClient());
 
         base.OnInitialized();
     }
@@ -110,7 +109,7 @@
 
     public async Task<List<DocumentTypeModel>> GetDocumentTypesAsync()
     {
-        var response = await _requestMakerService.MakeGetRequest("documenttype/alldocumenttypes");
+        var response = await RequestMakerService.MakeGetRequest("documenttype/alldocumenttypes");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
@@ -154,7 +153,7 @@
                         UploadTypeDto = UploadTypeModel
                     };
 
-                await _requestMakerService.MakePostRequest("uploadtype/adduploadtype", request);
+                await RequestMakerService.MakePostRequest("uploadtype/adduploadtype", request);
             }
         }
     }

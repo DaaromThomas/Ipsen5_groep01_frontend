@@ -10,6 +10,7 @@
 @inject LoginService LoginService
 @inject FileUploadService FileUploadService
 @inject ContractService ContractService
+@inject RequestMakerService RequestMakerService
 
 @inject IJSRuntime JSRuntime
 @inject RequestMakerService RequestMakerService
@@ -63,8 +64,6 @@
 
 
 @code {
-    private RequestMakerService _requestMakerService;
-
     [Parameter]
     public required string candidateId { get; set; }
 
@@ -72,14 +71,14 @@
     public required string contractId { get; set; }
     private List<DocumentOpened> chosenDocuments = new List<DocumentOpened>();
     private List<Dossier> dossiers = new List<Dossier>();
-    private InputFileChangeEventArgs file;
+    private InputFileChangeEventArgs? file;
 
-    private List<CandidateDocumentModel> candidateDocuments;
+    private List<CandidateDocumentModel>? candidateDocuments;
     private List<UploadTypeModel> _uploadTypes = [];
 
     protected override void OnInitialized()
     {
-        _requestMakerService = new RequestMakerService(HttpClient);
+        RequestMakerService = new RequestMakerService(new HttpClient());
     }
 
     protected override async Task OnInitializedAsync()
@@ -135,7 +134,7 @@
 
     private void ResetSelectedContract()
     {
-        contractId = null;
+        contractId = "";
     }
 
     private async Task UploadFile(string documentId, InputFileChangeEventArgs e, string candidateId, string contractId, string uploadTypeName, CandidateDocumentModel document)
@@ -158,7 +157,7 @@
             CandidateDocumentModelRequest request = new CandidateDocumentModelRequest();
             request.CandidateDocumentDto = document;
 
-            await _requestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
+            await RequestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
         }
 
         
@@ -186,7 +185,7 @@
 
     public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
     {
-        var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var response = await RequestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
