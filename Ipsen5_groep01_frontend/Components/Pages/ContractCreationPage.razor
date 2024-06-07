@@ -611,6 +611,7 @@ else
     if(contractArray["candidateDocumentsDto"] == null){
       return new Contract();
     }
+    
     foreach (var jToken in contractArray["candidateDocumentsDto"])
     {
       var candidateDocument= new CandidateDocumentModel();
