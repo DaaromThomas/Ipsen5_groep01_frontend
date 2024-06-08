@@ -1,4 +1,5 @@
 ﻿using Ipsen5_groep01_frontend.Models;
+using Ipsen5_groep01_frontend.Requests;
 using Newtonsoft.Json.Linq;
 
 namespace Ipsen5_groep01_frontend.Services
@@ -52,6 +53,15 @@ namespace Ipsen5_groep01_frontend.Services
 
             return ParseCandidate(candidateArray);
         }
+
+
+        public async Task CreateCandidate(RegisterUserRequest request)
+        {
+            var response = await _requestMakerService.MakePostRequest("Candidate/Candidate", request);
+        }
+
+
+
 
         private Candidate ParseCandidate(JToken jToken)
         {

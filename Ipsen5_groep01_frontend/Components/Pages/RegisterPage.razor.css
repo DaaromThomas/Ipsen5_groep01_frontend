@@ -1,0 +1,599 @@
+﻿namespace Ipsen5_groep01_frontend.Components.Pages
+{
+    public class RegisterPage
+    {
+    }
+}
+/*@@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap');*/
+
+.page {
+    display: flex;
+    height: fit-content;
+    flex-direction: column;
+}
+
+.header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.logo-container {
+    padding-left: 5vmin;
+    padding-top: 2.3vmin;
+}
+
+.logo {
+    height: 6vmin
+}
+
+
+.wizard-container {
+    display: flex;
+    height: 17vmin;
+    align-items: center;/*
+    justify-content: center;*/
+    border: solid;
+    border: 0vmin;
+    border: none;
+    margin-top: 2vmin;
+    margin-left: 16vmin;
+}
+
+
+.wizard-circle {
+    display: flex;
+    align-items: center;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.circle {
+    transition: background-color 1s ease;
+    width: 5vmin;
+    height: 5vmin;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .circle.active {
+        background-color: lightgray;
+    }
+
+.line {
+    width: 23vmin;
+    height: 0.4vmin;
+    border-radius: 5vmin;
+}
+
+.wizard-title {
+    color: #1f262f;
+    font-size: 1.6vmin;
+    padding-top: 1.2vmin;
+    font-family: Inter;
+    font-weight: 600;
+}
+
+.wizard-title-status {
+    color: #4c545c;
+    font-size: 1.3vmin;
+    font-family: Inter;
+    font-weight: 600;
+}
+
+.wizard-step {
+    font-size: 2.5vmin;
+    font-family: Inter;
+    font-weight: 800;
+    color: white;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+
+.register-container {
+    background-color: white;
+    width: 120vmin;
+    /*height: 60vmin;*/
+    margin-top: 6vmin;
+    border-radius: 1vmin;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+
+    margin-bottom: 10vmin;
+}
+
+.sign-container {
+    display: flex;
+    justify-content: end;
+    padding-right: 5vmin;
+    padding-top: 2.3vmin;
+}
+
+.sign-in {
+    margin-right: 2vmin;
+    width: 21vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sign-up {
+    width: 21vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.sign-in-button {
+    width: 100%;
+    height: 60%;
+    font-family: Ubuntu, sans-serif;
+    font-size: 1.8vmin;
+    color: white;
+    font-weight: 600;
+    background-color: #10ADE5;
+    border-width: 0;
+}
+
+.sign-up-button {
+    width: 100%;
+    height: 60%;
+    background-color: #FF6700;
+    font-size: 1.8vmin;
+    color: white;
+    font-weight: 700;
+    border-width: 0;
+    font-family: Ubuntu, sans-serif;
+}
+
+
+.linear-gradient-Container {
+    background: linear-gradient(0.22turn, #FF6700 -20%, #1A222D 40%, #183749 60%, #10ADE5 100%);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  
+}
+
+
+
+.title-login {
+    color: BLACK;
+    grid-row-start: 2;
+    grid-row-end: 4;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3vmin;
+    font-weight: bold;
+    border-top-left-radius: 1vmin;
+    border-top-right-radius: 1vmin;
+}
+
+.inlog-text {
+    color: #1d232f;
+    font-family: Helvetica, sans-serif;
+}
+
+.gen-text {
+    color: #0baee5;
+    font-family: Helvetica, sans-serif;
+}
+
+.login {
+    background-color: white;
+    grid-row-start: 4;
+    grid-row-end: 7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-button {
+    margin-top: 2vmin;
+    width: 50vmin;
+    height: 5vmin;
+    font-family: Ubuntu, sans-serif;
+    font-size: 1.8vmin;
+    color: white;
+    font-weight: 600;
+    background-color: #10ADE5;
+    border: solid 0.25vmin #10ADE5;
+    transition: background-color 0.3s;
+}
+
+    .login-button:hover {
+        background-color: white;
+        color: #10ADE5;
+    }
+
+.back-button-container {
+    background-color: white;
+    grid-row-start: 7;
+    grid-row-end: 10;
+    display: flex;
+    align-items: end;
+    border-bottom-left-radius: 1vmin;
+    border-bottom-right-radius: 1vmin;
+}
+
+.back-button {
+    width: 18vmin;
+    height: 4vmin;
+    font-family: Ubuntu, sans-serif;
+    font-size: 1.8vmin;
+    color: white;
+    font-weight: 600;
+    background-color: white;
+    margin-left: 5vmin;
+    margin-bottom: 5vmin;
+    border: solid 0.3vmin #FF6700;
+    color: #FF6700;
+    font-size: 1.6vmin;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    letter-spacing: 0.05vmin
+}
+
+    .back-button:hover {
+        background-color: #FF6700;
+        color: white;
+    }
+
+.text-fieldcontrainer {
+    width: 50vmin;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    background-color: #1A222D;
+    height: 100px;
+}
+
+.footer-text-container {
+    display: flex;
+    align-items: center;
+    padding-left: 5vmin;
+}
+
+.footer-text {
+    font-size: 1.5vmin;
+    color: white;
+    font-weight: 700;
+    font-family: Ubuntu, sans-serif;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20vmin;
+    /*background-color: red;*/
+}
+
+.input-description-container {
+    width: 90vmin;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.section {
+    background-color: white;
+    padding: 2vmin;
+    border-radius: 1.5vmin;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    margin-top: 3vmin;
+}
+
+.section-title {
+    font-family: Inter;
+    font-weight: 600;
+}
+
+.description-title {
+    width: 100%;
+    color: #1f262f;
+    font-size: 1.9vmin;
+    padding-top: 5vmin;
+    font-family: Inter;
+    font-weight: 600;
+    animation: fade-up 0.5s;
+}
+
+.description {
+    width: 100%;
+    color: #4c545c;
+    font-size: 1.6vmin;
+    padding-top: 0.8vmin;
+    font-family: Inter;
+    font-weight: 600;
+    padding-bottom: 1.5vmin;
+}
+
+
+
+.input-title {
+    color: #1f262f;
+    font-size: 1.5vmin;
+    padding-top: 1.2vmin;
+    padding-bottom: 0.3vmin;
+    font-family: Inter;
+    font-weight: 600;
+}
+
+.input-field {
+    width: 86vmin;
+    height: 4.5vmin;
+    border-radius: 0.7vmin;
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    background-color: white;
+    font-family: inter;
+    padding-left: 1vmin;
+    transition: border-color 0.3s ease;
+    outline: none;
+}
+
+    .input-field:focus {
+        border-width: 0.2vmin;
+        border-color: #1f262f;
+    }
+
+.input-pair-Container {
+    display: flex;
+    gap: 2vmin;
+}
+
+.input-field-pair {
+    width: 42vmin;
+    height: 4.5vmin;
+    border-radius: 0.7vmin;
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    background-color: white;
+    font-family: inter;
+    padding-left: 1vmin;
+    transition: border-color 0.3s ease;
+    outline: none;
+}
+
+    .input-field-pair:focus {
+        border-width: 0.2vmin;
+        border-color: #1f262f;
+    }
+
+.input-pair-Container-odd {
+    display: flex;
+    gap: 2vmin;
+}
+
+.input-field-pair-odd-first {
+    width: 52vmin;
+    height: 4.5vmin;
+    border-radius: 0.7vmin;
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    background-color: white;
+    font-family: inter;
+    transition: border-color 0.3s ease;
+    padding-left: 1vmin;
+    outline: none;
+}
+
+    .input-field-pair-odd-first:focus {
+        border-width: 0.2vmin;
+        border-color: #1f262f;
+    }
+
+.input-field-pair-odd-second {
+    width: 32vmin;
+    height: 4.5vmin;
+    border-radius: 0.7vmin;
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    background-color: white;
+    font-family: inter;
+    padding-left: 1vmin;
+    outline: none;
+}
+
+    .input-field-pair-odd-second:focus {
+        border-width: 0.2vmin;
+        border-color: #1f262f;
+    }
+
+.button-container {
+    display: flex;
+    justify-content: end;
+    width: 90vmin;
+    padding-top: 7vmin;
+    gap: 3vmin;
+}
+
+.previous-button {
+    background-color: transparent;
+    border: none;
+    font-family: inter;
+    font-weight: 600;
+    color: #1f262f;
+    border-radius: 1vmin;
+    transition: background-color 0.3s ease;
+}
+
+
+    .previous-button:hover {
+        background-color: #E3E7ED;
+    }
+
+.next-button {
+    background-color: #1f262f;
+    border: none;
+    font-family: inter;
+    border-radius: 1vmin;
+    font-weight: 600;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+    .next-button:hover {
+        background-color: #3a4757;
+    }
+
+
+
+/*Page 2*/
+
+.selected-documents-container {
+    display: flex;
+    flex-direction: row;
+    gap: 3vmin;
+}
+
+.section-documents {
+    background-color: white;
+    padding: 2vmin;
+    border-radius: 1.5vmin;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    margin-top: 3vmin;
+    width: 75vmin;
+    min-height: 50vmin;
+}
+
+.section-title-selected {
+    padding-top: 2vmin;
+    font-family: Inter;
+    font-weight: 600;
+}
+
+
+
+.input-checkbox-container {
+    padding: 1.1vmin;
+    background-color: #E3E7ED;
+    margin: 0.7vmin;
+    font-size: 1.5vmin;
+    font-family: Inter;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 0.8vmin;
+    min-width: fit-content;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+    .input-checkbox-container:hover {
+        background-color: #1f262f;
+        color: white;
+    }
+
+    .input-checkbox-container.selected {
+        background-color: #1f262f;
+        color: white;
+    }
+
+        .input-checkbox-container.selected:hover {
+            background-color: #E3E7ED;
+            color: #1f262f;
+        }
+
+
+.selected-documents-container {
+    display: flex;
+}
+
+
+
+
+.input-container-select-documents {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20vmin;
+    /*background-color: red;*/
+}
+
+.button-container-2 {
+    display: flex;
+    justify-content: end;
+    width: 153vmin;
+    padding-top: 7vmin;
+    gap: 3vmin;
+}
+
+
+/*Page 3*/
+
+.section-review {
+    background-color: white;
+    padding: 2vmin;
+    border-radius: 1.5vmin;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+    margin-top: 3vmin;
+    width: 90vmin;
+}
+
+.input-pair-Container-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.input-value {
+    font-family: Inter;
+    font-weight: 450;
+    color: dodgerblue;
+    font-size: 1.5vmin;
+}
+
