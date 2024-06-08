@@ -13,6 +13,7 @@
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
 @inject CandidateService CandidateService
+@inject RequestMakerService RequestMakerService
 
 
 
@@ -122,8 +123,6 @@
     private int currentPage = 1;
     private int totalPages => (int)Math.Ceiling((double)contracts.Count() / pageSize);
     private string tijdelijk = "";
-
-    private RequestMakerService _requestMakerService;
     private CustomerService _customerService;
     private CandidateService _candidateService;
 
@@ -134,9 +133,9 @@
 
     public ContractsPage()
     {
-        _requestMakerService = new RequestMakerService(new HttpClient());
-        _customerService = new CustomerService(_requestMakerService);
-        _candidateService = new CandidateService(_requestMakerService);
+        RequestMakerService = new RequestMakerService(new HttpClient());
+        _customerService = new CustomerService(RequestMakerService);
+        _candidateService = new CandidateService(RequestMakerService);
     }
 
 
@@ -193,7 +192,7 @@
 
     public async Task<List<Contract>> GetContracts()
     {
-        var response = await _requestMakerService.MakeGetRequest("contract/allcontracts");
+        var response = await RequestMakerService.MakeGetRequest("contract/allcontracts");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
@@ -255,7 +254,7 @@
 
     public async Task<List<Customer>> GetAllCustomers()
     {
-        var response = await _requestMakerService.MakeGetRequest("Customer/allcustomers");
+        var response = await RequestMakerService.MakeGetRequest("Customer/allcustomers");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);

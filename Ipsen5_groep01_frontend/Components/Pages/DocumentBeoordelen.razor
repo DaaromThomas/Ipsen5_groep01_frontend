@@ -10,8 +10,6 @@
 @inject HttpClient HttpClient
 @inject IJSRuntime JSRuntime
 
-
-
  
 <div class="document-container-background">
     <div class="page-title">Document beoordelen</div>
@@ -83,24 +81,21 @@
  
             </div>
         </div>
- 
+    </div>
+    <div class="contract-note-container">
+        <label for="contractNote">Opmerkingen voor het contract:</label>
+        <textarea id="contractNote" @bind="_contract.Note" placeholder="Voeg een opmerking toe..."></textarea>
+        <button class="button save-note-button" @onclick="() => UpdateContractNote()">Opslaan</button>
     </div>
 </div>
 <script>
     window.downloadFile = function (url, fileName) {
-        // Maak een verborgen link aan
         var link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', fileName); // Voeg het 'download' attribuut toe om het bestand te downloaden
+        link.setAttribute('download', fileName);
         link.style.display = 'none';
-
-        // Voeg de link toe aan de DOM
         document.body.appendChild(link);
-
-        // Simuleer een klik op de link
         link.click();
-
-        // Verwijder de link uit de DOM
         document.body.removeChild(link);
     };
 </script>
@@ -113,15 +108,13 @@
     public required string contractId{ get; set; }
     private List<Contract> _contracts = new List<Contract>();
 
-    private Contract _contract;
+    private Contract _contract = new Contract();
  
     private int pageSize = 10;
     private int currentPage = 1;
     private int totalPages => (int)Math.Ceiling((double)_documents.Count() / pageSize);
  
     private List<CandidateDocumentModel> _documents = [];
-   
-
     private List<UploadTypeModel> _uploadTypes = [];
 
      protected override void OnInitialized()
@@ -167,11 +160,7 @@
         var response = await RequestMakerService.MakeGetRequest($"BlobStorage/downloadFile/{_contract.CustomerId}/{_contract.Id}/{UploadTypeName}");
          var contentDisposition = response.Content.Headers.ContentDisposition;
         var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? "downloaded_file";
-
-        // Ensure the fileName is correctly decoded if it's URL encoded
         fileName = Uri.UnescapeDataString(fileName);
-
-        // Get the path to the user's Downloads folder
         string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
         var filePath = Path.Combine(downloadsPath, fileName);
 
@@ -181,7 +170,6 @@
         }
 
         var downloadUrl = $"https://staffingnowdocuments.blob.core.windows.net/myfiles/{_contract.CustomerId}/{_contract.Id}/{UploadTypeName}/{fileName}";
-        
         await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
 
     }
@@ -199,6 +187,21 @@
         if (RequestMakerService != null)
         {
             await RequestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
+        }
+    }
+    private async Task UpdateContractNote(){
+        if(_contract != null){
+            ContractRequest request = new();
+            {
+                request.ContractDto = _contract;
+                Console.WriteLine(_contract);
+            };
+
+            if(RequestMakerService != null){
+                await RequestMakerService.MakePatchRequest("Contract/updatecontract", request);
+            }
+            _contract.Note = string.Empty;
+            StateHasChanged();
         }
     }
 
