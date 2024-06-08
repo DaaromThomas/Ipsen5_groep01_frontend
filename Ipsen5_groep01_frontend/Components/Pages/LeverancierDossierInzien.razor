@@ -58,8 +58,14 @@
                 <td colspan="2">Geen documenten gevonden.</td>
             </tr>
         }
-
     </div>
+    @if (_contract != null)
+    {
+        <div class="contract-note-container">
+            <label for="contractNote">Opmerkingen voor het contract:</label>
+            <textarea id="contractNote" readonly>@_contract.Note</textarea>
+        </div>
+    }
 </div>
 
 
@@ -74,6 +80,8 @@
     private List<CandidateDocumentModel>? candidateDocuments;
     private List<UploadTypeModel> _uploadTypes = [];
 
+    private Contract _contract = new Contract();
+
     protected override void OnInitialized()
     {
         RequestMakerService = new RequestMakerService(new HttpClient());
@@ -81,9 +89,13 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadContracts();
         await LoadDocuments();
         await GetAllUploadTypesAsync();
 
+    }
+
+    private async Task LoadContracts(){
     }
 
     private async Task LoadDocuments()
@@ -92,6 +104,8 @@
         var _contractId = Guid.Parse(contractId);
         await ContractService.getContractsByCandidateId(candidateId.ToString());
         var contract = ContractService.Contracts.FirstOrDefault(c => c.Id.ToString() == contractId.ToString());
+        _contract = contract;
+        Console.WriteLine(_contract);
         if (contract != null)
         {
             candidateDocuments = contract.CandidateDocumentsDto;
