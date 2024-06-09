@@ -76,7 +76,7 @@
 
 .user-header {
     display: grid;
-    grid-template-columns: 1.2fr 1.2fr 2fr 0.5fr 1.15fr 0.2fr 0.2fr 0.2fr;
+    grid-template-columns: 1fr 1fr 2fr 0.5fr 1.15fr 0.2fr 0.2fr 0.2fr;
     padding: 1.5vmin;
     background-color: #1f262f;
     border-radius: 1vmin;
@@ -96,7 +96,7 @@
 }
 .users {
     display: grid;
-    grid-template-columns: 1.2fr 1.2fr 2fr 0.5fr 1.15fr 0.2fr 0.2fr 0.2fr;
+    grid-template-columns: 1fr 1fr 2fr 0.5fr 1.15fr 0.2fr 0.2fr 0.2fr;
     border-left-width: 0.1vmin;
     border-right-width: 0.1vmin;
     border-bottom-width: 0.1vmin;

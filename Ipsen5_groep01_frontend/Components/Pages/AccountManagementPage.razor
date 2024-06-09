@@ -52,18 +52,7 @@
 
         @foreach (var user in users.Skip((currentPage - 1) * pageSize).Take(pageSize))
         {
-
-                <div class="users" @onclick="() => NavigateToUserDetails(user.Id.ToString())">
-                    @* <div>@getCustomerNameById(users.CustomerId)</div> *@
-                    @* <div>@getCandidateNameById(users.CandidateId)</div> *@
-                    @* <div>users.StartDate.ToString("dd-MM-yyyy") - users.EndDate.ToString("dd-MM-yyyy")</div> *@
-
-                    @* <div class="status-container-color"> *@
-                    @*     <div class="status" style="background-color: @(GetBackgroundColor(user.Status));"> *@
-                    @*         users.Status *@
-                    @*     </div> *@
-                    @* </div> *@
-                    
+                <div class="users">
                     <div>@user.FirstName</div>
                     <div>@user.LastName</div>
                     <div>@user.Email</div>
@@ -75,9 +64,18 @@
                     <button class="edit_user">
                         <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
                     </button>
-                    <button class="delete_user">
-                        <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
-                    </button>
+                    @if(user.IsActive)
+                    {
+                        <button class="delete_user" @onclick="() => DisableUser(user.Id.ToString())">
+                            <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
+                        </button>
+                    }
+                    @if(!user.IsActive)
+                    {
+                        <button class="delete_user" @onclick="() => EnableUser(user.Id.ToString())">
+                            <img class="delete_icon" src="/icons/trash-1.png" alt="Maak account actief" />
+                        </button>
+                    }
 
                 </div>
         }
@@ -132,12 +130,7 @@
     {
 
     }
-
-
-
-
-
-
+    
     protected override void OnInitialized()
     {
 
@@ -193,6 +186,7 @@
         var userArray = outerObject["result"]["userDto"];
 
 
+        users.Clear();
         foreach (var jToken in userArray)
         {
 
@@ -201,10 +195,29 @@
             user.FirstName = (string)jToken["firstName"];
             user.LastName = (string)jToken["lastName"];
             user.Email = (string)jToken["email"];
+            user.IsActive = (bool)jToken["isActive"];
             
             users.Add(user);
         }
         return users;
+    }
+    
+    private async Task DisableUser(string id)
+    {
+        var response = await _requestMakerService.MakePutRequest($"user/disable/{id}", "");
+        if (response.IsSuccessStatusCode)
+        {
+            await GetAllUsers();
+        }
+    }
+
+    private async Task EnableUser(string id)
+    {
+        var response = await _requestMakerService.MakePutRequest($"user/enable/{id}", "");
+        if (response.IsSuccessStatusCode)
+        {
+            await GetAllUsers();
+        }
     }
 
     private string GetBackgroundColor(string status)
@@ -219,6 +232,7 @@
 
     private void NavigateToUserDetails(string userId)
     {
+        Console.WriteLine("NTUD");
         NavigationManager.NavigateTo($"/DocumentBeoordelen/{userId}");
     }
     
@@ -227,5 +241,7 @@
     {
         currentPage += increment;
     }
-    
+
+
+
 }
