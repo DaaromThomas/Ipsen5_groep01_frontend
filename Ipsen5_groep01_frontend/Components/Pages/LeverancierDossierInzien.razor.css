@@ -283,10 +283,10 @@
 }
 
 .status {
-    display: flex;
-    justify-content: center;
-    padding: 0.1vmin 1.2vmin;
-    border-radius: 1vmin;
+    padding: 0.25em;
+    width: 9em;
+    height: fit-content;
+    border-radius: 5px;
 }
 
 .view_customer {
