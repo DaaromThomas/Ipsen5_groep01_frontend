@@ -42,14 +42,12 @@
         </div>
  
         @foreach (CandidateDocumentModel document in _documents.Skip((currentPage - 1) * pageSize).Take(pageSize)){
-            
             <div class="documents">
                 <div>@GetUploadTypeName(document.UploadTypeId)</div>
                 <div class="status-container-color">
-                    @* <div class="status" style="background-color: @(GetBackgroundColor(document.Status));">
-                        @document.Status
-                    </div> *@
-                    <select @onchange="(e) => OnStatusChange(e, document)">
+                    <select @onchange="(e) => OnStatusChange(e, document)" 
+                            style="background-color: @GetBackgroundColor(document.Status);"
+                            class="custom-select">
                         @foreach(var option in statusOptions){
                             if(@document.Status == option){
                                 <option selected value="@document.Status">@document.Status</option>

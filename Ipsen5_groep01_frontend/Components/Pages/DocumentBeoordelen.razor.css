@@ -190,19 +190,26 @@ select {
     appearance: none;
     background-color: transparent;
     border: none;
-    padding: 0 1em 0 0;
+    padding: 0.25em;
     margin: 0;
-    width: 100%;
+    width: fit-content;
     font-family: inherit;
     font-size: inherit;
     cursor: inherit;
     line-height: inherit;
-  }
+}
 
-  select::-ms-expand {
+/* Remove the dropdown arrow in IE */
+select::-ms-expand {
     display: none;
-  }
+}
 
-  select {
-    outline: none;
-  }
+/* Style the options */
+select option {
+    background-color: #ffffff; /* Default option background */
+}
+
+/* Focus state for select */
+.custom-select:focus {
+    background-color: #e2e4e4;
+}
