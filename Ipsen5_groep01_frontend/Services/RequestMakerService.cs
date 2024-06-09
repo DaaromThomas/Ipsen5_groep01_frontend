@@ -47,6 +47,16 @@ namespace Ipsen5_groep01_frontend.Services
 
             return await _httpClient.PatchAsync(url, content);
         }
+        
+        public async Task<HttpResponseMessage> MakePutRequest<T>(string endpoint, T data)
+        {
+            var url = $"{BaseUrl}/{endpoint}";
+            var json = JsonConvert.SerializeObject(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            Console.WriteLine(json);
+
+            return await _httpClient.PutAsync(url, content);
+        }
 
 
         public async Task<HttpResponseMessage> MakeGetRequest(string endpoint)
