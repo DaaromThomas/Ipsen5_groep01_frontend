@@ -1,4 +1,6 @@
-﻿namespace Ipsen5_groep01_frontend.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Ipsen5_groep01_frontend.Models
 {
     public class Candidate
     {
@@ -8,8 +10,10 @@
 
         public string? LastName { get; set; }
 
+        [Required(ErrorMessage = "BSN is verplicht")]
         public DateTime DateOfBirth { get; set; }
 
+        [Required(ErrorMessage = "BSN is verplicht")]
         public string? BSN { get; set; }
 
         public DateTime CreatedDate { get; set; }

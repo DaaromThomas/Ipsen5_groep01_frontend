@@ -6,10 +6,13 @@ namespace Ipsen5_groep01_frontend.Models
     {
         public Guid Id { get; set; }
 
+        //[Required(ErrorMessage = "Voornaam is verplicht")]
         public string FirstName { get; set; }
 
+        //[Required(ErrorMessage = "Achternaam is verplicht")]
         public string LastName { get; set; }
 
+        [Required(ErrorMessage = "Wachtwoord is verplicht")]
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
 
@@ -27,11 +30,11 @@ namespace Ipsen5_groep01_frontend.Models
 
         public string? Role { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Email is verplicht")]
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Wachtwoord is verplicht")]
         public string Password { get; set; }
 
         public Candidate? CandidateDto { get; set; }

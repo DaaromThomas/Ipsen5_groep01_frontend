@@ -134,7 +134,7 @@
                 <div class="input-container ">
 
                     <div class="input-description-container">
-                        <EditForm Model="@registerModel" FormName="createuser">
+                        <EditForm Model="@registerModel" OnValidSubmit="GoToNextStep" FormName="createuser">
                             <DataAnnotationsValidator />
 
                             <div class="description-title">
@@ -186,7 +186,7 @@
                                 <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
                                     Vorige
                                 </button>
-                                <button type="submit" class="next-button" @onclick="GoToNextStep">
+                                <button type="submit" class="next-button">
                                     Volgende
                                 </button>
                             </div>
@@ -219,7 +219,7 @@
                                     <div>
                                         <div class="input-title">Voornaam</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="Voornaam" @bind="@registerModel.FirstName"/>
+                                            <input class="input-field-pair" placeholder="Voornaam" @bind="@registerModel.FirstName" />
                                             <ValidationMessage For="() => registerModel.FirstName"></ValidationMessage>
                                         </div>
                                     </div>
@@ -227,7 +227,7 @@
                                     <div>
                                         <div class="input-title">Achternaam</div>
                                         <div>
-                                            <input type="number" class="input-field-pair" placeholder="Achternaam" @bind="@registerModel.LastName"/>
+                                            <input type="number" class="input-field-pair" placeholder="Achternaam" @bind="@registerModel.LastName" />
                                         </div>
                                         <ValidationMessage For="() => registerModel.LastName"></ValidationMessage>
                                     </div>
@@ -344,24 +344,41 @@
                             <div class="section">
                                 <div class="section-title">Adres gegevens</div>
 
-                                    <div class="input-pair-Container">
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">Postcode</div>
                                         <div>
-                                            <div class="input-title">Postcode</div>
-                                            <div>
-                                                <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.PostalCode" />
-                                                <ValidationMessage For="() => candidateAddressModel.PostalCode"></ValidationMessage>
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <div class="input-title">Huisnummer</div>
-                                            <div>
-                                                <input type="number" class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.HouseNumber" />
-                                            </div>
-                                            <ValidationMessage For="() => candidateAddressModel.HouseNumber"></ValidationMessage>
+                                            <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.PostalCode" />
+                                            <ValidationMessage For="() => candidateAddressModel.PostalCode"></ValidationMessage>
                                         </div>
                                     </div>
 
+                                    <div>
+                                        <div class="input-title">Huisnummer</div>
+                                        <div>
+                                            <input type="number" class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.HouseNumber" />
+                                        </div>
+                                        <ValidationMessage For="() => candidateAddressModel.HouseNumber"></ValidationMessage>
+                                    </div>
+                                </div>
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">Postcode</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.StreetName" />
+                                            <ValidationMessage For="() => candidateAddressModel.StreetName"></ValidationMessage>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="input-title">Huisnummer</div>
+                                        <div>
+                                            <input type="number" class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.Province" />
+                                        </div>
+                                        <ValidationMessage For="() => candidateAddressModel.Province"></ValidationMessage>
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -605,11 +622,10 @@
         request.User.CandidateDto.VatNumber = vatNumberModel;
         request.User.CandidateDto.BankAccountNumber = bankAccountNumberModel;
         request.User.CandidateDto.PhoneNumber = phoneNumberModel;
-        nawModel.NAW = "ss";
+
+        nawModel.NAW = "niet";
         request.User.CandidateDto.Naw = nawModel;
 
-        candidateAddressModel.StreetName = "dd";
-        candidateAddressModel.Province = "dddd";
         candidateAddressModel.Country = "dddd";
 
         candidateAddressModels.Add(candidateAddressModel);
@@ -619,10 +635,10 @@
     }
 
     public void HandleNextButtonClick()
-{
-    AddNewAddress();
-    GoToNextStep();
-}
+    {
+        AddNewAddress();
+        GoToNextStep();
+    }
 
     protected override void OnInitialized()
     {
