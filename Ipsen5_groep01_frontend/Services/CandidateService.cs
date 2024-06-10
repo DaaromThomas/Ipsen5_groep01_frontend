@@ -61,6 +61,10 @@ namespace Ipsen5_groep01_frontend.Services
         }
 
 
+        public async Task CreateUserCandidate(RegisterUserRequest request)
+        {
+            var response = await _requestMakerService.MakePostRequest("user/signup", request);
+        }
 
 
         private Candidate ParseCandidate(JToken jToken)

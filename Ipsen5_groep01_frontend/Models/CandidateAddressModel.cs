@@ -1,4 +1,4 @@
-﻿namespace IPSEN5_Backend.Services.Dtos
+﻿namespace Ipsen5_groep01_frontend.Models
 {
     public class CandidateAddressModel
     {
