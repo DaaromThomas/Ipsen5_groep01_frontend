@@ -10,4 +10,9 @@ public class User
     
     public string Email { get; set; }
     public bool IsActive { get; set; }
+    public string Password { get; set; }
+    public string ConfirmPassword { get; set; }
+    public DateTime createdDate { get; set; }
+    public DateTime updatedDate { get; set; }
+    public string Role { get; set; }
 }
