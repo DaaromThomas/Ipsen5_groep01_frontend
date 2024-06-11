@@ -2,6 +2,17 @@ namespace Ipsen5_groep01_frontend.Services{
     public class TemplateUploadService{
         private List<BinaryDocument> _documents = [];
 
+        private Guid _customerId;
+
+        public void SetCustomerId(Guid customerId){
+            _customerId = customerId;
+        }
+
+        public Guid GetCustomerId()
+        {
+        return _customerId;
+        }
+
         public void ClearDocuments(){
             _documents.Clear();
         }
