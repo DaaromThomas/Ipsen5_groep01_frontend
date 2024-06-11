@@ -4,9 +4,9 @@
     {
         public Guid Id { get; set; } 
 
-        public string Type { get; set; } 
+        public string? Type { get; set; } 
 
-        public string DocumentType { get; set; }
+        public string? DocumentType { get; set; }
 
         public bool Required { get; set; } 
 
