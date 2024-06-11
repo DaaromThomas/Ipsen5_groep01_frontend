@@ -285,9 +285,12 @@
                             @foreach (var uploadType in UploadTypes.Where(u => u.Required))
                             {
                                 <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
-                                    @uploadType.Type
+                                    <p>@uploadType.Type</p>
+                                    <InputFile class="custom-file-input" @onclick:stopPropagation OnChange="@(e => UploadDocument(e, uploadType.Type))"/>
                                 </div>
                             }
+
+
                         </div>
 
                         <div class="section-title-selected">Geselecteerde documenten</div>
@@ -296,7 +299,8 @@
                             @foreach (var uploadType in UploadTypes.Where(u => selectedItems.Contains(u.Id) && !u.Required))
                             {
                                 <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
-                                    @uploadType.Type
+                                    <p>@uploadType.Type</p>
+                                    <InputFile class="custom-file-input" @onclick:stopPropagation OnChange="@(e => UploadDocument(e, uploadType.Type))"/>
                                 </div>
                             }
                         </div>
@@ -416,7 +420,6 @@
                         {
                             <div class="input-checkbox-container selected">
                                 @uploadType.Type
-                                <img class="upload-icon" src="/icons/upload.png"/>
                             </div>
                         }
                     </div>
@@ -451,6 +454,7 @@
     private int currentStep = 1;
     private string? houseNumberValidationMessage;
     private string? postalCodeValidationMessage;
+    
 
 
     public CustomerConfigPage2()
@@ -475,7 +479,9 @@
         await GetUploadTypesAsync();
     }
 
-
+    public async Task UploadDocument(InputFileChangeEventArgs e, string uploadTypeName){
+        TemplateUploadService._uploadDocument(e, uploadTypeName);
+    }
 
     public async Task<List<UploadTypeModel>> GetUploadTypesAsync()
     {
@@ -514,6 +520,7 @@
 
     public async Task CreateCustomerAsync()
     {
+        Customer.Id = customerId;
         CustomerRequest CustomerRequest = new CustomerRequest
             {
                 CustomerDto = Customer
@@ -531,9 +538,8 @@
             return;
         }
 
-        customerId = ParseGuid(resultObject, "id");
         if(customerId != null){
-            TemplateUploadService.SetCustomerId(customerId);
+            Console.WriteLine("Customer ID" + customerId);
         }
 
         await CreateCustomerTemplateAsync();
@@ -731,7 +737,7 @@
 
         )
         {
-
+            
             bool founded = await GetAddressInfo();
 
             if (founded == true)
@@ -744,6 +750,8 @@
                     currentStep++;
                     if (currentStep == 2)
                     {
+                        customerId = Guid.NewGuid();
+                        TemplateUploadService.SetCustomerId(customerId);
                         await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
                     }
                     await JSRuntime.InvokeVoidAsync("scrollToTop");

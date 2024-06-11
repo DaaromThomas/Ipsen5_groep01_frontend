@@ -1,6 +1,7 @@
 using System.Text;
 using Newtonsoft.Json;
 using System.Net.Http;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace Ipsen5_groep01_frontend.Services{
     public class TemplateUploadService{
@@ -14,21 +15,65 @@ namespace Ipsen5_groep01_frontend.Services{
             httpClient.BaseAddress = new Uri("http://localhost:5196/api/");
         }
 
-        public async Task UploadAllDocuments(){
-            foreach(BinaryDocument document in _documents){
-                _uploadDocument(document);
+        public async Task UploadAllDocuments()
+        {
+            foreach (var document in _documents)
+            {
+                try
+                {
+                    // await _uploadDocument(document);
+                }
+                finally
+                {
+                    document.Dispose();
+                }
             }
         }
 
-        private async Task<string> _uploadDocument(BinaryDocument document){
-            var formData = new MultipartFormDataContent();
-            formData.Add(new StreamContent(document.GetStream()), "file", document.GetFileName());
 
-            Console.WriteLine(formData);
-            var response = await _httpClient.PostAsync($"BlobStorage/uploadTemplate/{_customerId}/{document.GetUploadTypeName()}", formData);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadAsStringAsync();
+        public async Task<string> _uploadDocument(InputFileChangeEventArgs e, string uploadTypeName)
+        {
+            var file = e.File;
+            if (file == null)
+            {
+                Console.WriteLine("No file selected.");
+                return "";
+            }
+            using (var memoryStream = new MemoryStream())
+            {
+                await file.OpenReadStream().CopyToAsync(memoryStream);
+                memoryStream.Seek(0, SeekOrigin.Begin);
+
+                var formData = new MultipartFormDataContent();
+                formData.Add(new StreamContent(memoryStream), "file", file.Name);
+                formData.Add(new StringContent(_customerId.ToString()), "customerId");
+                formData.Add(new StringContent(uploadTypeName), "uploadTypeName");
+
+                var response = await _httpClient.PostAsync($"BlobStorage/uploadTemplate/{_customerId}/{uploadTypeName}", formData);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
         }
+
+
+
+        public async Task AddUploadedDocumentToList(InputFileChangeEventArgs e, string uploadTypeName)
+        {
+            var file = e.File;
+            if (file == null)
+            {
+                Console.WriteLine("No file selected.");
+                return;
+            }
+
+            var memoryStream = new MemoryStream();
+            await file.OpenReadStream().CopyToAsync(memoryStream);
+            memoryStream.Seek(0, SeekOrigin.Begin);
+
+            var binaryDocument = new BinaryDocument(memoryStream, file.Name, uploadTypeName);
+            AddDocument(binaryDocument);
+        }
+
 
         public void ClearDocuments(){
             _documents.Clear();
@@ -57,40 +102,40 @@ namespace Ipsen5_groep01_frontend.Services{
 
     }
 
-    public class BinaryDocument{
+    public class BinaryDocument : IDisposable
+    {
         private Stream _stream;
         private string _fileName;
-        private Guid _uploadTypeName;
+        private string _uploadTypeName;
+        private bool _disposed;
 
-        public BinaryDocument(Stream stream, string name, Guid uploadTypeName){
+        public BinaryDocument() { }
+
+        public BinaryDocument(Stream stream, string name, string uploadTypeName)
+        {
             _stream = stream;
             _fileName = name;
             _uploadTypeName = uploadTypeName;
         }
 
-        public string GetFileName(){
-            return _fileName;
-        }
+        public string GetFileName() => _fileName;
+        public Stream GetStream() => _stream;
+        public string GetUploadTypeName() => _uploadTypeName;
 
-        public Stream GetStream(){
-            return _stream;
-        }
+        public void SetFileName(string name) => _fileName = name;
+        public void SetStream(Stream stream) => _stream = stream;
+        public void SetUploadTypeName(string uploadTypeName) => _uploadTypeName = uploadTypeName;
 
-        public Guid GetUploadTypeName(){
-            return _uploadTypeName;
-        }
-
-        public void SetFileName(string name){
-            _fileName = name;
-        }
-
-        public void SetStream(Stream stream){
-            _stream = stream;
-        }
-
-        public void SetUploadTypeName(Guid uploadTypeName){
-            _uploadTypeName = uploadTypeName;
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                _stream?.Dispose();
+                _disposed = true;
+            }
         }
     }
+
+
 
 }
