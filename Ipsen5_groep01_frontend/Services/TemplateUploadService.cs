@@ -4,15 +4,6 @@ namespace Ipsen5_groep01_frontend.Services{
 
         private Guid _customerId;
 
-        public void SetCustomerId(Guid customerId){
-            _customerId = customerId;
-        }
-
-        public Guid GetCustomerId()
-        {
-        return _customerId;
-        }
-
         public void ClearDocuments(){
             _documents.Clear();
         }
@@ -28,6 +19,16 @@ namespace Ipsen5_groep01_frontend.Services{
         public List<BinaryDocument> GetAllDocuments(){
             return _documents;
         }
+
+        public void SetCustomerId(Guid customerId){
+            _customerId = customerId;
+        }
+
+        public Guid GetCustomerId()
+        {
+        return _customerId;
+        }
+
     }
 
     public class BinaryDocument{
