@@ -106,23 +106,13 @@
                 <ValidationMessage For="() => User.LastName"></ValidationMessage>
               </div>
             </div>
-            <div class="input-pair-Container">
+            <div>
+              <div class="input-title">Email</div>
               <div>
-                <div class="input-title">Email</div>
-                <div>
-                  <input class="input-field-pair" placeholder="Voorbeeld@email.com" @bind="@User.Email" />
-                </div>
-                <ValidationMessage For="() => User.Email"></ValidationMessage>
+                <input class="input-field" placeholder="Voorbeeld@email.com" @bind="@User.Email" />
               </div>
-              <div>
-                <div class="input-title">Telefoonnummer</div>
-                <div>
-                  <input class="input-field-pair" placeholder="0612345678" @bind="@User.PhoneNumber" />
-                </div>
-                <ValidationMessage For="() => User.PhoneNumber"></ValidationMessage>
-              </div>
+              <ValidationMessage For="() => User.Email"></ValidationMessage>
             </div>
-
             <div class="input-pair-Container">
               <div>
                 <div class="input-title">Wachtwoord</div>
@@ -181,15 +171,9 @@
               <div class="input-value">@User.LastName</div>
             </div>
           </div>                    
-          <div class="input-pair-Container-3">
-            <div>
-              <div class="input-title">Email</div>
-              <div class="input-value">@User.Email</div>
-            </div>
-            <div>
-              <div class="input-title">Telefoon</div>
-              <div class="input-value">@User.PhoneNumber</div>
-            </div>
+          <div>
+            <div class="input-title">Email</div>
+            <div class="input-value">@User.Email</div>
           </div>
         </div>
       </div>
@@ -198,7 +182,7 @@
         <button class="previous-button" @onclick="GoToPreviousStep">
           Vorige
         </button>
-        <button class="next-button" @onclick="CreateUserAsync">
+        <button class="next-button" @onclick="CreateEmployeeAsync">
           Opslaan
         </button>
       </div>
@@ -249,7 +233,6 @@
   protected override async Task OnInitializedAsync()
   {
     await GetUploadTypesAsync();
-//    jwtToken = await _localstorage.GetItemAsStringAsync("JWT");
 
   }
 
@@ -287,24 +270,32 @@
     return UploadTypes;
   }
 
-  public async Task CreateUserAsync()
+  public async Task CreateEmployeeAsync()
   {
-    SignUpRequest signUpRequest  = new SignUpRequest()
+    var user = User;
+    
+    user.FirstName = User.FirstName;
+    user.LastName = User.LastName;
+    user.Email = User.Email;
+    user.Password = User.Password;
+    user.ConfirmPassword = User.ConfirmPassword;
+
+    UserRequest userRequest = new UserRequest
     {
-      UserDto = User
+      User = user
     };
-
-
-    var response = await _requestMakerService.MakePostRequest("user/signup", signUpRequest);
-
-    var json = await response.Content.ReadAsStringAsync();
-
-    var outerObject = JObject.Parse(json);
-    var resultObject = outerObject["result"];
-
-    customerId = Guid.Parse((string)resultObject["id"]);
-
-    await CreateUserTemplateAsync();
+    
+    jwtToken = await _localstorage.GetItemAsStringAsync("JWT");
+  
+    var response = await _requestMakerService.MakePostRequest("user/employee", userRequest, jwtToken);
+  
+//    var json = await response.Content.ReadAsStringAsync();
+  
+//    var outerObject = JObject.Parse(json);
+//    var resultObject = outerObject["result"];
+  
+    // customerId = Guid.Parse((string)resultObject["id"]);
+    
   }
 
   public async Task CreateUserTemplateAsync()
@@ -345,7 +336,7 @@
     };
 
 
-    var response = await _requestMakerService.MakePostRequest("contract/contract", contractRequest);
+    var response = await _requestMakerService.MakePostRequest("contract/contract", contractRequest, "");
 
     NavigationManager.NavigateTo("/customer");
   }
@@ -392,7 +383,7 @@
 
   private async Task SubmitForms()
   {
-    await CreateUserAsync();
+    // await CreateUserAsync();
     await CreateUserTemplateAsync();
     NavigationManager.NavigateTo("/customer");
   }
@@ -489,9 +480,7 @@
         User.LastName != null &&
         User.Email != null &&
         User.Password != null &&
-        User.ConfirmPassword != null &&
-        User.PhoneNumber != null 
-
+        User.ConfirmPassword != null
        )
     {
       if (currentStep < 3)
