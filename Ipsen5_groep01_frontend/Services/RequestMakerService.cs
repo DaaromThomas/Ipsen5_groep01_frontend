@@ -29,12 +29,14 @@ namespace Ipsen5_groep01_frontend.Services
             return await _httpClient.SendAsync(request);
         }
 
-        public async Task<HttpResponseMessage> MakePostRequest<T>(string endpoint, T data)
+        public async Task<HttpResponseMessage> MakePostRequest<T>(string endpoint, T data, string jwtToken)
         {
             var url = $"{BaseUrl}/{endpoint}"; 
             var json = JsonConvert.SerializeObject(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-
+            
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwtToken);
+            
             return await _httpClient.PostAsync(url, content);
         }
 
