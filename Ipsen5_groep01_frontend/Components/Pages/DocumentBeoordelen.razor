@@ -200,7 +200,6 @@
             if(RequestMakerService != null){
                 await RequestMakerService.MakePatchRequest("Contract/updatecontract", request);
             }
-            _contract.Note = string.Empty;
             StateHasChanged();
         }
     }

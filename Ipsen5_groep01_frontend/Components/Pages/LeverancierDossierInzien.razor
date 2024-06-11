@@ -105,7 +105,6 @@
         await ContractService.getContractsByCandidateId(candidateId.ToString());
         var contract = ContractService.Contracts.FirstOrDefault(c => c.Id.ToString() == contractId.ToString());
         _contract = contract;
-        Console.WriteLine(_contract);
         if (contract != null)
         {
             candidateDocuments = contract.CandidateDocumentsDto;
