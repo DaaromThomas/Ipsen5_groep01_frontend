@@ -571,12 +571,13 @@
 
 
         ContractRequest contractRequest = new ContractRequest
-            {
-                ContractDto = ContractModel
-            };
-
+        {
+            ContractDto = ContractModel
+        };
 
         var response = await RequestMakerService.MakePostRequest("contract/contract", contractRequest);
+
+        await TemplateUploadService.UploadAllDocuments();
 
         NavigationManager.NavigateTo("/customer");
     }
