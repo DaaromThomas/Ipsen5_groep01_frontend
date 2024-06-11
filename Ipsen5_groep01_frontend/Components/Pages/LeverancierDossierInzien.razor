@@ -42,12 +42,14 @@
                     <div>@document.UploadTypeId</div>
                     <div></div>
                     <div>@document.UpdatedBy</div>
-                    <div>@document.Status</div>
+                    <div class="status" style="background-color: @GetBackgroundColor(document.Status)">@document.Status</div>
 
-                    <InputFile class="eye_icon" OnChange="@(e => file = e)" @onclick:stopPropagation/>
-                    <button class="view_customer" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
-                        <img class="eye_icon" src="/icons/upload.png"/>
-                    </button>
+                    @if(document.Status == "New" || document.Status == "Afgekeurd"){
+                        <InputFile class="eye_icon" OnChange="@(e => file = e)" @onclick:stopPropagation/>
+                        <button class="view_customer" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
+                            <img class="eye_icon" src="/icons/upload.png"/>
+                        </button>
+                    }
                 </div>
 
             }
@@ -122,6 +124,19 @@
             default:
                 return "white";
         }
+    }
+
+    private string GetBackgroundColor(string status)
+    {
+        return status switch
+        {
+            "New" => "lightgreen",
+            "Completed" => "#AA77FF",
+            "Wachten op beoordeling" => "#FFFDD0",
+            "Goedgekeurd" => "#3CB371",
+            "Afgekeurd" => "#FF3131",
+            _ => "lightblue"
+        };
     }
 
     public void navigate()
