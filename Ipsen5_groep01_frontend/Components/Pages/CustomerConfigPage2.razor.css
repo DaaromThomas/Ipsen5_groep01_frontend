@@ -388,3 +388,11 @@ button {
     font-size: 1.5vmin;
 }
 
+.upload-icon {
+    position: relative;
+    top: -5px;
+    right: -10px;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
