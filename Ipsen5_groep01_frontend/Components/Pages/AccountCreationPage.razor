@@ -287,7 +287,7 @@
     
     jwtToken = await _localstorage.GetItemAsStringAsync("JWT");
   
-    var response = await _requestMakerService.MakePostRequest("user/employee", userRequest, jwtToken);
+    var response = await _requestMakerService.MakePostRequest("user/createemployee", userRequest, jwtToken);
   
 //    var json = await response.Content.ReadAsStringAsync();
   
