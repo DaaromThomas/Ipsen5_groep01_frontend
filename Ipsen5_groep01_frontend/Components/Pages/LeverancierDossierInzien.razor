@@ -5,12 +5,12 @@
 @inject NavigationManager NavigationManager
 
 @using Services;
-@using Ipsen5_groep01_frontend.Services
 @using Ipsen5_groep01_frontend.Requests
 
 @inject LoginService LoginService
 @inject FileUploadService FileUploadService
 @inject ContractService ContractService
+@inject RequestMakerService RequestMakerService
 
 @inject IJSRuntime JSRuntime
 @inject RequestMakerService RequestMakerService
@@ -42,12 +42,14 @@
                     <div>@document.UploadTypeId</div>
                     <div></div>
                     <div>@document.UpdatedBy</div>
-                    <div>@document.Status</div>
+                    <div class="status" style="background-color: @GetBackgroundColor(document.Status)">@document.Status</div>
 
-                    <InputFile class="eye_icon" OnChange="@(e => file = e)" @onclick:stopPropagation/>
-                    <button class="view_customer" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
-                        <img class="eye_icon" src="/icons/upload.png"/>
-                    </button>
+                    @if(document.Status == "New" || document.Status == "Afgekeurd"){
+                        <InputFile class="eye_icon" OnChange="@(e => file = e)" @onclick:stopPropagation/>
+                        <button class="view_customer" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
+                            <img class="eye_icon" src="/icons/upload.png"/>
+                        </button>
+                    }
                 </div>
 
             }
@@ -58,36 +60,44 @@
                 <td colspan="2">Geen documenten gevonden.</td>
             </tr>
         }
-
     </div>
+    @if (_contract != null)
+    {
+        <div class="contract-note-container">
+            <label for="contractNote">Opmerkingen voor het contract:</label>
+            <textarea id="contractNote" readonly>@_contract.Note</textarea>
+        </div>
+    }
 </div>
 
 
 @code {
-    private RequestMakerService _requestMakerService;
+    [Parameter]
+    public required string candidateId { get; set; }
 
     [Parameter]
-    public string candidateId { get; set; }
+    public required string contractId { get; set; }
+    private InputFileChangeEventArgs? file;
 
-    [Parameter]
-    public string contractId { get; set; }
-    private List<DocumentOpened> chosenDocuments = new List<DocumentOpened>();
-    private List<Dossier> dossiers = new List<Dossier>();
-    private InputFileChangeEventArgs file;
-
-    private List<CandidateDocumentModel> candidateDocuments;
+    private List<CandidateDocumentModel>? candidateDocuments;
     private List<UploadTypeModel> _uploadTypes = [];
+
+    private Contract _contract = new Contract();
 
     protected override void OnInitialized()
     {
-        _requestMakerService = new RequestMakerService(HttpClient);
+        RequestMakerService = new RequestMakerService(new HttpClient());
     }
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadContracts();
         await LoadDocuments();
         await GetAllUploadTypesAsync();
 
+    }
+
+    private async Task LoadContracts(){
     }
 
     private async Task LoadDocuments()
@@ -96,6 +106,7 @@
         var _contractId = Guid.Parse(contractId);
         await ContractService.getContractsByCandidateId(candidateId.ToString());
         var contract = ContractService.Contracts.FirstOrDefault(c => c.Id.ToString() == contractId.ToString());
+        _contract = contract;
         if (contract != null)
         {
             candidateDocuments = contract.CandidateDocumentsDto;
@@ -128,6 +139,19 @@
         }
     }
 
+    private string GetBackgroundColor(string status)
+    {
+        return status switch
+        {
+            "New" => "lightgreen",
+            "Completed" => "#AA77FF",
+            "Wachten op beoordeling" => "#FFFDD0",
+            "Goedgekeurd" => "#3CB371",
+            "Afgekeurd" => "#FF3131",
+            _ => "lightblue"
+        };
+    }
+
     public void navigate()
     {
         this.NavigationManager.NavigateTo($"/LeverancierDossierScherm/{candidateId}");
@@ -136,7 +160,7 @@
 
     private void ResetSelectedContract()
     {
-        contractId = null;
+        contractId = "";
     }
 
     private async Task UploadFile(string documentId, InputFileChangeEventArgs e, string candidateId, string contractId, string uploadTypeName, CandidateDocumentModel document)
@@ -159,7 +183,7 @@
             CandidateDocumentModelRequest request = new CandidateDocumentModelRequest();
             request.CandidateDocumentDto = document;
 
-            await _requestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
+            await RequestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
         }
 
         
@@ -172,39 +196,64 @@
     }
 
 
-    public class DocumentOpened
-    {
-        public Document Document { get; set; }
-        public bool Opened { get; set; }
-
-        public DocumentOpened(Document document)
-        {
-            Document = document;
-            Opened = false;
-        }
-
-    } 
-
     public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
     {
-        var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var response = await RequestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
-        var contractArray = outerObject["result"]["uploadTypeDto"];
+        var contractArray = outerObject?["result"]?["uploadTypeDto"];
 
+        if(contractArray == null){
+            return [];
+        }
 
         foreach (var jToken in contractArray)
         {
             var uploadType = new UploadTypeModel();
-            uploadType.Id = Guid.Parse((string)jToken["id"]);
-            uploadType.Type = (string)jToken["type"];
-            uploadType.DocumentType = (string)jToken["documentType"];
-            uploadType.Required = (bool)jToken["required"];
+            uploadType.Id = ParseGuid(jToken, "id");
+            uploadType.Type = ParseString(jToken, "type");
+            uploadType.DocumentType = ParseString(jToken, "documentType");
+            uploadType.Required = ParseBool(jToken, "required");
 
             _uploadTypes.Add(uploadType);
         }
 
         return _uploadTypes;
     }
+
+    private Guid ParseGuid(JToken token, string key)
+{
+    var valueToken = token[key];
+    return valueToken != null && Guid.TryParse(valueToken.ToString(), out Guid parsedId) ? parsedId : Guid.Empty;
+}
+
+private string ParseString(JToken token, string key)
+{
+    return token[key]?.ToString() ?? string.Empty;
+}
+
+private bool ParseBool(JToken token, string key)
+{
+    var valueToken = token[key];
+    return valueToken != null && bool.TryParse(valueToken.ToString(), out bool parsedBool) ? parsedBool : false;
+}
+
+private DateTime ParseDateTime(JToken token, string key)
+{
+    var valueToken = token[key];
+    return valueToken != null && DateTime.TryParse(valueToken.ToString(), out DateTime parsedDate) ? parsedDate : DateTime.MinValue;
+}
+
+private double ParseDouble(JToken token, string key)
+{
+    var valueToken = token[key];
+    return valueToken != null && double.TryParse(valueToken.ToString(), out double parsedDouble) ? parsedDouble : 0.0;
+}
+
+private byte[] ParseByteArray(JToken token, string key)
+{
+    var valueToken = token[key];
+    return valueToken != null ? Convert.FromBase64String(valueToken.ToString()) : Array.Empty<byte>();
+}
 }

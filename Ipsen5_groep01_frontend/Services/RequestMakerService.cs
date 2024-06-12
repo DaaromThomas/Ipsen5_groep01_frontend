@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+
 namespace Ipsen5_groep01_frontend.Services
 {
     public class RequestMakerService
@@ -18,7 +19,7 @@ namespace Ipsen5_groep01_frontend.Services
             _httpClient = httpClient;
         }
 
-        public async Task<HttpResponseMessage> MakeRequest(HttpMethod method, string endpoint, HttpContent content = null)
+        public async Task<HttpResponseMessage> MakeRequest(HttpMethod method, string endpoint, HttpContent? content = null)
         {
             var url = $"{BaseUrl}/{endpoint}"; 
             var request = new HttpRequestMessage(method, url)

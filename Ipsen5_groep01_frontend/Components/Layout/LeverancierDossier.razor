@@ -3,9 +3,10 @@
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 
-@using Services
+@using Ipsen5_groep01_frontend.Services
 @inject LoginService LoginService
 @inject ContractService ContractService
+@inject CandidateService CandidateService
 
 @using Models
 
@@ -19,14 +20,6 @@
     <div class="filter-container">
         <div class="filters">
             <div class="search-container">
-                <EditForm Model="dossiers" FormName="createCustomerAddressForm">
-                    <DataAnnotationsValidator />
-
-                    <div class="form-group search-field">
-                        <InputText id="name" @bind-Value="searchTerm" @oninput="HandleInput" class=" form-control" placeholder="Zoeken"></InputText>
-                    </div>
-
-                </EditForm>
             </div>
 
            @*  <div class="dropdown-container">
@@ -47,7 +40,7 @@
 
         <div class="customer-header">
             <div class="header-title">Opdracht</div>
-            <div class="header-title">Proffesional</div>
+            <div class="header-title">Professional</div>
             <div class="header-title">Beschrijving</div>
             <div class="header-title">Status</div>
             <div class="header-title"></div>
@@ -58,7 +51,7 @@
         {
             <div class="customers" @onclick="()=>navigate(contract.CandidateId, contract.Id)">
                 <div>@contract.Id</div>
-                <div>@contract.CandidateId</div>
+                <div>@GetCandidateNameById(@contract.CandidateId)</div>
                 <div>@contract.JobDescription</div>
                 <div>@contract.Status</div>
                 <div></div>
@@ -82,14 +75,10 @@
                 </button>
 
                 <div class="pagination-info">
-                    @currentPage van @totalPages
+                    @currentPage
                 </div>
 
                 <button class="next-page-button" @onclick="() => ChangePage(1)">
-                    @if (dossiers.Count() > currentPage * pageSize)
-                    {
-                        <img class="rotate-180" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
-                    }
                 </button>
 
             </div>
@@ -100,24 +89,38 @@
  
 
 @code {
-    private List<Dossier> dossiers = new List<Dossier>();
-    private List<Dossier> filteredDossiers = new List<Dossier>();
+
     private string searchTerm = "";
     private int pageSize = 10;
     private int currentPage = 1;
-    private int totalPages => (int)Math.Ceiling((double)dossiers.Count() / pageSize);
+    private List<Candidate> _candidates = [];
 
     [Parameter]
-    public string candidateId {get; set;}
+    public required string candidateId {get; set;}
     
     protected override async Task OnInitializedAsync()
     {
-        FilterDossiers();
+
         await getContract();
+        await GetAllCandidatesFromService();
     }
 
     public async Task getContract(){
         await this.ContractService.getContractsByCandidateId(candidateId);
+    }
+
+     private async Task GetAllCandidatesFromService(){
+        _candidates = await this.CandidateService.GetAllCandidates();
+    }
+
+     public string GetCandidateNameById(Guid id){
+        var Candidate = _candidates.FirstOrDefault(ut => ut.Id == id);
+
+        if(Candidate == null){
+            return "Unknown";
+        }
+
+        return Candidate.FirstName + " " + Candidate?.LastName;
     }
     
 
@@ -130,21 +133,20 @@
 
     private void HandleInput(ChangeEventArgs e)
     {
-        searchTerm = e.Value.ToString().ToUpper();
-        FilterDossiers();
+        if (e.Value != null)
+        {
+            string tempSearchTerm = e.Value.ToString()?.ToUpper() ?? string.Empty;
+            if (tempSearchTerm != null)
+            {
+                searchTerm = tempSearchTerm;
+            
+            }
+        }
     }
 
-    private void FilterDossiers()
-    {
-        if (searchTerm == null)
-        {
-            filteredDossiers = dossiers;
-        }
-        else
-        {
-            filteredDossiers = dossiers.Where(t => t.KandidaatId.ToUpper().Contains(searchTerm)).ToList<Dossier>();
-        }
-    }
+   
+
+
 
     private void ChangePage(int increment)
     {

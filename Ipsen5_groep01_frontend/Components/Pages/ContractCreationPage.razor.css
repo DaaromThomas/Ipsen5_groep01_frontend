@@ -21,9 +21,6 @@
     border-bottom: 0.2vmin solid lightgray; 
 }
 
-.wizard-circle-container {
-}
-
 .wizard-circle {
     display: flex;
     align-items: center;
@@ -84,14 +81,6 @@ button {
     font-size: 16px;
     cursor: pointer;
 }
-
-
-
-
-
-
-
-
 
 .input-container {
     display: flex;
@@ -304,10 +293,6 @@ button {
     padding-top: 2vmin;
     font-family: Inter;
     font-weight: 600;
-}
-
-.uploadtype-container {
-    /*display: flex;*/
 }
 
 .input-checkbox-container {

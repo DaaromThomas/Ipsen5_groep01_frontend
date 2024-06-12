@@ -17,6 +17,7 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
+@inject RequestMakerService RequestMakerService
 
 <style>
     @@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
@@ -364,15 +365,12 @@
 
 @code {
     [Parameter]
-    public Guid CustomerId { get; set; }
+    public required Guid CustomerId { get; set; }
     private Guid contractId;
-    private string type;
-    private int currentPage = 1;
     private int currentStep = 1;
-    private string houseNumberValidationMessage;
-    private string postalCodeValidationMessage;
+    private string? houseNumberValidationMessage;
+    private string? postalCodeValidationMessage;
 
-    private RequestMakerService _requestMakerService;
 
     private Customer CustomerModel { get; set; } = new();
     private Contract ContractModel { get; set; } = new();
@@ -382,9 +380,6 @@
     private List<UploadTypeModel> uploadTypeModelList = new List<UploadTypeModel>();
     private List<UploadTypeModel> selectedUploadTypeModelList = new List<UploadTypeModel>();
     private List<UploadTypeModel> originSelectedUploadTypeModelList = new List<UploadTypeModel>();
-
-
-
 
 
 
@@ -404,61 +399,71 @@
 
     protected override void OnInitialized()
     {
-        _requestMakerService = new RequestMakerService(HttpClient);
+        RequestMakerService = new RequestMakerService(HttpClient);
         base.OnInitialized();
     }
 
     public async Task<Customer> GetCustomerConfigById(Guid customerId)
     {
-        var response = await _requestMakerService.MakeGetRequest($"customer/customerbyid/{customerId}");
+        var response = await RequestMakerService.MakeGetRequest($"customer/customerbyid/{customerId}");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
-        var customerArray = outerObject["result"]["customerDto"];
+        var customerArray = outerObject?["result"]?["customerDto"];
+
+        if(customerArray == null){
+            return new Customer();
+        }
 
         var customer = new Customer();
-
-        customer.Id = Guid.Parse((string)customerArray["id"]);
-        customer.Name = (string)customerArray["name"];
-        customer.FirstName = (string)customerArray["firstName"];
-        customer.LastName = (string)customerArray["lastName"];
-        customer.PhoneNumber = (string)customerArray["phoneNumber"];
-        customer.KVK = (string)customerArray["kvk"];
-        customer.VAT = (string)customerArray["vat"];
-        customer.BankAccountNumber = (string)customerArray["bankAccountNumber"];
-        customer.Email = (string)customerArray["email"];
+            customer.Id = ParseGuid(customerArray, "id");
+            customer.Name = ParseString(customerArray, "name");
+            customer.CustomerAddressDto = new CustomerAddress();
+            customer.FirstName = ParseString(customerArray, "firstName");
+            customer.LastName = ParseString(customerArray, "lastName");
+            customer.KVK = ParseString(customerArray, "kvk");
+            customer.VAT = ParseString(customerArray, "vat");
+            customer.BankAccountNumber = ParseString(customerArray, "bankAccountNumber");
+            customer.Email = ParseString(customerArray, "email");
+            customer.PhoneNumber = ParseString(customerArray, "phoneNumber");
+            customer.Disabled = ParseBool(customerArray, "disabled");
 
 
         customer.CustomerAddressDto = new CustomerAddress();
-        customer.CustomerAddressDto.StreetName = (string)customerArray["customerAddressDto"]["streetName"];
-        customer.CustomerAddressDto.HouseNumber = (string)customerArray["customerAddressDto"]["houseNumber"];
-        customer.CustomerAddressDto.PostalCode = (string)customerArray["customerAddressDto"]["postalCode"];
-        customer.CustomerAddressDto.City = (string)customerArray["customerAddressDto"]["city"];
-        customer.CustomerAddressDto.Country = (string)customerArray["customerAddressDto"]["country"];
-        customer.CustomerAddressDto.Province = (string)customerArray["customerAddressDto"]["province"];
+        customer.CustomerAddressDto.StreetName = ParseNestedString(customerArray, "customerAddressDto", "streetName") ?? "No streetname found";
+        customer.CustomerAddressDto.HouseNumber = ParseNestedString(customerArray, "customerAddressDto", "houseNumber");
+        customer.CustomerAddressDto.PostalCode = ParseNestedString(customerArray, "customerAddressDto", "postalCode");
+        customer.CustomerAddressDto.City = ParseNestedString(customerArray, "customerAddressDto", "city");
+        customer.CustomerAddressDto.Country = ParseNestedString(customerArray, "customerAddressDto", "country");
+        customer.CustomerAddressDto.Province = ParseNestedString(customerArray, "customerAddressDto", "province");
 
         return CustomerModel = customer;
     }
 
     public async Task GetCustomerConfigUploadDocumentsById(Guid customerId)
     {
-        var response = await _requestMakerService.MakeGetRequest($"uploadtype/customerid/{customerId}");
+        var response = await RequestMakerService.MakeGetRequest($"uploadtype/customerid/{customerId}");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
-        var customerArray = outerObject["result"]["uploadTypeDto"];
+        var customerArray = outerObject?["result"]?["uploadTypeDto"];
 
-        contractId = Guid.Parse((string)outerObject["result"]["contractId"]);
+        if(outerObject == null || customerArray == null){
+            return;
+        }
 
+        contractId = ParseNestedGuid(outerObject, "result", "contractId");
+        
         var uploadTypes = new List<UploadTypeModel>();
 
-        foreach (var Jtoken in customerArray)
+        foreach (var jToken in customerArray)
         {
             var uploadType = new UploadTypeModel();
 
-            uploadType.Id = Guid.Parse((string)Jtoken["id"]);
-            uploadType.Type = (string)Jtoken["type"];
-            uploadType.Required = (bool)Jtoken["required"];
+            uploadType.Id = ParseGuid(jToken, "id");
+            uploadType.Type = ParseString(jToken, "type");
+            uploadType.DocumentType = ParseString(jToken, "documentType");
+            uploadType.Required = ParseBool(jToken, "required");
 
             if (!selectedUploadTypeModelList.Any(u => u.Id == uploadType.Id))
             {
@@ -470,20 +475,23 @@
 
     public async Task<List<UploadTypeModel>> GetUploadTypesAsync()
     {
-        var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var response = await RequestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
-        var contractArray = outerObject["result"]["uploadTypeDto"];
+        var contractArray = outerObject?["result"]?["uploadTypeDto"];
 
+        if(contractArray == null){
+            return [];
+        }
 
         foreach (var jToken in contractArray)
         {
             var uploadType = new UploadTypeModel();
-            uploadType.Id = Guid.Parse((string)jToken["id"]);
-            uploadType.Type = (string)jToken["type"];
-            uploadType.DocumentType = (string)jToken["documentType"];
-            uploadType.Required = (bool)jToken["required"];
+            uploadType.Id = ParseGuid(jToken, "id");
+            uploadType.Type = ParseString(jToken, "type");
+            uploadType.DocumentType = ParseString(jToken, "documentType");
+            uploadType.Required = ParseBool(jToken, "required");
 
             if (!uploadTypeModelList.Any(u => u.Id == uploadType.Id))
             {
@@ -498,40 +506,41 @@
 
     public async Task GetContractByIdAsync()
     {
-        var response = await _requestMakerService.MakeGetRequest($"Contract/contractbyid/{contractId}");
+        var response = await RequestMakerService.MakeGetRequest($"Contract/contractbyid/{contractId}");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
-        var contractArray = outerObject["result"]["contractDto"];
+        var contractArray = outerObject?["result"]?["contractDto"];
 
-        ContractModelById.Id = (Guid)contractArray["id"];
-        ContractModelById.CandidateId = (Guid)contractArray["candidateId"];
-        ContractModelById.CustomerId = (Guid)contractArray["customerId"];
+        ContractModelById.Id = ParseGuid(contractArray, "id");
+        ContractModelById.CandidateId = ParseGuid(contractArray, "candidateId");
+        ContractModelById.CustomerId = ParseGuid(contractArray, "customerId");
+        ContractModelById.Status = ParseString(contractArray, "status");
+        ContractModelById.EndDate = ParseDateTime(contractArray, "endDate");
+        ContractModelById.StartDate = ParseDateTime(contractArray, "startDate");
+        ContractModelById.PurchaseRate = ParseDouble(contractArray, "purchaseRate");
+        ContractModelById.SellingRate = ParseDouble(contractArray, "sellingRate");
+        ContractModelById.PaymentTerm = ParseString(contractArray, "paymentTerm");
+        ContractModelById.FeeParty = ParseString(contractArray, "feeParty");
+        ContractModelById.JobDescription = ParseString(contractArray, "jobDescription");
+        ContractModelById.Note = ParseString(contractArray, "note");
+        ContractModelById.Template = ParseBool(contractArray, "template");
 
-        ContractModelById.Status = (string)contractArray["status"];
-        ContractModelById.EndDate = (DateTime)contractArray["endDate"];
-        ContractModelById.StartDate = (DateTime)contractArray["startDate"];
-        ContractModelById.PurchaseRate = (double)contractArray["purchaseRate"];
-        ContractModelById.SellingRate = (double)contractArray["sellingRate"];
-        ContractModelById.PaymentTerm = (string)contractArray["paymentTerm"];
-        ContractModelById.FeeParty = (string)contractArray["feeParty"];
-        ContractModelById.JobDescription = (string)contractArray["jobDescription"];
-        ContractModelById.Note = (string)contractArray["note"];
-        ContractModelById.Template = (bool)contractArray["template"];
 
         foreach (var jToken in contractArray["candidateDocumentsDto"])
         {
             CandidateDocumentModel CandidateDocument = new CandidateDocumentModel();
 
-            CandidateDocument.Id = Guid.Parse((string)jToken["id"]);
-            CandidateDocument.UploadTypeId = Guid.Parse((string)jToken["uploadTypeId"]);
-            CandidateDocument.ContractId = Guid.Parse((string)jToken["contractId"]);
-            CandidateDocument.Status = (string)jToken["status"];
-            CandidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
-            CandidateDocument.CreatedBy = (string)jToken["createdBy"];
-            CandidateDocument.UpdatedBy = (string)jToken["updatedBy"];
-            CandidateDocument.CreatedDate = (DateTime)jToken["createdDate"];
+            CandidateDocument.Id = ParseGuid(jToken, "id");
+            CandidateDocument.UploadTypeId = ParseGuid(jToken, "uploadTypeId");
+            CandidateDocument.ContractId = ParseGuid(jToken, "contractId");
+            CandidateDocument.Status = ParseString(jToken, "status");
+            CandidateDocument.DocumentBlob = ParseByteArray(jToken, "documentBlob");
+            CandidateDocument.CreatedBy = ParseString(jToken, "createdBy");
+            CandidateDocument.UpdatedBy = ParseString(jToken, "updatedBy");
+            CandidateDocument.CreatedDate = ParseDateTime(jToken, "createdDate");
             CandidateDocument.UpdatedDate = DateTime.Now;
+
 
 
             ContractModelById.CandidateDocumentsDto.Add(CandidateDocument);
@@ -546,7 +555,7 @@
 
         customerRequest.CustomerDto = CustomerModel;
 
-        await _requestMakerService.MakePatchRequest("customer/updatecustomer", customerRequest);
+        await RequestMakerService.MakePatchRequest("customer/updatecustomer", customerRequest);
         
         foreach (var uploadType in selectedUploadTypeModelList)
         {
@@ -573,7 +582,7 @@
             };
 
 
-        var response = await _requestMakerService.MakePatchRequest("contract/updatecontract", contractRequest);
+        var response = await RequestMakerService.MakePatchRequest("contract/updatecontract", contractRequest);
 
         NavigationManager.NavigateTo("/customer");
     }
@@ -704,18 +713,98 @@
 
         try
         {
-            var response = await _requestMakerService.GetAddressInfoAsync(CustomerModel.CustomerAddressDto.PostalCode, CustomerModel.CustomerAddressDto.HouseNumber);
+            var response = await RequestMakerService.GetAddressInfoAsync(CustomerModel.CustomerAddressDto.PostalCode, CustomerModel.CustomerAddressDto.HouseNumber);
             var jsonResponse = JsonDocument.Parse(response);
             var root = jsonResponse.RootElement;
 
-            CustomerModel.CustomerAddressDto.StreetName = root.GetProperty("street").GetString();
-            CustomerModel.CustomerAddressDto.Province = root.GetProperty("province").GetString();
-            CustomerModel.CustomerAddressDto.City = root.GetProperty("city").GetString();
+            CustomerModel.CustomerAddressDto.StreetName = SafeGetString(root, "street");
+            CustomerModel.CustomerAddressDto.Province = SafeGetString(root, "province");
+            CustomerModel.CustomerAddressDto.City = SafeGetString(root, "city");
             return true;
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex);
             return false;
         }
     }
+
+    private string SafeGetString(JsonElement element, string propertyName)
+    {
+        return element.TryGetProperty(propertyName, out JsonElement property) && property.ValueKind != JsonValueKind.Null
+            ? property.GetString() ?? string.Empty
+            : string.Empty;
+    }
+
+
+    private Guid ParseGuid(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && Guid.TryParse(valueToken.ToString(), out Guid parsedId) ? parsedId : Guid.Empty;
+    }
+
+    private string ParseString(JToken token, string key)
+    {
+        return token[key]?.ToString() ?? string.Empty;
+    }
+
+    private bool ParseBool(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && bool.TryParse(valueToken.ToString(), out bool parsedBool) ? parsedBool : false;
+    }
+
+    private DateTime ParseDateTime(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && DateTime.TryParse(valueToken.ToString(), out DateTime parsedDate) ? parsedDate : DateTime.MinValue;
+    }
+
+    private double ParseDouble(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null && double.TryParse(valueToken.ToString(), out double parsedDouble) ? parsedDouble : 0.0;
+    }
+
+    private string ParseNestedString(JToken token, string parentKey, string nestedKey)
+    {
+        return token[parentKey]?[nestedKey]?.ToString() ?? string.Empty;
+    }
+
+    private Guid ParseNestedGuid(JToken token, string parentKey, string nestedKey)
+    {
+        var nestedToken = token[parentKey]?[nestedKey];
+        return nestedToken != null && Guid.TryParse(nestedToken.ToString(), out Guid parsedId) ? parsedId : Guid.Empty;
+    }
+
+    private bool ParseNestedBool(JToken token, string parentKey, string nestedKey)
+    {
+        var nestedToken = token[parentKey]?[nestedKey];
+        return nestedToken != null && bool.TryParse(nestedToken.ToString(), out bool parsedBool) ? parsedBool : false;
+    }
+
+    private DateTime ParseNestedDateTime(JToken token, string parentKey, string nestedKey)
+    {
+        var nestedToken = token[parentKey]?[nestedKey];
+        return nestedToken != null && DateTime.TryParse(nestedToken.ToString(), out DateTime parsedDate) ? parsedDate : DateTime.MinValue;
+    }
+
+    private double ParseNestedDouble(JToken token, string parentKey, string nestedKey)
+    {
+        var nestedToken = token[parentKey]?[nestedKey];
+        return nestedToken != null && double.TryParse(nestedToken.ToString(), out double parsedDouble) ? parsedDouble : 0.0;
+    }
+
+    private byte[] ParseNestedByteArray(JToken token, string parentKey, string nestedKey)
+    {
+        var nestedToken = token[parentKey]?[nestedKey];
+        return nestedToken != null ? Convert.FromBase64String(nestedToken.ToString()) : Array.Empty<byte>();
+    }
+
+    private byte[] ParseByteArray(JToken token, string key)
+    {
+        var valueToken = token[key];
+        return valueToken != null ? Convert.FromBase64String(valueToken.ToString()) : Array.Empty<byte>();
+    }
+
 }

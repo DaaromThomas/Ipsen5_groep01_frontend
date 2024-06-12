@@ -21,8 +21,6 @@
     border-bottom: 0.2vmin solid lightgray; 
 }
 
-.wizard-circle-container {
-}
 
 .wizard-circle {
     display: flex;
@@ -306,9 +304,7 @@ button {
     font-weight: 600;
 }
 
-.uploadtype-container {
-    /*display: flex;*/
-}
+
 
 .input-checkbox-container {
     padding: 1.1vmin;

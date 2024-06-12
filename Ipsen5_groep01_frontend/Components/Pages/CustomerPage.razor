@@ -119,7 +119,8 @@
 
     public CustomerPage()
     {
-
+    	var requestMakerService = new RequestMakerService(new HttpClient());
+        _customerService = new CustomerService(requestMakerService);
     }
 
     protected override void OnInitialized()
@@ -129,8 +130,6 @@
             NavigationManager.NavigateTo("/signin");
         }
 
-        var requestMakerService = new RequestMakerService(HttpClient);
-        _customerService = new CustomerService(requestMakerService);
 
         base.OnInitialized();
     }
