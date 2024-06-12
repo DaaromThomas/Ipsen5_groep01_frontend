@@ -104,7 +104,7 @@
         if (!string.IsNullOrEmpty(SignInModel.Email) && !string.IsNullOrEmpty(SignInModel.Password))
         {
 
-            var response = await _requestMakerService.MakePostRequest("user/signIn", SignInModel, "");
+            var response = await RequestMakerService.MakePostRequest("user/signIn", SignInModel, "");
 
             if (response.IsSuccessStatusCode)
             {
