@@ -164,7 +164,11 @@
                                             <input class="input-field-pair" placeholder="Wachtwoord" @bind="@registerModel.Password" />
 
                                         </div>
-                                        <ValidationMessage For="() => registerModel.Password"></ValidationMessage>
+                                        <ValidationMessage For="() => registerModel.Password" />
+                                        @if (showPasswordError)
+                                        {
+                                            <div class="validation-message">Wachtwoord is verplicht.</div>
+                                        }
                                     </div>
 
 
@@ -176,6 +180,10 @@
 
                                         </div>
                                         <ValidationMessage For="() => registerModel.ConfirmPassword"></ValidationMessage>
+                                        @if (showConfirmPasswordError)
+                                        {
+                                            <div class="validation-message">Bevestig wachtwoord is verplicht.</div>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -201,7 +209,7 @@
                 <div class="input-container ">
 
                     <div class="input-description-container">
-                        <EditForm Model="@registerModel" FormName="createuser">
+                        <EditForm Model="@registerModel" OnValidSubmit="GoToNextStep" FormName="createuse" ShowValidationSummary="true">
                             <DataAnnotationsValidator />
 
                             <div class="description-title">
@@ -221,15 +229,23 @@
                                         <div>
                                             <input class="input-field-pair" placeholder="Voornaam" @bind="@registerModel.FirstName" />
                                             <ValidationMessage For="() => registerModel.FirstName"></ValidationMessage>
+                                            @if (showFirstNameError)
+                                            {
+                                                <div class="validation-message">Voornaam is verplicht.</div>
+                                            }
                                         </div>
                                     </div>
 
                                     <div>
                                         <div class="input-title">Achternaam</div>
                                         <div>
-                                            <input type="number" class="input-field-pair" placeholder="Achternaam" @bind="@registerModel.LastName" />
+                                            <input class="input-field-pair" placeholder="Achternaam" @bind="@registerModel.LastName" />
                                         </div>
                                         <ValidationMessage For="() => registerModel.LastName"></ValidationMessage>
+                                        @if (showLastNameError)
+                                        {
+                                            <div class="validation-message">Voornaam is verplicht.</div>
+                                        }
                                     </div>
                                 </div>
 
@@ -251,10 +267,13 @@
                                     <div>
                                         <div class="input-title">Burger Service Nummer (BSN)</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="123456789" @bind="@candidateModel.BSN" />
+                                            <input type="number" class="input-field-pair" placeholder="123456789" @bind="@candidateModel.BSN" />
 
                                         </div>
-                                        <ValidationMessage For="() => candidateModel.BSN"></ValidationMessage>
+                                        @if (showBSNError)
+                                        {
+                                            <div class="validation-message">BSN is verplicht.</div>
+                                        }
                                     </div>
                                 </div>
 
@@ -266,7 +285,7 @@
                                 <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
                                     Vorige
                                 </button>
-                                <button type="submit" class="next-button" @onclick="HandleNextButtonClick">
+                                <button type="submit" class="next-button">
                                     Volgende
                                 </button>
                             </div>
@@ -300,8 +319,12 @@
                                     <div>
                                         <div class="input-title">KVK nummer</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="12345678" @bind="@kvkNumberModel.KVKNumber" />
+                                            <input type="number" class="input-field-pair" placeholder="12345678" @bind="@kvkNumberModel.KVKNumber" />
                                             <ValidationMessage For="() => kvkNumberModel.KVKNumber"></ValidationMessage>
+                                            @if (showKVKError)
+                                            {
+                                                <div class="validation-message">KVK nummer is verplicht.</div>
+                                            }
                                         </div>
                                     </div>
 
@@ -311,6 +334,10 @@
                                             <input type="number" class="input-field-pair" placeholder="NL123456789B01" @bind="@vatNumberModel.VATNumber" />
                                         </div>
                                         <ValidationMessage For="() => vatNumberModel.VATNumber"></ValidationMessage>
+                                        @if (showVATError)
+                                        {
+                                            <div class="validation-message">BTW nummer is verplicht.</div>
+                                        }
                                     </div>
                                 </div>
 
@@ -325,6 +352,10 @@
 
                                         </div>
                                         <ValidationMessage For="() => bankAccountNumberModel.AccountNumber"></ValidationMessage>
+                                        @if (showAccountNumberError)
+                                        {
+                                            <div class="validation-message">Rekeningnummer is verplicht.</div>
+                                        }
                                     </div>
 
 
@@ -332,10 +363,14 @@
                                     <div>
                                         <div class="input-title">Telefoonnummer</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="31612345678" @bind="@phoneNumberModel.Phonenumber" />
+                                            <input type="number" class="input-field-pair" placeholder="31612345678" @bind="@phoneNumberModel.Phonenumber" />
 
                                         </div>
                                         <ValidationMessage For="() => phoneNumberModel.Phonenumber"></ValidationMessage>
+                                        @if (showPhoneError)
+                                        {
+                                            <div class="validation-message">Telefoonnummer is verplicht.</div>
+                                        }
                                     </div>
                                 </div>
 
@@ -350,33 +385,49 @@
                                         <div>
                                             <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.PostalCode" />
                                             <ValidationMessage For="() => candidateAddressModel.PostalCode"></ValidationMessage>
+                                            @if (showpostalCodeError)
+                                            {
+                                                <div class="validation-message">postcode is verplicht.</div>
+                                            }
                                         </div>
                                     </div>
 
                                     <div>
                                         <div class="input-title">Huisnummer</div>
                                         <div>
-                                            <input type="number" class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.HouseNumber" />
+                                            <input class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.HouseNumber" />
                                         </div>
                                         <ValidationMessage For="() => candidateAddressModel.HouseNumber"></ValidationMessage>
+                                        @if (showHousnumberError)
+                                        {
+                                            <div class="validation-message">Huisnummer is verplicht.</div>
+                                        }
                                     </div>
                                 </div>
 
                                 <div class="input-pair-Container">
                                     <div>
-                                        <div class="input-title">Postcode</div>
+                                        <div class="input-title">Straat</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.StreetName" />
+                                            <input class="input-field-pair" placeholder="Kersenstraat" @bind="@candidateAddressModel.StreetName" />
                                             <ValidationMessage For="() => candidateAddressModel.StreetName"></ValidationMessage>
+                                            @if (showStreetError)
+                                            {
+                                                <div class="validation-message">Straat is verplicht.</div>
+                                            }
                                         </div>
                                     </div>
 
                                     <div>
-                                        <div class="input-title">Huisnummer</div>
+                                        <div class="input-title">Provincie</div>
                                         <div>
-                                            <input type="number" class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.Province" />
+                                            <input class="input-field-pair" placeholder="Zuid-Holland" @bind="@candidateAddressModel.Province" />
                                         </div>
                                         <ValidationMessage For="() => candidateAddressModel.Province"></ValidationMessage>
+                                        @if (showProvinceError)
+                                        {
+                                            <div class="validation-message">Provincie is verplicht.</div>
+                                        }
                                     </div>
                                 </div>
 
@@ -421,7 +472,7 @@
                                 <div>
                                     <div class="input-title">Email</div>
                                     <div>
-                                        <input class="input-field" placeholder="voorbeeld@email.com" @bind="@registerModel.Email" />
+                                        <input class="input-field" placeholder="voorbeeld@email.com" @bind="@registerModel.Email" disabled />
 
                                     </div>
                                     <ValidationMessage For="() => registerModel.Email"></ValidationMessage>
@@ -437,14 +488,14 @@
                                     <div>
                                         <div class="input-title">Voornaam</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="Voornaam" @bind="@registerModel.FirstName" />
+                                            <input class="input-field-pair" placeholder="Voornaam" @bind="@registerModel.FirstName" disabled />
                                         </div>
                                     </div>
 
                                     <div>
                                         <div class="input-title">Achternaam</div>
                                         <div>
-                                            <input type="number" class="input-field-pair" placeholder="Achternaam" @bind="@registerModel.LastName" />
+                                            <input type="number" class="input-field-pair" placeholder="Achternaam" @bind="@registerModel.LastName" disabled />
                                         </div>
                                     </div>
                                 </div>
@@ -456,7 +507,7 @@
                                     <div>
                                         <div class="input-title">GeboorteDatum</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="Vb. 12-04-1995" @bind="@candidateModel.DateOfBirth" />
+                                            <input class="input-field-pair" placeholder="Vb. 12-04-1995" @bind="@candidateModel.DateOfBirth" disabled />
                                         </div>
                                     </div>
 
@@ -465,7 +516,7 @@
                                     <div>
                                         <div class="input-title">Burger Service Nummer (BSN)</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="123456789" @bind="@candidateModel.BSN" />
+                                            <input class="input-field-pair" placeholder="123456789" @bind="@candidateModel.BSN" disabled />
                                         </div>
                                     </div>
                                 </div>
@@ -479,14 +530,14 @@
                                     <div>
                                         <div class="input-title">KVK nummer</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="12345678" @bind="@kvkNumberModel.KVKNumber" />
+                                            <input class="input-field-pair" placeholder="12345678" @bind="@kvkNumberModel.KVKNumber" disabled />
                                         </div>
                                     </div>
 
                                     <div>
                                         <div class="input-title">BTW nummer</div>
                                         <div>
-                                            <input type="number" class="input-field-pair" placeholder="NL123456789B01" @bind="@vatNumberModel.VATNumber" />
+                                            <input type="number" class="input-field-pair" placeholder="NL123456789B01" @bind="@vatNumberModel.VATNumber" disabled />
                                         </div>
                                     </div>
                                 </div>
@@ -498,10 +549,9 @@
                                     <div>
                                         <div class="input-title">Rekeningnummer</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="NL12ABCD3456789123" @bind="@bankAccountNumberModel.AccountNumber" />
+                                            <input class="input-field-pair" placeholder="NL12ABCD3456789123" @bind="@bankAccountNumberModel.AccountNumber" disabled />
 
                                         </div>
-                                        <ValidationMessage For="() => registerModel.Password"></ValidationMessage>
                                     </div>
 
 
@@ -509,10 +559,9 @@
                                     <div>
                                         <div class="input-title">Telefoonnummer</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="31612345678" @bind="@phoneNumberModel.Phonenumber" />
+                                            <input class="input-field-pair" placeholder="31612345678" @bind="@phoneNumberModel.Phonenumber" disabled />
 
                                         </div>
-                                        <ValidationMessage For="() => registerModel.ConfirmPassword"></ValidationMessage>
                                     </div>
                                 </div>
 
@@ -525,14 +574,14 @@
                                     <div>
                                         <div class="input-title">Postcode</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.PostalCode" />
+                                            <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.PostalCode" disabled />
                                         </div>
                                     </div>
 
                                     <div>
                                         <div class="input-title">Huisnummer</div>
                                         <div>
-                                            <input type="number" class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.HouseNumber" />
+                                            <input type="number" class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.HouseNumber" disabled />
                                         </div>
                                     </div>
                                 </div>
@@ -542,16 +591,26 @@
                                     <div>
                                         <div class="input-title">Straat</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.StreetName" />
+                                            <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.StreetName" disabled />
                                         </div>
                                     </div>
 
                                     <div>
                                         <div class="input-title">Provincie</div>
                                         <div>
-                                            <input type="number" class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.Province" />
+                                            <input type="number" class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.Province" disabled />
                                         </div>
                                     </div>
+                                </div>
+                                <div>
+                                    @if (createCandidateteMessage)
+                                    {
+                                        <div class="validation-message">Account is aangemaakt.</div>
+                                    }
+                                    else if (createCandidateteMessage && createCandidateteError)
+                                    {
+                                        <div class="validation-message">Er is een fout opgetreden</div>
+                                    }
                                 </div>
 
 
@@ -601,6 +660,23 @@
     private PhoneNumberModel phoneNumberModel { get; set; } = new();
     private NawModel nawModel { get; set; } = new();
     private List<CandidateAddressModel> candidateAddressModels { get; set; } = new List<CandidateAddressModel>();
+    private bool showPasswordError = false;
+    private bool showConfirmPasswordError = false;
+    private bool showFirstNameError = false;
+    private bool showLastNameError = false;
+    private bool showBSNError = false;
+    private bool showVATError = false;
+    private bool showAccountNumberError = false;
+    private bool showBirthError = false;
+    private bool showPhoneError = false;
+    private bool showKVKError = false;
+    private bool showpostalCodeError = false;
+    private bool showHousnumberError = false;
+    private bool showProvinceError = false;
+    private bool showStreetError = false;
+    private bool createCandidateteMessage = false;
+    private bool createCandidateteError = false;
+
 
 
     private CandidateService _candidateService;
@@ -612,53 +688,73 @@
 
     public async Task CreateCandidate()
     {
-        RegisterUserRequest request = new RegisterUserRequest();
+       
+            RegisterUserRequest request = new RegisterUserRequest();
 
-        request.User = registerModel;
-        request.User.CandidateDto = candidateModel;
-        candidateModel.FirstName = request.User.FirstName;
-        candidateModel.LastName = request.User.LastName;
-        request.User.CandidateDto.KvkNumber = kvkNumberModel;
-        request.User.CandidateDto.VatNumber = vatNumberModel;
-        request.User.CandidateDto.BankAccountNumber = bankAccountNumberModel;
-        request.User.CandidateDto.PhoneNumber = phoneNumberModel;
+            request.User = registerModel;
+            request.User.CandidateDto = candidateModel;
+            candidateModel.FirstName = request.User.FirstName;
+            candidateModel.LastName = request.User.LastName;
+            request.User.CandidateDto.KvkNumber = kvkNumberModel;
+            request.User.CandidateDto.VatNumber = vatNumberModel;
+            request.User.CandidateDto.BankAccountNumber = bankAccountNumberModel;
+            request.User.CandidateDto.PhoneNumber = phoneNumberModel;
 
-        nawModel.NAW = "niet";
-        request.User.CandidateDto.Naw = nawModel;
+            nawModel.NAW = "niet";
+            request.User.CandidateDto.Naw = nawModel;
 
-        candidateAddressModel.Country = "dddd";
+            candidateAddressModel.Country = "dddd";
 
-        candidateAddressModels.Add(candidateAddressModel);
-        request.User.CandidateDto.CandidateAddress = candidateAddressModels;
+            candidateAddressModels.Add(candidateAddressModel);
+            request.User.CandidateDto.CandidateAddress = candidateAddressModels;
 
-        _candidateService.CreateUserCandidate(request);
+            var response = await _candidateService.CreateUserCandidate(request);
+
+        if (response)
+        {
+            createCandidateteMessage = true;
+           
+            await Task.Delay(3000);
+
+            NavigationManager.NavigateTo("/signin");
+        }
+        else
+        {
+            createCandidateteMessage = true;
+            createCandidateteError = true;
+
+            await Task.Delay(3000);
+
+            NavigationManager.NavigateTo("/signin");
+        }
+
+            
+      
     }
+
 
     public void HandleNextButtonClick()
     {
-        AddNewAddress();
         GoToNextStep();
     }
 
     protected override void OnInitialized()
     {
-        // candidateAddressModels.Add(new CandidateAddressModel());
+        registerModel.CurrentStep = currentStep;
     }
 
-    public void AddNewAddress()
-    {
-
-    }
-
+  
     private async Task GoToPreviousStep()
     {
         if (currentStep == 1)
         {
             NavigationManager.NavigateTo("/customer");
+            registerModel.CurrentStep = currentStep;
         }
         else
         {
             currentStep--;
+            registerModel.CurrentStep = currentStep;
         }
 
         if (currentStep == 2)
@@ -671,9 +767,11 @@
 
     private async Task GoToNextStep()
     {
-        if (currentStep < 4)
+        var isValid = ValidatePasswordFields(); // Validatie van de wachtwoordvelden
+        if (isValid)
         {
             currentStep++;
+            registerModel.CurrentStep = currentStep;
             if (currentStep == 2)
             {
                 await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
@@ -682,12 +780,161 @@
         }
     }
 
+    private bool ValidatePasswordFields()
+    {
+        bool isValid = true;
+
+        if (currentStep == 1)
+        {
+            if (string.IsNullOrEmpty(registerModel.Password))
+            {
+                showPasswordError = true;
+                isValid = false;
+            }
+            else
+            {
+                showPasswordError = false;
+            }
+
+            if (string.IsNullOrEmpty(registerModel.ConfirmPassword))
+            {
+                showConfirmPasswordError = true;
+                isValid = false;
+            }
+            else
+            {
+                showConfirmPasswordError = false;
+            }
+        }
+        else if (currentStep == 2)
+        {
+            if (string.IsNullOrEmpty(registerModel.FirstName))
+            {
+                showFirstNameError = true;
+                isValid = false;
+            }
+            else
+            {
+                showFirstNameError = false;
+            }
+
+            if (string.IsNullOrEmpty(registerModel.LastName))
+            {
+                showLastNameError = true;
+                isValid = false;
+            }
+            else
+            {
+                showLastNameError = false;
+            }
+
+            if (string.IsNullOrEmpty(candidateModel.BSN))
+            {
+                showBSNError = true;
+                isValid = false;
+            }
+            else
+            {
+                showBSNError = false;
+            }
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(vatNumberModel.VATNumber))
+            {
+                showVATError = true;
+                isValid = false;
+            }
+            else
+            {
+                showVATError = false;
+            }
+
+            if (string.IsNullOrEmpty(kvkNumberModel.KVKNumber))
+            {
+                showKVKError = true;
+                isValid = false;
+            }
+            else
+            {
+                showKVKError = false;
+            }
+
+            if (string.IsNullOrEmpty(phoneNumberModel.Phonenumber))
+            {
+                showPhoneError = true;
+                isValid = false;
+            }
+            else
+            {
+                showPhoneError = false;
+            }
+
+            if (string.IsNullOrEmpty(candidateAddressModel.HouseNumber))
+            {
+                showHousnumberError = true;
+                isValid = false;
+            }
+            else
+            {
+                showHousnumberError = false;
+            }
+
+            if (string.IsNullOrEmpty(candidateAddressModel.Province))
+            {
+                showProvinceError = true;
+                isValid = false;
+            }
+            else
+            {
+                showProvinceError = false;
+               
+            }
+
+
+
+            if (string.IsNullOrEmpty(candidateAddressModel.StreetName))
+            {
+                showStreetError = true;
+                isValid = false;
+            }
+            else
+            {
+                showStreetError = false;
+            }
+
+            if (string.IsNullOrEmpty(candidateAddressModel.PostalCode))
+            {
+                showpostalCodeError = true;
+                isValid = false;
+            }
+            else
+            {
+                showpostalCodeError = false;
+
+            }
+
+            if (string.IsNullOrEmpty(bankAccountNumberModel.AccountNumber))
+            {
+                showAccountNumberError = true;
+                isValid = false;
+            }
+            else
+            {
+                showAccountNumberError = false;
+
+            }
+
+            
+        }
+
+        return isValid;
+    }
 
     public void NavigateToHome()
     {
         NavigationManager.NavigateTo("/");
     }
-
 
 
     private string GetCircleColorClass(int step)
@@ -814,4 +1061,5 @@
             return "grey";
         }
     }
+
 }

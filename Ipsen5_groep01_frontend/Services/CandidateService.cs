@@ -61,9 +61,21 @@ namespace Ipsen5_groep01_frontend.Services
         }
 
 
-        public async Task CreateUserCandidate(RegisterUserRequest request)
+        public async Task<Boolean>CreateUserCandidate(RegisterUserRequest request)
         {
-            var response = await _requestMakerService.MakePostRequest("user/signup", request);
+            bool requestSucceed = false;
+            try
+            {
+                var response = await _requestMakerService.MakePostRequest("user/signup", request);
+
+                requestSucceed = true;
+            }
+            catch (Exception ex)
+            {
+                requestSucceed = false;
+            }
+
+            return requestSucceed;
         }
 
 

@@ -1,20 +1,29 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Ipsen5_groep01_frontend.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ipsen5_groep01_frontend.Models
 {
     public class RegisterModel
     {
         public Guid Id { get; set; }
+        public int CurrentStep { get; set; }
 
-        //[Required(ErrorMessage = "Voornaam is verplicht")]
+
+        //[StepRequired(2, ErrorMessage = "Voornaam is verplicht")]
         public string FirstName { get; set; }
 
-        //[Required(ErrorMessage = "Achternaam is verplicht")]
+        //[StepRequired(2, ErrorMessage = "Achternaam is verplicht")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Wachtwoord is verplicht")]
-        [Compare("Password")]
+
+        //[StepRequired(1, ErrorMessage = "Bevestig wachtwoord is verplicht")]
+        [Compare("Password", ErrorMessage = "Wachtwoorden komen niet overeen")]
         public string ConfirmPassword { get; set; }
+
+        //[StepRequired(1, ErrorMessage = "Wachtwoord is verplicht")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*\d{3,})(?=.*[^a-zA-Z\d]).{9,}$",
+        ErrorMessage = "Wachtwoord moet minimaal 5 letters waarvan 1 hoofdletter, 1 teken en 3 cijfers bevatten.")]
+        public string Password { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
@@ -31,11 +40,8 @@ namespace Ipsen5_groep01_frontend.Models
         public string? Role { get; set; }
 
         [Required(ErrorMessage = "Email is verplicht")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Ongeldige email")]
         public string Email { get; set; }
-
-        [Required(ErrorMessage = "Wachtwoord is verplicht")]
-        public string Password { get; set; }
 
         public Candidate? CandidateDto { get; set; }
     }

@@ -10,10 +10,10 @@ namespace Ipsen5_groep01_frontend.Models
 
         public string? LastName { get; set; }
 
-        [Required(ErrorMessage = "BSN is verplicht")]
+
         public DateTime DateOfBirth { get; set; }
 
-        [Required(ErrorMessage = "BSN is verplicht")]
+        [RegularExpression("^[0-9]*$", ErrorMessage = "BSN mag alleen cijfers bevatten")]
         public string? BSN { get; set; }
 
         public DateTime CreatedDate { get; set; }
@@ -32,6 +32,4 @@ namespace Ipsen5_groep01_frontend.Models
 
         public List<CandidateAddressModel> CandidateAddress { get; set; }
     }
-
-  
 }
