@@ -284,12 +284,15 @@
                         <div class="uploadtype-container">
                             @foreach (var uploadType in UploadTypes.Where(u => u.Required))
                             {
+                                var inputId = $"fileInput_{uploadType.Id}";
                                 <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
-                                    <p>@uploadType.Type</p>
-                                    <InputFile class="custom-file-input" @onclick:stopPropagation OnChange="@(e => UploadDocument(e, uploadType.Type))"/>
-                                    <label for="fileInput" class="custom-file-label">Upload Document</label>
+                                    <p class="text">@uploadType.Type</p>
+                                    <InputFile hidden="true" id="@inputId" class="custom-file-input " @onclick:stopPropagation OnChange="@(e => UploadDocument(e, uploadType.Type))" />
+                                    <label for="@inputId" class="custom-file-label" @onclick:stopPropagation><img class="upload-label-img" src="/icons/upload.png" /></label>
                                 </div>
                             }
+
+
 
 
                         </div>
@@ -299,9 +302,11 @@
                         <div class="uploadtype-container">
                             @foreach (var uploadType in UploadTypes.Where(u => selectedItems.Contains(u.Id) && !u.Required))
                             {
+                                var inputId = $"fileInput_{uploadType.Id}";
                                 <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
-                                    <p>@uploadType.Type</p>
-                                    <InputFile class="custom-file-input" @onclick:stopPropagation OnChange="@(e => UploadDocument(e, uploadType.Type))"/>
+                                    <p class="text">@uploadType.Type</p>
+                                    <InputFile hidden="true" id="@inputId" class="custom-file-input " @onclick:stopPropagation OnChange="@(e => UploadDocument(e, uploadType.Type))" />
+                                    <label for="@inputId" class="custom-file-label" @onclick:stopPropagation><img class="upload-label-img" src="/icons/upload.png" /></label>
                                 </div>
                             }
                         </div>

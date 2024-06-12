@@ -324,6 +324,10 @@ button {
     .input-checkbox-container:hover {
         background-color: #1f262f;
         color: white;
+
+        .upload-label-img{
+            filter: invert(0);
+        }
     }
 
     .input-checkbox-container.selected {
@@ -403,46 +407,30 @@ button {
     filter: invert(0);
 }
 
-.custom-file-input::-webkit-file-upload-button {
-    visibility: hidden;
-  }
-  .custom-file-input::before {
-    content: 'Select some files';
-    display: inline-block;
-    background: linear-gradient(top, #f9f9f9, #e3e3e3);
-    border: 1px solid #999;
-    border-radius: 3px;
-    padding: 5px 8px;
-    outline: none;
-    white-space: nowrap;
-    -webkit-user-select: none;
-    cursor: pointer;
-    text-shadow: 1px 1px #fff;
-    font-weight: 700;
-    font-size: 10pt;
-  }
-  .custom-file-input:hover::before {
-    border-color: black;
-  }
-  .custom-file-input:active::before {
-    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
-  }
-
-  .custom-file-input {
+.custom-file-input {
     display: none;
 }
 
+
 .custom-file-label {
-    display: inline-block;
-    padding: 0.5rem 1rem;
+    display: flex;
     color: #fff;
-    background-color: #007bff;
-    border-color: #007bff;
     border-radius: 0.25rem;
     cursor: pointer;
+    align-items: center;
+    justify-content: center;
 }
 
-.custom-file-label:hover {
-    background-color: #0056b3;
-    border-color: #004085;
+.upload-label-img{
+    width: 50%;
+    height: auto;
+    filter: invert(1);
+}
+
+.upload-label-img:hover{
+    transition: 0.4s;
+}
+
+.text{
+    margin: 0;
 }
