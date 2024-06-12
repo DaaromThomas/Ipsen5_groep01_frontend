@@ -42,12 +42,14 @@
                     <div>@document.UploadTypeId</div>
                     <div></div>
                     <div>@document.UpdatedBy</div>
-                    <div>@document.Status</div>
+                    <div class="status" style="background-color: @GetBackgroundColor(document.Status)">@document.Status</div>
 
-                    <InputFile class="eye_icon" OnChange="@(e => file = e)" @onclick:stopPropagation/>
-                    <button class="view_customer" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
-                        <img class="eye_icon" src="/icons/upload.png"/>
-                    </button>
+                    @if(document.Status == "New" || document.Status == "Afgekeurd"){
+                        <InputFile class="eye_icon" OnChange="@(e => file = e)" @onclick:stopPropagation/>
+                        <button class="view_customer" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
+                            <img class="eye_icon" src="/icons/upload.png"/>
+                        </button>
+                    }
                 </div>
 
             }
@@ -58,8 +60,14 @@
                 <td colspan="2">Geen documenten gevonden.</td>
             </tr>
         }
-
     </div>
+    @if (_contract != null)
+    {
+        <div class="contract-note-container">
+            <label for="contractNote">Opmerkingen voor het contract:</label>
+            <textarea id="contractNote" readonly>@_contract.Note</textarea>
+        </div>
+    }
 </div>
 
 
@@ -74,6 +82,8 @@
     private List<CandidateDocumentModel>? candidateDocuments;
     private List<UploadTypeModel> _uploadTypes = [];
 
+    private Contract _contract = new Contract();
+
     protected override void OnInitialized()
     {
         RequestMakerService = new RequestMakerService(new HttpClient());
@@ -81,9 +91,13 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await LoadContracts();
         await LoadDocuments();
         await GetAllUploadTypesAsync();
 
+    }
+
+    private async Task LoadContracts(){
     }
 
     private async Task LoadDocuments()
@@ -92,6 +106,7 @@
         var _contractId = Guid.Parse(contractId);
         await ContractService.getContractsByCandidateId(candidateId.ToString());
         var contract = ContractService.Contracts.FirstOrDefault(c => c.Id.ToString() == contractId.ToString());
+        _contract = contract;
         if (contract != null)
         {
             candidateDocuments = contract.CandidateDocumentsDto;
@@ -122,6 +137,19 @@
             default:
                 return "white";
         }
+    }
+
+    private string GetBackgroundColor(string status)
+    {
+        return status switch
+        {
+            "New" => "lightgreen",
+            "Completed" => "#AA77FF",
+            "Wachten op beoordeling" => "#FFFDD0",
+            "Goedgekeurd" => "#3CB371",
+            "Afgekeurd" => "#FF3131",
+            _ => "lightblue"
+        };
     }
 
     public void navigate()
