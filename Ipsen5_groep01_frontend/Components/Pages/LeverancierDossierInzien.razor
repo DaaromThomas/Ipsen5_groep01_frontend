@@ -71,7 +71,7 @@
     }
 </div>
 <script>
-    window.downloadTemplateFile = function (url, fileName) {
+    window.downloadFile = function (url, fileName) {
         var link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', fileName);
@@ -134,7 +134,7 @@
 
     private async Task DownloadDocument(string UploadTypeName){
         var response = await RequestMakerService.MakeGetRequest($"BlobStorage/downloadTemplateFile/{_contract.CustomerId}/{UploadTypeName}");
-         var contentDisposition = response.Content.Headers.ContentDisposition;
+        var contentDisposition = response.Content.Headers.ContentDisposition;
         var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? "downloaded_file";
         fileName = Uri.UnescapeDataString(fileName);
         string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
@@ -145,8 +145,8 @@
             await response.Content.CopyToAsync(fileStream);
         }
 
-        var downloadUrl = $"https://staffingnowdocuments.blob.core.windows.net/myfiles/{_contract.CustomerId}/Templates/{UploadTypeName}";
-        await JSRuntime.InvokeVoidAsync("downloadTemplateFile", downloadUrl, fileName);
+        var downloadUrl = $"https://staffingnowdocuments.blob.core.windows.net/myfiles/{_contract.CustomerId}/Templates/{UploadTypeName}/{fileName}";
+        await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
 
     }
 

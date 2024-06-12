@@ -287,6 +287,7 @@
                                 <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
                                     <p>@uploadType.Type</p>
                                     <InputFile class="custom-file-input" @onclick:stopPropagation OnChange="@(e => UploadDocument(e, uploadType.Type))"/>
+                                    <label for="fileInput" class="custom-file-label">Upload Document</label>
                                 </div>
                             }
 

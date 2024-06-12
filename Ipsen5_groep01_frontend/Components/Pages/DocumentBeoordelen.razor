@@ -56,7 +56,7 @@
                     </select>
                 </div>
                 <div>@document.UpdatedDate.ToString("dd-MM-yyyy")</div>  
-                <div @onclick="() => DownloadDocument(GetUploadTypeName(document.UploadTypeId))">Downloaden</div>
+                <img class="edit_icon" src="/icons/download.png" alt="Bewerk" @onclick="() => DownloadDocument(GetUploadTypeName(document.UploadTypeId))">
                 @if(@document.Status == "Wachten op beoordeling"){
                     <div class="button-holder">
                         <button class="button ok-button" @onclick="() => UpdateDocumentStatus(0, document)">✓</button>
