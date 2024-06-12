@@ -15,6 +15,7 @@
 @inject IJSRuntime JSRuntime
 @inject RequestMakerService RequestMakerService
 @inject HttpClient HttpClient
+@inject NotificatieService NotificationService
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
 
@@ -146,7 +147,14 @@
         }
 
         var downloadUrl = $"https://staffingnowdocuments.blob.core.windows.net/myfiles/{_contract.CustomerId}/Templates/{UploadTypeName}/{fileName}";
-        await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
+        Console.WriteLine(fileName);
+        if(fileName != "downloaded_file"){
+            await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
+        }
+        else{
+            NotificationService.Notify("No template file available.", NotificationType.Error);
+        }
+
 
     }
 

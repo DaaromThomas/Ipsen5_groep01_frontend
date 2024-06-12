@@ -32,6 +32,7 @@ builder.Services.AddSingleton<LoginService>();
 builder.Services.AddSingleton<FileUploadService>();
 builder.Services.AddSingleton<CandidateService>();
 builder.Services.AddSingleton<TemplateUploadService>();
+builder.Services.AddSingleton<NotificatieService>();
  
  
 var app = builder.Build();

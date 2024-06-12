@@ -1,0 +1,48 @@
+@using Ipsen5_groep01_frontend.Services
+@inject NotificatieService NotificationService
+@implements IDisposable
+@layout MainLayout
+
+<div class="notification-container">
+    @foreach (var notification in notifications)
+    {
+        <div class="notification @notification.Type.ToString().ToLower()">
+            @notification.Message
+        </div>
+    }
+</div>
+
+@code {
+    private List<NotificationMessage> notifications = new List<NotificationMessage>();
+
+    protected override void OnInitialized()
+    {
+        NotificationService.OnNotify += ShowNotification;
+    }
+
+    private void ShowNotification(string message, NotificationType type)
+    {
+        notifications.Add(new NotificationMessage { Message = message, Type = type });
+        StateHasChanged();
+
+        Task.Delay(5000).ContinueWith(_ => 
+        {
+            notifications.Remove(notifications.First(n => n.Message == message && n.Type == type));
+            InvokeAsync(StateHasChanged);
+        });
+    }
+
+    public void Dispose()
+    {
+        InvokeAsync(() =>
+        {
+        NotificationService.OnNotify -= ShowNotification;
+        });
+    }
+
+    private class NotificationMessage
+    {
+        public string Message { get; set; }
+        public NotificationType Type { get; set; }
+    }
+}
