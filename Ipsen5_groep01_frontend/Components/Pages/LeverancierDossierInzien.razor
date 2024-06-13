@@ -152,7 +152,7 @@
             await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
         }
         else{
-            NotificationService.Notify("No template file available.", NotificationType.Error);
+            NotificationService.Notify("Voor dit document is er geen template", NotificationType.Error);
         }
 
 
