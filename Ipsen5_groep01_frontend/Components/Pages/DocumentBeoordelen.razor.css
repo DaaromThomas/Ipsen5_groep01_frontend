@@ -272,3 +272,8 @@ select option {
 .custom-select:focus {
     background-color: #e2e4e4;
 }
+
+.edit_icon {
+    margin-left: 25px;
+    width: 2.5vmin;
+}
