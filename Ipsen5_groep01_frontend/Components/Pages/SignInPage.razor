@@ -47,7 +47,19 @@
                         </div>
                         <div class="form-group">
                             <label>Password:</label>
-                            <InputText id="password" @bind-Value="SignInModel.Password" type="password" class="form-control"></InputText>
+                            <div class="password-input">
+                                <InputText id="password" @bind-Value="SignInModel.Password" type="@GetPasswordInputType()" class="form-control"></InputText>
+                                <button type="button" class="password-toggle-btn" @onclick="TogglePasswordVisibility">
+                                    @if (showPassword)
+                                    {
+                                        <i class="fas fa-eye-slash"></i> <!-- Icon when password is visible -->
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-eye"></i> <!-- Icon when password is hidden -->
+                                    }
+                                </button>
+                            </div>
                             <ValidationMessage For="() => SignInModel.Password"></ValidationMessage>
                         </div>
                     </div>
@@ -76,6 +88,18 @@
     private SignInModel SignInModel { get; set; } = new();
     
     private string? role { get; set; }
+
+    private bool showPassword = false;
+
+    private void TogglePasswordVisibility()
+    {
+    showPassword = !showPassword;
+    }
+
+    private string GetPasswordInputType()
+    {
+    return showPassword ? "text" : "password";
+    }
 
     public SignInPage(){
         
