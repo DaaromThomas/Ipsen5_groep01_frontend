@@ -5,6 +5,7 @@
 @inject HttpClient HttpClient
 @inject LoginService LoginService
 @inject AuthService AuthService
+@inject ILocalStorageService _localstorage;
 @inject RequestMakerService RequestMakerService
 @inject IConfiguration Configuration;
 
@@ -20,6 +21,7 @@
 @using System.Text;
 @using static System.Runtime.InteropServices.JavaScript.JSType;
 @using System.ComponentModel.DataAnnotations;
+@using Blazored.LocalStorage
 @using Microsoft.AspNetCore.Components.Forms;
 @using Ipsen5_groep01_frontend.Models;
 
@@ -101,7 +103,8 @@
     {
         if (!string.IsNullOrEmpty(SignInModel.Email) && !string.IsNullOrEmpty(SignInModel.Password))
         {
-            var response = await RequestMakerService.MakePostRequest("user/signIn", SignInModel);
+
+            var response = await RequestMakerService.MakePostRequest("user/signIn", SignInModel, "");
 
             if (response.IsSuccessStatusCode)
             {
@@ -109,6 +112,8 @@
                 if (response.Headers.TryGetValues("Authorization", out var tokens))
                 {
                     var Token = tokens.FirstOrDefault().Substring(7);
+                    
+                    _localstorage.SetItemAsync("JWT", Token);
 
                     var handler = new JwtSecurityTokenHandler();
                     var secret = "ThisIsMySecre6546rgfg5464fddzffg546fgtKey123456778";

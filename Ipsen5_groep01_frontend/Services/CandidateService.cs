@@ -57,7 +57,7 @@ namespace Ipsen5_groep01_frontend.Services
 
         public async Task CreateCandidate(RegisterUserRequest request)
         {
-            var response = await _requestMakerService.MakePostRequest("Candidate/Candidate", request);
+            var response = await _requestMakerService.MakePostRequest("Candidate/Candidate", request, "");
         }
 
 
@@ -66,7 +66,7 @@ namespace Ipsen5_groep01_frontend.Services
             bool requestSucceed = false;
             try
             {
-                var response = await _requestMakerService.MakePostRequest("user/signup", request);
+                var response = await _requestMakerService.MakePostRequest("user/signup", request, "");
 
                 requestSucceed = true;
             }

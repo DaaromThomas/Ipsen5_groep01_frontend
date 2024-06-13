@@ -533,7 +533,7 @@
             };
 
 
-        var response = await RequestMakerService.MakePostRequest("customer/customers", CustomerRequest);
+        var response = await RequestMakerService.MakePostRequest("customer/customers", CustomerRequest, "");
 
         var json = await response.Content.ReadAsStringAsync();
 
@@ -584,11 +584,14 @@
 
 
         ContractRequest contractRequest = new ContractRequest
-        {
-            ContractDto = ContractModel
-        };
 
-        var response = await RequestMakerService.MakePostRequest("contract/contract", contractRequest);
+            {
+                ContractDto = ContractModel
+            };
+
+        var response = await RequestMakerService.MakePostRequest("contract/contract", contractRequest, "");
+
+
 
         await TemplateUploadService.UploadAllDocuments();
 
