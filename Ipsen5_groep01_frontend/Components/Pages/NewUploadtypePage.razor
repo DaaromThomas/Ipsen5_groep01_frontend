@@ -153,8 +153,7 @@
                         UploadTypeDto = UploadTypeModel
                     };
 
-                await _requestMakerService.MakePostRequest("uploadtype/adduploadtype", request, "");
-
+                await RequestMakerService.MakePostRequest("uploadtype/adduploadtype", request);
             }
         }
     }
