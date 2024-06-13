@@ -518,7 +518,7 @@
             };
 
 
-        var response = await _requestMakerService.MakePostRequest("customer/customers", CustomerRequest, "");
+        var response = await RequestMakerService.MakePostRequest("customer/customers", CustomerRequest);
 
         var json = await response.Content.ReadAsStringAsync();
 
@@ -571,8 +571,8 @@
                 ContractDto = ContractModel
             };
 
-        var response = await _requestMakerService.MakePostRequest("contract/contract", contractRequest, "");
 
+        var response = await RequestMakerService.MakePostRequest("contract/contract", contractRequest);
 
         NavigationManager.NavigateTo("/customer");
     }
