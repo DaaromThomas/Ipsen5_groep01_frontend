@@ -17,8 +17,8 @@
     justify-content: center;
     border: solid;
     border: 0vmin;
-    border: none;
-    border-bottom: 0.2vmin solid lightgray; 
+    border: none; /* Zorgt ervoor dat alle borders behalve de onderkant worden uitgeschakeld */
+    border-bottom: 0.2vmin solid lightgray; /* Stel de border-bottom in */
 }
 
 .wizard-circle-container {
@@ -377,11 +377,10 @@ button {
     border-color: #d1d5db;
     margin-top: 3vmin;
     width: 90vmin;
-    
 }
 
 .input-pair-Container-3 {
-    display: grid; 
+    display: grid;
     grid-template-columns: 1fr 1fr;
 }
 
@@ -391,4 +390,3 @@ button {
     color: dodgerblue;
     font-size: 1.5vmin;
 }
-

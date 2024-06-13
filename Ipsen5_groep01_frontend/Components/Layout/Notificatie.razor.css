@@ -1,0 +1,29 @@
+.notification-container {
+    position: fixed;
+    top: 110px;
+    right: 10px;
+    z-index: 1000;
+}
+
+.notification {
+    margin: 5px;
+    padding: 10px;
+    border-radius: 3px;
+    color: white;
+}
+
+.notification.info {
+    background-color: blue;
+}
+
+.notification.success {
+    background-color: green;
+}
+
+.notification.warning {
+    background-color: orange;
+}
+
+.notification.error {
+    background-color: red;
+}

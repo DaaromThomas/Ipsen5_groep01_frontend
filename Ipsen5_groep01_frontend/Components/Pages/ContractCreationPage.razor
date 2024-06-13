@@ -684,8 +684,7 @@ else
       ContractDto =  contract
     };
     
-    var response = await _requestMakerService.MakePostRequest("Contract/contract", contractRequest, "");
-    
+    var response = await _requestMakerService.MakePostRequest("Contract/contract", contractRequest);
     if (response.IsSuccessStatusCode)
     {
     var json = await response.Content.ReadAsStringAsync();

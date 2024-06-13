@@ -14,6 +14,7 @@
 
 @inject IJSRuntime JSRuntime
 @inject HttpClient HttpClient
+@inject NotificatieService NotificationService
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
 
@@ -31,6 +32,7 @@
             <div class="header-title">Status</div>
             <div class="header-title">Kies Bestand</div>
             <div class="header-title">Uploaden</div>
+            <div class="header-title">Template</div>
         </div>
 
         @if (candidateDocuments != null)
@@ -38,17 +40,17 @@
             @foreach (var document in candidateDocuments)
             {
                 <div class="customers">
-                    <div>@document.UploadTypeId</div>
+                    <div>@GetUploadTypeName(@document.UploadTypeId)</div>
                     <div></div>
                     <div>@document.UpdatedBy</div>
                     <div class="status" style="background-color: @GetBackgroundColor(document.Status)">@document.Status</div>
-
                     @if(document.Status == "New" || document.Status == "Afgekeurd"){
                         <InputFile class="eye_icon" OnChange="@(e => file = e)" @onclick:stopPropagation/>
                         <button class="view_customer" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
                             <img class="eye_icon" src="/icons/upload.png"/>
                         </button>
                     }
+                    <img class="edit_icon" src="/icons/download.png" alt="Bewerk" @onclick="() => DownloadDocument(GetUploadTypeName(document.UploadTypeId))"/>
                 </div>
 
             }
@@ -68,6 +70,17 @@
         </div>
     }
 </div>
+<script>
+    window.downloadFile = function (url, fileName) {
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName);
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+</script>
 
 
 @code {
@@ -82,6 +95,7 @@
     private List<UploadTypeModel> _uploadTypes = [];
 
     private Contract _contract = new Contract();
+    private UploadType uploadType;
 
     protected override void OnInitialized()
     {
@@ -93,7 +107,13 @@
         await LoadContracts();
         await LoadDocuments();
         await GetAllUploadTypesAsync();
+        
+    }
 
+    private string GetUploadTypeName(Guid uploadTypeId)
+    {
+        var uploadType = _uploadTypes.FirstOrDefault(ut => ut.Id == uploadTypeId);
+        return uploadType?.Type ?? "Unknown";
     }
 
     private async Task LoadContracts(){
@@ -110,6 +130,31 @@
         {
             candidateDocuments = contract.CandidateDocumentsDto;
         }
+    }
+
+    private async Task DownloadDocument(string UploadTypeName){
+        var response = await RequestMakerService.MakeGetRequest($"BlobStorage/downloadTemplateFile/{_contract.CustomerId}/{UploadTypeName}");
+        var contentDisposition = response.Content.Headers.ContentDisposition;
+        var fileName = contentDisposition?.FileNameStar ?? contentDisposition?.FileName ?? "downloaded_file";
+        fileName = Uri.UnescapeDataString(fileName);
+        string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
+        var filePath = Path.Combine(downloadsPath, fileName);
+
+        using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+        {
+            await response.Content.CopyToAsync(fileStream);
+        }
+
+        var downloadUrl = $"https://staffingnowdocuments.blob.core.windows.net/myfiles/{_contract.CustomerId}/Templates/{UploadTypeName}/{fileName}";
+        Console.WriteLine(fileName);
+        if(fileName != "downloaded_file"){
+            await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
+        }
+        else{
+            NotificationService.Notify("No template file available.", NotificationType.Error);
+        }
+
+
     }
 
     protected override void OnAfterRender(bool firstRender)
@@ -188,11 +233,6 @@
         
     }
 
-    private string GetUploadTypeName(Guid uploadTypeId)
-    {
-        var uploadType = _uploadTypes.FirstOrDefault(ut => ut.Id == uploadTypeId);
-        return uploadType?.Type ?? "Unknown";
-    }
 
 
     public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()

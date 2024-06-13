@@ -2,8 +2,8 @@
 
 namespace Ipsen5_groep01_frontend.Requests
 {
-    public class UserRequest
+    public class RegisterUserRequest
     {
-        public User User { get; set; }
+        public RegisterModel User { get; set; }
     }
 }

@@ -1,24 +1,42 @@
-﻿.page-title {
+﻿namespace Ipsen5_groep01_frontend.Components.Pages
+{
+    public class RegisterPage
+    {
+    }
+}
+/*@@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap');*/
+
+.page {
     display: flex;
-    width: 100%;
-    color: #1f262f;
-    font-size: 3vmin;
-    font-family: Inter;
-    font-weight: 600;
-    padding-left: 45.3vmin;
-    padding-top: 4.5vmin;
+    height: fit-content;
+    flex-direction: column;
+}
+
+.header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.logo-container {
+    padding-left: 5vmin;
+    padding-top: 2.3vmin;
+}
+
+.logo {
+    height: 6vmin
 }
 
 
 .wizard-container {
     display: flex;
     height: 17vmin;
-    align-items: center;
-    justify-content: center;
+    align-items: center;/*
+    justify-content: center;*/
     border: solid;
     border: 0vmin;
     border: none;
-    border-bottom: 0.2vmin solid lightgray; 
+    margin-top: 2vmin;
+    margin-left: 16vmin;
 }
 
 
@@ -48,17 +66,15 @@
     }
 
 .line {
-    width: 35vmin;
+    width: 23vmin;
     height: 0.4vmin;
-    margin-left: 3vmin;
-    margin-right: 3vmin;
     border-radius: 5vmin;
 }
 
 .wizard-title {
     color: #1f262f;
     font-size: 1.6vmin;
-    padding-top: 1.2vmin; 
+    padding-top: 1.2vmin;
     font-family: Inter;
     font-weight: 600;
 }
@@ -82,6 +98,200 @@ button {
     font-size: 16px;
     cursor: pointer;
 }
+
+
+
+.register-container {
+    background-color: white;
+    width: 120vmin;
+    /*height: 60vmin;*/
+    margin-top: 6vmin;
+    border-radius: 1vmin;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: solid;
+    border-width: 0.1vmin;
+    border-color: #d1d5db;
+
+    margin-bottom: 10vmin;
+}
+
+.sign-container {
+    display: flex;
+    justify-content: end;
+    padding-right: 5vmin;
+    padding-top: 2.3vmin;
+}
+
+.sign-in {
+    margin-right: 2vmin;
+    width: 21vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sign-up {
+    width: 21vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.sign-in-button {
+    width: 100%;
+    height: 60%;
+    font-family: Ubuntu, sans-serif;
+    font-size: 1.8vmin;
+    color: white;
+    font-weight: 600;
+    background-color: #10ADE5;
+    border-width: 0;
+}
+
+.sign-up-button {
+    width: 100%;
+    height: 60%;
+    background-color: #FF6700;
+    font-size: 1.8vmin;
+    color: white;
+    font-weight: 700;
+    border-width: 0;
+    font-family: Ubuntu, sans-serif;
+}
+
+
+.linear-gradient-Container {
+    background: linear-gradient(0.22turn, #FF6700 -20%, #1A222D 40%, #183749 60%, #10ADE5 100%);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  
+}
+
+
+
+.title-login {
+    color: BLACK;
+    grid-row-start: 2;
+    grid-row-end: 4;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3vmin;
+    font-weight: bold;
+    border-top-left-radius: 1vmin;
+    border-top-right-radius: 1vmin;
+}
+
+.inlog-text {
+    color: #1d232f;
+    font-family: Helvetica, sans-serif;
+}
+
+.gen-text {
+    color: #0baee5;
+    font-family: Helvetica, sans-serif;
+}
+
+.login {
+    background-color: white;
+    grid-row-start: 4;
+    grid-row-end: 7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-button {
+    margin-top: 2vmin;
+    width: 50vmin;
+    height: 5vmin;
+    font-family: Ubuntu, sans-serif;
+    font-size: 1.8vmin;
+    color: white;
+    font-weight: 600;
+    background-color: #10ADE5;
+    border: solid 0.25vmin #10ADE5;
+    transition: background-color 0.3s;
+}
+
+    .login-button:hover {
+        background-color: white;
+        color: #10ADE5;
+    }
+
+.back-button-container {
+    background-color: white;
+    grid-row-start: 7;
+    grid-row-end: 10;
+    display: flex;
+    align-items: end;
+    border-bottom-left-radius: 1vmin;
+    border-bottom-right-radius: 1vmin;
+}
+
+.back-button {
+    width: 18vmin;
+    height: 4vmin;
+    font-family: Ubuntu, sans-serif;
+    font-size: 1.8vmin;
+    color: white;
+    font-weight: 600;
+    background-color: white;
+    margin-left: 5vmin;
+    margin-bottom: 5vmin;
+    border: solid 0.3vmin #FF6700;
+    color: #FF6700;
+    font-size: 1.6vmin;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    letter-spacing: 0.05vmin
+}
+
+    .back-button:hover {
+        background-color: #FF6700;
+        color: white;
+    }
+
+.text-fieldcontrainer {
+    width: 50vmin;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    background-color: #1A222D;
+    height: 100px;
+}
+
+.footer-text-container {
+    display: flex;
+    align-items: center;
+    padding-left: 5vmin;
+}
+
+.footer-text {
+    font-size: 1.5vmin;
+    color: white;
+    font-weight: 700;
+    font-family: Ubuntu, sans-serif;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -324,10 +534,6 @@ button {
     .input-checkbox-container:hover {
         background-color: #1f262f;
         color: white;
-
-        .upload-label-img{
-            filter: invert(0);
-        }
     }
 
     .input-checkbox-container.selected {
@@ -377,11 +583,10 @@ button {
     border-color: #d1d5db;
     margin-top: 3vmin;
     width: 90vmin;
-    
 }
 
 .input-pair-Container-3 {
-    display: grid; 
+    display: grid;
     grid-template-columns: 1fr 1fr;
 }
 
@@ -390,47 +595,5 @@ button {
     font-weight: 450;
     color: dodgerblue;
     font-size: 1.5vmin;
-    text-align: center;
 }
 
-.upload-icon {
-    position: relative;
-    top: -5px;
-    right: -10px;
-    margin-left: 5px;
-    cursor: pointer;
-    filter: invert(1);
-    transform: scale(0.8);
-}
-
-.upload-icon:hover{
-    filter: invert(0);
-}
-
-.custom-file-input {
-    display: none;
-}
-
-
-.custom-file-label {
-    display: flex;
-    color: #fff;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-}
-
-.upload-label-img{
-    width: 50%;
-    height: auto;
-    filter: invert(1);
-}
-
-.upload-label-img:hover{
-    transition: 0.4s;
-}
-
-.text{
-    margin: 0;
-}

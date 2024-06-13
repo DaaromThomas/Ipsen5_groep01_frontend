@@ -19,6 +19,7 @@
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
 @inject RequestMakerService RequestMakerService
+@inject TemplateUploadService TemplateUploadService
 
 <style>
     @@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
@@ -283,10 +284,17 @@
                         <div class="uploadtype-container">
                             @foreach (var uploadType in UploadTypes.Where(u => u.Required))
                             {
+                                var inputId = $"fileInput_{uploadType.Id}";
                                 <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
-                                    @uploadType.Type
+                                    <p class="text">@uploadType.Type</p>
+                                    <InputFile hidden="true" id="@inputId" class="custom-file-input " @onclick:stopPropagation OnChange="@(e => UploadDocument(e, uploadType.Type))" />
+                                    <label for="@inputId" class="custom-file-label" @onclick:stopPropagation><img class="upload-label-img" src="/icons/upload.png" /></label>
                                 </div>
                             }
+
+
+
+
                         </div>
 
                         <div class="section-title-selected">Geselecteerde documenten</div>
@@ -294,8 +302,11 @@
                         <div class="uploadtype-container">
                             @foreach (var uploadType in UploadTypes.Where(u => selectedItems.Contains(u.Id) && !u.Required))
                             {
+                                var inputId = $"fileInput_{uploadType.Id}";
                                 <div class="input-checkbox-container selected" @onclick="() => ToggleSelection(uploadType.Id)">
-                                    @uploadType.Type
+                                    <p class="text">@uploadType.Type</p>
+                                    <InputFile hidden="true" id="@inputId" class="custom-file-input " @onclick:stopPropagation OnChange="@(e => UploadDocument(e, uploadType.Type))" />
+                                    <label for="@inputId" class="custom-file-label" @onclick:stopPropagation><img class="upload-label-img" src="/icons/upload.png" /></label>
                                 </div>
                             }
                         </div>
@@ -449,6 +460,7 @@
     private int currentStep = 1;
     private string? houseNumberValidationMessage;
     private string? postalCodeValidationMessage;
+    
 
 
     public CustomerConfigPage2()
@@ -473,7 +485,9 @@
         await GetUploadTypesAsync();
     }
 
-
+    public async Task UploadDocument(InputFileChangeEventArgs e, string uploadTypeName){
+        TemplateUploadService._uploadDocument(e, uploadTypeName);
+    }
 
     public async Task<List<UploadTypeModel>> GetUploadTypesAsync()
     {
@@ -512,13 +526,14 @@
 
     public async Task CreateCustomerAsync()
     {
+        Customer.Id = customerId;
         CustomerRequest CustomerRequest = new CustomerRequest
             {
                 CustomerDto = Customer
             };
 
 
-        var response = await RequestMakerService.MakePostRequest("customer/customers", CustomerRequest, "");
+        var response = await RequestMakerService.MakePostRequest("customer/customers", CustomerRequest);
 
         var json = await response.Content.ReadAsStringAsync();
 
@@ -529,7 +544,9 @@
             return;
         }
 
-        customerId = ParseGuid(resultObject, "id");
+        if(customerId != null){
+            Console.WriteLine("Customer ID" + customerId);
+        }
 
         await CreateCustomerTemplateAsync();
     }
@@ -567,12 +584,13 @@
 
 
         ContractRequest contractRequest = new ContractRequest
-            {
-                ContractDto = ContractModel
-            };
+        {
+            ContractDto = ContractModel
+        };
 
-        var response = await RequestMakerService.MakePostRequest("contract/contract", contractRequest, "");
+        var response = await RequestMakerService.MakePostRequest("contract/contract", contractRequest);
 
+        await TemplateUploadService.UploadAllDocuments();
 
         NavigationManager.NavigateTo("/customer");
     }
@@ -725,7 +743,7 @@
 
         )
         {
-
+            
             bool founded = await GetAddressInfo();
 
             if (founded == true)
@@ -738,6 +756,8 @@
                     currentStep++;
                     if (currentStep == 2)
                     {
+                        customerId = Guid.NewGuid();
+                        TemplateUploadService.SetCustomerId(customerId);
                         await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
                     }
                     await JSRuntime.InvokeVoidAsync("scrollToTop");
