@@ -7,6 +7,7 @@
 @inject AuthService AuthService
 @inject ILocalStorageService _localstorage;
 @inject RequestMakerService RequestMakerService
+@inject NotificatieService NotificationService
 @inject IConfiguration Configuration;
 
 @using Services
@@ -129,7 +130,10 @@
         {
 
             var response = await RequestMakerService.MakePostRequest("user/signIn", SignInModel, "");
-
+            if (!response.IsSuccessStatusCode){
+            NotificationService.Notify("Je inloggegevens zijn incorrect!", NotificationType.Error);
+            }
+            
             if (response.IsSuccessStatusCode)
             {
                 
