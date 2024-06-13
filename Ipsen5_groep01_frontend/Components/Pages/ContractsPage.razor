@@ -34,8 +34,8 @@
             </div>
 
             <div class="dropdown-container">
-                <select class="dropdown-field" @bind="SelectedCustomerId" @onchange="OnCustomerChange">
-                    <option value="">Selecteer filter</option>
+                <select class="dropdown-field" @onchange="OnCustomerChange">
+                    <option value="">Selecteer opdrachtgever</option>
                     @foreach (var customer in _customersInContracts)
                     {
                         <option value="@customer.Id">@customer.Name</option>
@@ -128,6 +128,8 @@
     private string tijdelijk = "";
     private CustomerService _customerService;
     private CandidateService _candidateService;
+    private string selectedCustomerId;
+
 
 
 
@@ -173,19 +175,25 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await GetContracts();
+        await GetAllCustomersInContracts();
         await GetAllCandidatesFromService();
         await GetAllCustomers();
-        await GetAllCustomersInContracts();
+        if (string.IsNullOrEmpty(selectedCustomerId))
+        {
+            await GetContracts();
+        }
     }
+    
     
     private async Task OnCustomerChange(ChangeEventArgs e)
     {
-        if (!string.IsNullOrEmpty(SelectedCustomerId))
+        if (e.Value != null)
         {
-            contracts = await GetContractByCustomerId(SelectedCustomerId);
+            selectedCustomerId = e.Value.ToString();
+            await GetContractByCustomerId(selectedCustomerId);
+            StateHasChanged();
         }
-    }   
+    } 
 
     private string getCandidateNameById(Guid id){
         var Candidate = _candidates.FirstOrDefault(ut => ut.Id == id);
@@ -245,11 +253,14 @@
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
-        var contractArray = outerObject?["result"]?["contractDto"];
+        var contractArray = outerObject?["result"]?["contracts"];
 
         if(contractArray == null){
             return [];
         }
+        
+        contracts.Clear();
+
 
         foreach (var jToken in contractArray)
         {
