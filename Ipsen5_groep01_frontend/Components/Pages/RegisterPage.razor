@@ -1,0 +1,1065 @@
+﻿@page "/Register"
+
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+@inject LoginService LoginService
+@inject AuthService AuthService
+@inject RequestMakerService RequestMakerService
+@inject IJSRuntime JSRuntime
+@inject IConfiguration Configuration;
+
+
+@using Microsoft.AspNetCore.Components.Authorization
+@using Services
+@using Models
+@using Newtonsoft.Json;
+@using Newtonsoft.Json.Linq;
+@using Requests;
+@using Microsoft.AspNetCore.Authorization;
+@using BlazorAnimate;
+@using System;
+@using System.Reflection.Metadata
+@using System.Text
+@using System.Text.RegularExpressions;
+@using System.Text.Json;
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.IdentityModel.Tokens;
+@using System.IdentityModel.Tokens.Jwt;
+@using System.Net;
+@using System.Runtime.InteropServices;
+@using System.Security.Claims;
+@using static System.Runtime.InteropServices.JavaScript.JSType;
+@using System.ComponentModel.DataAnnotations;
+@using Microsoft.AspNetCore.Components.Forms;
+
+
+
+<script>
+    function scrollToTop() {
+        window.scrollTo({ top: 0.09 * document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function scrollToTopStep2() {
+        window.scrollTo({ top: 0.08 * document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+</script>
+
+<div class="page">
+    <div class="linear-gradient-Container">
+
+        <div class="register-container">
+            <div class="wizard-container">
+                <div class="wizard-circle-container">
+                    <div class="wizard-circle">
+                        <div class="circle" style="background-color: @GetCircleColorClass(1);" id="circle1">
+                            @if (currentStep >= 2)
+                            {
+                                <img src="/icons/checkmark.png" />
+                            }
+                            else
+                            {
+                                <div class="wizard-step">1</div>
+                            }
+                        </div>
+
+                        <div class="line" style="background-color: @GetLineColorClass(1);"></div>
+                    </div>
+                    <div class="wizard-title">Account gegevens</div>
+                    <div class="wizard-title-status">@(currentStep >= 2 ? "Completed" : "Bezig")</div>
+                </div>
+
+                <div class="wizard-circle-container">
+                    <div class="wizard-circle">
+                        <div class="circle" style="background-color: @GetCircleColorClass(2);" id="circle1">
+                            @if (currentStep >= 3)
+                            {
+                                <img src="/icons/checkmark.png" />
+                            }
+                            else
+                            {
+                                <div class="wizard-step">2</div>
+                            }
+                        </div>
+                        <div class="line" style="background-color: @GetLineColorClass(2);"></div>
+                    </div>
+                    <div class="wizard-title">Persoons gegevens</div>
+                    <div class="wizard-title-status">
+                        @(currentStep == 2 ? "Bezig" : (currentStep >= 3 ? "Completed" : "In afwachting"))
+                    </div>
+                </div>
+
+                <div class="wizard-circle-container">
+                    <div class="wizard-circle">
+                        <div class="circle" style="background-color: @GetCircleColorClass(3);" id="circle3">
+                            @if (currentStep >= 4)
+                            {
+                                <img src="/icons/checkmark.png" />
+                            }
+                            else
+                            {
+                                <div class="wizard-step">3</div>
+                            }
+                        </div>
+                        <div class="line" style="background-color: @GetLineColorClass(3);"></div>
+
+                    </div>
+                    <div class="wizard-title">Bedrijfs gegevens</div>
+                    <div class="wizard-title-status">@(currentStep >= 4 ? "Completed" : "In afwachting")</div>
+                </div>
+
+                <div class="wizard-circle-container">
+                    <div class="wizard-circle">
+                        <div class="circle" style="background-color: @GetCircleColorClass(4);" id="circle3">
+                            @if (currentStep >= 5)
+                            {
+                                <img src="/icons/checkmark.png" />
+                            }
+                            else
+                            {
+                                <div class="wizard-step">4</div>
+                            }
+                        </div>
+
+                    </div>
+                    <div class="wizard-title">Controleren</div>
+                    <div class="wizard-title-status">@(currentStep >= 3 ? "Bezig" : "In afwachting")</div>
+                </div>
+            </div>
+
+
+            @if (currentStep == 1)
+            {
+                <div class="input-container ">
+
+                    <div class="input-description-container">
+                        <EditForm Model="@registerModel" OnValidSubmit="GoToNextStep" FormName="createuser">
+                            <DataAnnotationsValidator />
+
+                            <div class="description-title">
+                                Account gegevens
+                            </div>
+
+                            <div class="description">
+                                Vul hieronder de basisgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+                            </div>
+
+                            <div class="section">
+                                <div class="section-title">Account gegevens</div>
+
+                                <div>
+                                    <div class="input-title">Email</div>
+                                    <div>
+                                        <input class="input-field" placeholder="voorbeeld@email.com" @bind="@registerModel.Email" />
+
+                                    </div>
+                                    <ValidationMessage For="() => registerModel.Email"></ValidationMessage>
+                                </div>
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">Wachtwoord</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="Wachtwoord" @bind="@registerModel.Password" />
+
+                                        </div>
+                                        <ValidationMessage For="() => registerModel.Password" />
+                                        @if (showPasswordError)
+                                        {
+                                            <div class="validation-message">Wachtwoord is verplicht.</div>
+                                        }
+                                    </div>
+
+
+
+                                    <div>
+                                        <div class="input-title">Herhaal Wachtwoord</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="Wachtwoord" @bind="@registerModel.ConfirmPassword" />
+
+                                        </div>
+                                        <ValidationMessage For="() => registerModel.ConfirmPassword"></ValidationMessage>
+                                        @if (showConfirmPasswordError)
+                                        {
+                                            <div class="validation-message">Bevestig wachtwoord is verplicht.</div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="button-container">
+                                <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
+                                    Vorige
+                                </button>
+                                <button type="submit" class="next-button">
+                                    Volgende
+                                </button>
+                            </div>
+                        </EditForm>
+
+                    </div>
+                </div>
+
+            }
+            @if (currentStep == 2)
+            {
+                <div class="input-container ">
+
+                    <div class="input-description-container">
+                        <EditForm Model="@registerModel" OnValidSubmit="GoToNextStep" FormName="createuse" ShowValidationSummary="true">
+                            <DataAnnotationsValidator />
+
+                            <div class="description-title">
+                                Persoons gegevens
+                            </div>
+
+                            <div class="description">
+                                Vul hieronder de persoonsgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+                            </div>
+
+                            <div class="section">
+                                <div class="section-title">Persoons gegevens</div>
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">Voornaam</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="Voornaam" @bind="@registerModel.FirstName" />
+                                            <ValidationMessage For="() => registerModel.FirstName"></ValidationMessage>
+                                            @if (showFirstNameError)
+                                            {
+                                                <div class="validation-message">Voornaam is verplicht.</div>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="input-title">Achternaam</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="Achternaam" @bind="@registerModel.LastName" />
+                                        </div>
+                                        <ValidationMessage For="() => registerModel.LastName"></ValidationMessage>
+                                        @if (showLastNameError)
+                                        {
+                                            <div class="validation-message">Voornaam is verplicht.</div>
+                                        }
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">GeboorteDatum</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="Vb. 12-04-1995" @bind="@candidateModel.DateOfBirth" />
+
+                                        </div>
+                                        <ValidationMessage For="() => candidateModel.DateOfBirth"></ValidationMessage>
+                                    </div>
+
+
+
+                                    <div>
+                                        <div class="input-title">Burger Service Nummer (BSN)</div>
+                                        <div>
+                                            <input type="number" class="input-field-pair" placeholder="123456789" @bind="@candidateModel.BSN" />
+
+                                        </div>
+                                        @if (showBSNError)
+                                        {
+                                            <div class="validation-message">BSN is verplicht.</div>
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="button-container">
+                                <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
+                                    Vorige
+                                </button>
+                                <button type="submit" class="next-button">
+                                    Volgende
+                                </button>
+                            </div>
+                        </EditForm>
+
+                    </div>
+                </div>
+
+            }
+
+            @if (currentStep == 3)
+            {
+                <div class="input-container ">
+
+                    <div class="input-description-container">
+                        <EditForm Model="@registerModel" FormName="createuser">
+                            <DataAnnotationsValidator />
+
+                            <div class="description-title">
+                                Bedrijfs gegevens
+                            </div>
+
+                            <div class="description">
+                                Vul hieronder de bedrijfs gegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+                            </div>
+
+                            <div class="section">
+                                <div class="section-title">Bedrijfs gegevens</div>
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">KVK nummer</div>
+                                        <div>
+                                            <input type="number" class="input-field-pair" placeholder="12345678" @bind="@kvkNumberModel.KVKNumber" />
+                                            <ValidationMessage For="() => kvkNumberModel.KVKNumber"></ValidationMessage>
+                                            @if (showKVKError)
+                                            {
+                                                <div class="validation-message">KVK nummer is verplicht.</div>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="input-title">BTW nummer</div>
+                                        <div>
+                                            <input type="number" class="input-field-pair" placeholder="NL123456789B01" @bind="@vatNumberModel.VATNumber" />
+                                        </div>
+                                        <ValidationMessage For="() => vatNumberModel.VATNumber"></ValidationMessage>
+                                        @if (showVATError)
+                                        {
+                                            <div class="validation-message">BTW nummer is verplicht.</div>
+                                        }
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">Rekeningnummer</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="NL12ABCD3456789123" @bind="@bankAccountNumberModel.AccountNumber" />
+
+                                        </div>
+                                        <ValidationMessage For="() => bankAccountNumberModel.AccountNumber"></ValidationMessage>
+                                        @if (showAccountNumberError)
+                                        {
+                                            <div class="validation-message">Rekeningnummer is verplicht.</div>
+                                        }
+                                    </div>
+
+
+
+                                    <div>
+                                        <div class="input-title">Telefoonnummer</div>
+                                        <div>
+                                            <input type="number" class="input-field-pair" placeholder="31612345678" @bind="@phoneNumberModel.Phonenumber" />
+
+                                        </div>
+                                        <ValidationMessage For="() => phoneNumberModel.Phonenumber"></ValidationMessage>
+                                        @if (showPhoneError)
+                                        {
+                                            <div class="validation-message">Telefoonnummer is verplicht.</div>
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="section">
+                                <div class="section-title">Adres gegevens</div>
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">Postcode</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.PostalCode" />
+                                            <ValidationMessage For="() => candidateAddressModel.PostalCode"></ValidationMessage>
+                                            @if (showpostalCodeError)
+                                            {
+                                                <div class="validation-message">postcode is verplicht.</div>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="input-title">Huisnummer</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.HouseNumber" />
+                                        </div>
+                                        <ValidationMessage For="() => candidateAddressModel.HouseNumber"></ValidationMessage>
+                                        @if (showHousnumberError)
+                                        {
+                                            <div class="validation-message">Huisnummer is verplicht.</div>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">Straat</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="Kersenstraat" @bind="@candidateAddressModel.StreetName" />
+                                            <ValidationMessage For="() => candidateAddressModel.StreetName"></ValidationMessage>
+                                            @if (showStreetError)
+                                            {
+                                                <div class="validation-message">Straat is verplicht.</div>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="input-title">Provincie</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="Zuid-Holland" @bind="@candidateAddressModel.Province" />
+                                        </div>
+                                        <ValidationMessage For="() => candidateAddressModel.Province"></ValidationMessage>
+                                        @if (showProvinceError)
+                                        {
+                                            <div class="validation-message">Provincie is verplicht.</div>
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                            <div class="button-container">
+                                <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
+                                    Vorige
+                                </button>
+                                <button type="submit" class="next-button" @onclick="GoToNextStep">
+                                    Volgende
+                                </button>
+                            </div>
+                        </EditForm>
+
+                    </div>
+                </div>
+
+            }
+
+            @if (currentStep == 4)
+            {
+                <div class="input-container ">
+
+                    <div class="input-description-container">
+                        <EditForm Model="@registerModel" FormName="createuser">
+                            <DataAnnotationsValidator />
+
+                            <div class="description-title">
+                                Persoons gegevens
+                            </div>
+
+                            <div class="description">
+                                Vul hieronder de persoonsgegevens in om verder te gaan. Zorg ervoor dat alle velden correct en volledig zijn ingevuld.
+                            </div>
+
+                            <div class="section">
+                                <div class="section-title">Account gegevens</div>
+
+                                <div>
+                                    <div class="input-title">Email</div>
+                                    <div>
+                                        <input class="input-field" placeholder="voorbeeld@email.com" @bind="@registerModel.Email" disabled />
+
+                                    </div>
+                                    <ValidationMessage For="() => registerModel.Email"></ValidationMessage>
+                                </div>
+
+                            </div>
+
+
+                            <div class="section">
+                                <div class="section-title">Persoons gegevens</div>
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">Voornaam</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="Voornaam" @bind="@registerModel.FirstName" disabled />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="input-title">Achternaam</div>
+                                        <div>
+                                            <input type="number" class="input-field-pair" placeholder="Achternaam" @bind="@registerModel.LastName" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">GeboorteDatum</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="Vb. 12-04-1995" @bind="@candidateModel.DateOfBirth" disabled />
+                                        </div>
+                                    </div>
+
+
+
+                                    <div>
+                                        <div class="input-title">Burger Service Nummer (BSN)</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="123456789" @bind="@candidateModel.BSN" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="section">
+                                <div class="section-title">Bedrijfs gegevens</div>
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">KVK nummer</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="12345678" @bind="@kvkNumberModel.KVKNumber" disabled />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="input-title">BTW nummer</div>
+                                        <div>
+                                            <input type="number" class="input-field-pair" placeholder="NL123456789B01" @bind="@vatNumberModel.VATNumber" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">Rekeningnummer</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="NL12ABCD3456789123" @bind="@bankAccountNumberModel.AccountNumber" disabled />
+
+                                        </div>
+                                    </div>
+
+
+
+                                    <div>
+                                        <div class="input-title">Telefoonnummer</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="31612345678" @bind="@phoneNumberModel.Phonenumber" disabled />
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="section">
+                                <div class="section-title">Adres gegevens</div>
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">Postcode</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.PostalCode" disabled />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="input-title">Huisnummer</div>
+                                        <div>
+                                            <input type="number" class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.HouseNumber" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="input-pair-Container">
+                                    <div>
+                                        <div class="input-title">Straat</div>
+                                        <div>
+                                            <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.StreetName" disabled />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="input-title">Provincie</div>
+                                        <div>
+                                            <input type="number" class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.Province" disabled />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    @if (createCandidateteMessage)
+                                    {
+                                        <div class="validation-message">Account is aangemaakt.</div>
+                                    }
+                                    else if (createCandidateteMessage && createCandidateteError)
+                                    {
+                                        <div class="validation-message">Er is een fout opgetreden</div>
+                                    }
+                                </div>
+
+
+
+                            </div>
+
+
+                            <div class="button-container">
+                                <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
+                                    Vorige
+                                </button>
+                                <button type="submit" class="next-button" @onclick="CreateCandidate">
+                                    Account Maken
+                                </button>
+                            </div>
+                        </EditForm>
+
+                    </div>
+                </div>
+
+            }
+
+        </div>
+
+
+
+    </div>
+    <div></div>
+    @*   <div class="footer">
+    <div class="footer-text-container">
+    <div class="footer-text">
+    © 2024 StaffingNow. All rights reserved
+    </div>
+    </div>
+    </div> *@
+</div>
+
+
+@code {
+    private int currentStep = 1;
+    private RegisterModel registerModel { get; set; } = new();
+    private Candidate candidateModel { get; set; } = new();
+    private KvkNumberModel kvkNumberModel { get; set; } = new();
+    private VatNumberModel vatNumberModel { get; set; } = new();
+    private BankAccountNumberModel bankAccountNumberModel { get; set; } = new();
+    private CandidateAddressModel candidateAddressModel { get; set; } = new();
+    private PhoneNumberModel phoneNumberModel { get; set; } = new();
+    private NawModel nawModel { get; set; } = new();
+    private List<CandidateAddressModel> candidateAddressModels { get; set; } = new List<CandidateAddressModel>();
+    private bool showPasswordError = false;
+    private bool showConfirmPasswordError = false;
+    private bool showFirstNameError = false;
+    private bool showLastNameError = false;
+    private bool showBSNError = false;
+    private bool showVATError = false;
+    private bool showAccountNumberError = false;
+    private bool showBirthError = false;
+    private bool showPhoneError = false;
+    private bool showKVKError = false;
+    private bool showpostalCodeError = false;
+    private bool showHousnumberError = false;
+    private bool showProvinceError = false;
+    private bool showStreetError = false;
+    private bool createCandidateteMessage = false;
+    private bool createCandidateteError = false;
+
+
+
+    private CandidateService _candidateService;
+
+    public RegisterPage()
+    {
+        _candidateService = new CandidateService(new RequestMakerService(new HttpClient()));
+    }
+
+    public async Task CreateCandidate()
+    {
+       
+            RegisterUserRequest request = new RegisterUserRequest();
+
+            request.User = registerModel;
+            request.User.CandidateDto = candidateModel;
+            candidateModel.FirstName = request.User.FirstName;
+            candidateModel.LastName = request.User.LastName;
+            request.User.CandidateDto.KvkNumber = kvkNumberModel;
+            request.User.CandidateDto.VatNumber = vatNumberModel;
+            request.User.CandidateDto.BankAccountNumber = bankAccountNumberModel;
+            request.User.CandidateDto.PhoneNumber = phoneNumberModel;
+
+            nawModel.NAW = "niet";
+            request.User.CandidateDto.Naw = nawModel;
+
+            candidateAddressModel.Country = "dddd";
+
+            candidateAddressModels.Add(candidateAddressModel);
+            request.User.CandidateDto.CandidateAddress = candidateAddressModels;
+
+            var response = await _candidateService.CreateUserCandidate(request);
+
+        if (response)
+        {
+            createCandidateteMessage = true;
+           
+            await Task.Delay(3000);
+
+            NavigationManager.NavigateTo("/signin");
+        }
+        else
+        {
+            createCandidateteMessage = true;
+            createCandidateteError = true;
+
+            await Task.Delay(3000);
+
+            NavigationManager.NavigateTo("/signin");
+        }
+
+            
+      
+    }
+
+
+    public void HandleNextButtonClick()
+    {
+        GoToNextStep();
+    }
+
+    protected override void OnInitialized()
+    {
+        registerModel.CurrentStep = currentStep;
+    }
+
+  
+    private async Task GoToPreviousStep()
+    {
+        if (currentStep == 1)
+        {
+            NavigationManager.NavigateTo("/customer");
+            registerModel.CurrentStep = currentStep;
+        }
+        else
+        {
+            currentStep--;
+            registerModel.CurrentStep = currentStep;
+        }
+
+        if (currentStep == 2)
+        {
+            await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
+        }
+
+        await JSRuntime.InvokeVoidAsync("scrollToTop");
+    }
+
+    private async Task GoToNextStep()
+    {
+        var isValid = ValidatePasswordFields(); // Validatie van de wachtwoordvelden
+        if (isValid)
+        {
+            currentStep++;
+            registerModel.CurrentStep = currentStep;
+            if (currentStep == 2)
+            {
+                await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
+            }
+            await JSRuntime.InvokeVoidAsync("scrollToTop");
+        }
+    }
+
+    private bool ValidatePasswordFields()
+    {
+        bool isValid = true;
+
+        if (currentStep == 1)
+        {
+            if (string.IsNullOrEmpty(registerModel.Password))
+            {
+                showPasswordError = true;
+                isValid = false;
+            }
+            else
+            {
+                showPasswordError = false;
+            }
+
+            if (string.IsNullOrEmpty(registerModel.ConfirmPassword))
+            {
+                showConfirmPasswordError = true;
+                isValid = false;
+            }
+            else
+            {
+                showConfirmPasswordError = false;
+            }
+        }
+        else if (currentStep == 2)
+        {
+            if (string.IsNullOrEmpty(registerModel.FirstName))
+            {
+                showFirstNameError = true;
+                isValid = false;
+            }
+            else
+            {
+                showFirstNameError = false;
+            }
+
+            if (string.IsNullOrEmpty(registerModel.LastName))
+            {
+                showLastNameError = true;
+                isValid = false;
+            }
+            else
+            {
+                showLastNameError = false;
+            }
+
+            if (string.IsNullOrEmpty(candidateModel.BSN))
+            {
+                showBSNError = true;
+                isValid = false;
+            }
+            else
+            {
+                showBSNError = false;
+            }
+        }
+        else
+        {
+            if (string.IsNullOrEmpty(vatNumberModel.VATNumber))
+            {
+                showVATError = true;
+                isValid = false;
+            }
+            else
+            {
+                showVATError = false;
+            }
+
+            if (string.IsNullOrEmpty(kvkNumberModel.KVKNumber))
+            {
+                showKVKError = true;
+                isValid = false;
+            }
+            else
+            {
+                showKVKError = false;
+            }
+
+            if (string.IsNullOrEmpty(phoneNumberModel.Phonenumber))
+            {
+                showPhoneError = true;
+                isValid = false;
+            }
+            else
+            {
+                showPhoneError = false;
+            }
+
+            if (string.IsNullOrEmpty(candidateAddressModel.HouseNumber))
+            {
+                showHousnumberError = true;
+                isValid = false;
+            }
+            else
+            {
+                showHousnumberError = false;
+            }
+
+            if (string.IsNullOrEmpty(candidateAddressModel.Province))
+            {
+                showProvinceError = true;
+                isValid = false;
+            }
+            else
+            {
+                showProvinceError = false;
+               
+            }
+
+
+
+            if (string.IsNullOrEmpty(candidateAddressModel.StreetName))
+            {
+                showStreetError = true;
+                isValid = false;
+            }
+            else
+            {
+                showStreetError = false;
+            }
+
+            if (string.IsNullOrEmpty(candidateAddressModel.PostalCode))
+            {
+                showpostalCodeError = true;
+                isValid = false;
+            }
+            else
+            {
+                showpostalCodeError = false;
+
+            }
+
+            if (string.IsNullOrEmpty(bankAccountNumberModel.AccountNumber))
+            {
+                showAccountNumberError = true;
+                isValid = false;
+            }
+            else
+            {
+                showAccountNumberError = false;
+
+            }
+
+            
+        }
+
+        return isValid;
+    }
+
+    public void NavigateToHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+
+    private string GetCircleColorClass(int step)
+    {
+        if (currentStep == 1)
+        {
+            if (step == 1)
+            {
+                return "#FF6700";
+            }
+            else
+            {
+                return "grey";
+            }
+        }
+        else if (currentStep == 2)
+        {
+            if (step == 1)
+            {
+                return "#1f262f";
+            }
+            else if (step == 2)
+            {
+                return "#FF6700";
+            }
+            else
+            {
+                return "grey";
+            }
+        }
+        else if (currentStep == 3)
+        {
+            if (step == 1 || step == 2)
+            {
+                return "#1f262f";
+            }
+            else if (step == 3)
+            {
+                return "#FF6700";
+            }
+            else
+            {
+                return "grey";
+            }
+        }
+
+        else if (currentStep == 4)
+        {
+            if (step == 1 || step == 2 || step == 3)
+            {
+                return "#1f262f";
+            }
+            else
+            {
+                return "#FF6700";
+            }
+        }
+        else
+        {
+            return "grey";
+        }
+    }
+
+    private string GetLineColorClass(int step)
+    {
+        if (currentStep == 1)
+        {
+            return "grey";
+        }
+        else if (currentStep == 2)
+        {
+            if (step == 1)
+            {
+                return "#FF6700";
+            }
+            else
+            {
+                return "grey";
+            }
+        }
+        else if (currentStep == 3)
+        {
+            if (step == 1)
+            {
+                return "#1f262f";
+
+            }
+            else if (step == 2)
+            {
+                return "#FF6700";
+
+            }
+            else
+            {
+                return "grey";
+            }
+
+        }
+        else if (currentStep == 4)
+        {
+            if (step == 1)
+            {
+                return "#1f262f";
+
+            }
+            else if (step == 2)
+            {
+                return "#1f262f";
+
+            }
+            else if (step == 3)
+            {
+                return "#FF6700";
+
+            }
+            else
+            {
+                return "grey";
+            }
+
+        }
+        else
+        {
+            return "grey";
+        }
+    }
+
+}

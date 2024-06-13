@@ -5,7 +5,98 @@
 @inject AuthService AuthService
 @inject NavigationManager NavigationManager
 
-<h1>Professionals</h1>
+
+<div class="upload-type-container-background">
+    <div class="page-title">Leveranciers</div>
+
+    <div class="filter-container">
+        <div class="filters">
+
+            <div class="search-container">
+                <EditForm Model="Candidates" FormName="createCustomerAddressForm">
+                    <DataAnnotationsValidator />
+
+                    <div class="form-group search-field">
+                        <InputText id="name" @bind-Value="valuetijdelijk" class="form-control" placeholder="Zoeken"></InputText>
+                    </div>
+
+                </EditForm>
+            </div>
+
+            <div class="dropdown-container">
+                <select class="dropdown-field">
+                    <option value="">Selecteer filter</option>
+                    <option value="option1">Optie 1</option>
+                    <option value="option2">Optie 2</option>
+                    <option value="option3">Optie 3</option>
+                </select>
+            </div>
+
+        </div>
+
+       
+
+    </div>
+    <div class="upload-type-container">
+        <div class="upload-type-header">
+            <div class="header-title">Voornaam</div>
+            <div class="header-title">Achternaam</div>
+            <div class="header-title">Geboortedatum</div>
+            <div class="header-title">Gemaakt op</div>
+            <div class="header-title"></div>
+            <div class="header-title">Acties</div>
+        </div>
+        @foreach (var candidate in Candidates.Skip((currentPage - 1) * pageSize).Take(pageSize))
+        {
+            <div class="upload-types">
+                <div>@candidate.FirstName</div>
+                <div>@candidate.LastName</div>
+                <div>@candidate.DateOfBirth</div>
+                <div>@candidate.CreatedDate</div>
+                <div></div> 
+
+              
+
+               
+                <button class="view_upload-type" @onclick="() => NavigateToCandidateDetails(candidate.Id)">
+                    <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
+                </button>
+       
+            </div>
+        }
+
+        <div class="pagination-container">
+            <div class="pagination-buttons">
+
+                <button class="previous-page-button" @onclick="() => ChangePage(-1)">
+                    @if (currentPage > 1)
+                    {
+                        <img class="rotate-18" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    }
+                </button>
+
+                <div class="pagination-info">
+                    @currentPage van @totalPages
+                </div>
+
+                <button class="next-page-button" @onclick="() => ChangePage(1)">
+                    @if (Candidates.Count() > currentPage * pageSize)
+                    {
+                        <img class="rotate-180" src="/icons/left-arrow-icon.svg" alt="Bewerk" />
+                    }
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+</div>
+
 
 @code {
     protected override void OnInitialized()

@@ -5,11 +5,11 @@ namespace Ipsen5_groep01_frontend.Models
 {
     public class SignInModel
     {
-        [EmailAddress(ErrorMessage = "Invalid email address")]
-        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "ongeldige email adres")]
+        [Required(ErrorMessage = "Email is verplicht")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
+        [Required(ErrorMessage = "Wachtwoord is verplicht")]
         public string Password { get; set; }
     }
 }

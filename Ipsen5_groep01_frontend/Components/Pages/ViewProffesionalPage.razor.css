@@ -17,10 +17,12 @@
     justify-content: center;
     border: solid;
     border: 0vmin;
-    border: none;
-    border-bottom: 0.2vmin solid lightgray; 
+    border: none; /* Zorgt ervoor dat alle borders behalve de onderkant worden uitgeschakeld */
+    border-bottom: 0.2vmin solid lightgray; /* Stel de border-bottom in */
 }
 
+.wizard-circle-container {
+}
 
 .wizard-circle {
     display: flex;
@@ -58,7 +60,7 @@
 .wizard-title {
     color: #1f262f;
     font-size: 1.6vmin;
-    padding-top: 1.2vmin; 
+    padding-top: 1.2vmin;
     font-family: Inter;
     font-weight: 600;
 }
@@ -304,7 +306,9 @@ button {
     font-weight: 600;
 }
 
-
+.uploadtype-container {
+    /*display: flex;*/
+}
 
 .input-checkbox-container {
     padding: 1.1vmin;
@@ -373,11 +377,10 @@ button {
     border-color: #d1d5db;
     margin-top: 3vmin;
     width: 90vmin;
-    
 }
 
 .input-pair-Container-3 {
-    display: grid; 
+    display: grid;
     grid-template-columns: 1fr 1fr;
 }
 
@@ -387,4 +390,3 @@ button {
     color: dodgerblue;
     font-size: 1.5vmin;
 }
-
