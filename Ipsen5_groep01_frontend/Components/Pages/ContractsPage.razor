@@ -59,8 +59,8 @@
         {
 
                 <div class="contracts" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
-                    <div>@getCustomerNameById(@contract.CustomerId)</div>
-                    <div>@getCandidateNameById(@contract.CandidateId)</div>
+                    <div>@contract.CustomerName</div>
+                    <div>@contract.CandidateName</div>
                     <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
 
                     <div class="status-container-color">
@@ -240,6 +240,8 @@
             contract.Id = ParseGuid(jToken, "id");
             contract.CandidateId = ParseGuid(jToken, "candidateId");
             contract.CustomerId = ParseGuid(jToken, "customerId");
+            contract.CandidateName = ParseString(jToken, "candidateName");
+            contract.CustomerName = ParseString(jToken, "customerName");
             contract.Status = ParseString(jToken, "status");
             contract.StartDate = ParseDateTime(jToken, "startDate");
             contract.EndDate = ParseDateTime(jToken, "endDate");
