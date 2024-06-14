@@ -23,14 +23,9 @@
     <div class="filter-container">
         <div class="filters">
             <div class="search-container">
-                <EditForm Model="contracts" FormName="createCustomerAddressForm">
-                    <DataAnnotationsValidator />
-
-                    <div class="form-group search-field">
-                        <InputText id="name" @bind-Value="tijdelijk" class="form-control" placeholder="Zoeken"></InputText>
-                    </div>
-
-                </EditForm>
+                <div class="form-group search-field" >
+                    <input value="@searchString" @onkeydown="HandleKeyDown" @oninput="UpdateSearchString" id="name" class="form-control" placeholder="Zoeken">
+                </div>
             </div>
 
             <div class="dropdown-container">
@@ -119,7 +114,7 @@
 
 @code {
     public string SelectedCustomerId { get; set; }
-    
+
     private List<Contract> contracts = new List<Contract>();
 
     private int pageSize = 10;
@@ -129,10 +124,8 @@
     private CustomerService _customerService;
     private CandidateService _candidateService;
     private string selectedCustomerId;
-
-
-
-
+    private string searchString;
+    
     private List<Candidate> _candidates = [];
     private List<Customer> _customers = [];
     private List<Customer> _customersInContracts = [];
@@ -180,7 +173,7 @@
         await GetAllCustomers();
         if (string.IsNullOrEmpty(selectedCustomerId))
         {
-            await GetContracts();
+            await GetContracts(".");
         }
     }
     
@@ -194,7 +187,21 @@
             StateHasChanged();
         }
     } 
-
+    
+    private void UpdateSearchString(ChangeEventArgs e)
+    {
+        searchString = e.Value.ToString();
+    }
+    
+    void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            GetContracts(searchString);
+            
+        }
+    }
+    
     private string getCandidateNameById(Guid id){
         var Candidate = _candidates.FirstOrDefault(ut => ut.Id == id);
         return Candidate?.FirstName + " " + Candidate?.LastName ?? "Unknown";
@@ -212,9 +219,9 @@
     }
 
 
-    public async Task<List<Contract>> GetContracts()
+    public async Task<List<Contract>> GetContracts(string searchString)
     {
-        var response = await RequestMakerService.MakeGetRequest("contract/allcontracts");
+        var response = await RequestMakerService.MakeGetRequest($"contract/allcontracts?search={searchString}");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
@@ -223,6 +230,8 @@
         if(contractArray == null){
             return [];
         }
+        
+        contracts.Clear();
 
         foreach (var jToken in contractArray)
         {
