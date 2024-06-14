@@ -9,6 +9,7 @@
 @inject RequestMakerService RequestMakerService
 @inject HttpClient HttpClient
 @inject IJSRuntime JSRuntime
+@inject GetColorService GetColorService;
 
  
 <div class="document-container-background">
@@ -43,8 +44,8 @@
             <div class="documents">
                 <div>@GetUploadTypeName(document.UploadTypeId)</div>
                 <div class="status-container-color">
-                    <select @onchange="(e) => OnStatusChange(e, document)" 
-                            style="background-color: @GetBackgroundColor(document.Status);"
+                    <select @onchange="(e) => OnStatusChange(e, document)"
+                            style="background-color: @GetColorService.GetBackgroundColor(document.Status)"
                             class="custom-select">
                         @foreach(var option in statusOptions){
                             if(@document.Status == option){
@@ -150,19 +151,6 @@
     void ChangePage(int increment)
     {
         currentPage += increment;
-    }
- 
-    private string GetBackgroundColor(string status)
-    {
-        return status switch
-        {
-            "New" => "lightgreen",
-            "Completed" => "#AA77FF",
-            "Wachten op beoordeling" => "#FFFDD0",
-            "Goedgekeurd" => "#3CB371",
-            "Afgekeurd" => "#FF3131",
-            _ => "lightblue"
-        };
     }
 
      private string GetUploadTypeName(Guid uploadTypeId)

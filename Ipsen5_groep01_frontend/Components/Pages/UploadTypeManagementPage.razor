@@ -151,16 +151,6 @@
         await GetAllUploadTypesAsync();
     }
 
-    private string GetBackgroundColor(string status)
-    {
-        return status switch
-        {
-            "New" => "lightgreen",
-            "Completed" => "purple",
-            _ => "lightblue"
-        };
-    }
-
     private void NavigateTouploadtypeDetails(Guid uploadtypeId)
     {
         NavigationManager.NavigateTo($"/uploadtype/{uploadtypeId}");

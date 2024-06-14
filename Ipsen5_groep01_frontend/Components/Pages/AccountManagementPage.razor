@@ -10,6 +10,7 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
+@inject GetColorService GetColorService;
 
 
 <div class="user-container-background">
@@ -222,16 +223,6 @@
         {
             await GetAllUsers();
         }
-    }
-
-    private string GetBackgroundColor(string status)
-    {
-        return status switch
-        {
-            "New" => "lightgreen",
-            "Completed" => "#AA77FF",
-            _ => "lightblue"
-        };
     }
 
     private void NavigateToUserDetails(string userId)

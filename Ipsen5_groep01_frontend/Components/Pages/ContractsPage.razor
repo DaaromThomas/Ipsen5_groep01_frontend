@@ -14,7 +14,7 @@
 @inject AuthService AuthService
 @inject CandidateService CandidateService
 @inject RequestMakerService RequestMakerService
-
+@inject GetColorService GetColorService;
 
 
 
@@ -68,7 +68,7 @@
                     <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
 
                     <div class="status-container-color">
-                        <div class="status" style="background-color: @(GetBackgroundColor(contract.Status));">
+                        <div class="status" style="background-color: @(GetColorService.GetBackgroundColor(contract.Status));">
                             @contract.Status
                         </div>
                     </div>
@@ -223,16 +223,6 @@
             contracts.Add(contract);
         }
         return contracts;
-    }
-
-    private string GetBackgroundColor(string status)
-    {
-        return status switch
-        {
-            "New" => "lightgreen",
-            "Completed" => "#AA77FF",
-            _ => "lightblue"
-        };
     }
 
     private void NavigateToContractDetails(string contractId)

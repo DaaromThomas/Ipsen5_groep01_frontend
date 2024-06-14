@@ -18,6 +18,7 @@
 @inject NotificatieService NotificationService
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
+@inject GetColorService GetColorService;
 
 
 <div class="customer-container-background">
@@ -44,7 +45,7 @@
                     <div>@GetUploadTypeName(@document.UploadTypeId)</div>
                     <div></div>
                     <div>@document.UpdatedBy</div>
-                    <div class="status" style="background-color: @GetBackgroundColor(document.Status)">@document.Status</div>
+                    <div class="status" style="background-color: @GetColorService.GetBackgroundColor(document.Status)">@document.Status</div>
                     @if(document.Status == "New" || document.Status == "Afgekeurd"){
                         <InputFile class="eye_icon" OnChange="@(e => file = e)" @onclick:stopPropagation/>
                         <button class="view_customer" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
@@ -165,36 +166,6 @@
             LoginService.setIsAdmin(false);
             LoginService.setLoggedIn(true);
         }
-    }
-
-    private string GetRowColor(string status)
-    {
-        switch (status)
-        {
-            case "Wachten op beoordeling":
-                return "#C3E6FF"; // Light blue
-            case "Afgekeurd":
-                return "#FFB8B8"; // Light red
-            case "Nog op te leveren":
-                return "#DBDBDB"; // Light gray
-            case "Goedgekeurd":
-                return "#92DD8c"; // Green
-            default:
-                return "white";
-        }
-    }
-
-    private string GetBackgroundColor(string status)
-    {
-        return status switch
-        {
-            "New" => "lightgreen",
-            "Completed" => "#AA77FF",
-            "Wachten op beoordeling" => "#FFFDD0",
-            "Goedgekeurd" => "#3CB371",
-            "Afgekeurd" => "#FF3131",
-            _ => "lightblue"
-        };
     }
 
     public void navigate()
