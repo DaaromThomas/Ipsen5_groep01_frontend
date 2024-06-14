@@ -202,21 +202,10 @@
         }
     }
     
-    private string getCandidateNameById(Guid id){
-        var Candidate = _candidates.FirstOrDefault(ut => ut.Id == id);
-        return Candidate?.FirstName + " " + Candidate?.LastName ?? "Unknown";
-    }
-
     private async Task GetAllCandidatesFromService(){
         _candidates = await this.CandidateService.GetAllCandidates();
     }
-
-    private string getCustomerNameById(Guid id)
-    {
-        var customer = _customers.FirstOrDefault(ut => ut.Id == id);
-
-        return customer?.Name ?? "Unknown";
-    }
+    
 
 
     public async Task<List<Contract>> GetContracts(string searchString)
