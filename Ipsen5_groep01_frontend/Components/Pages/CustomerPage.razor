@@ -17,14 +17,9 @@
     <div class="filter-container">
         <div class="filters">
             <div class="search-container">
-                <EditForm Model="customers" FormName="createCustomerAddressForm">
-                    <DataAnnotationsValidator />
-
-                    <div class="form-group search-field">
-                        <InputText id="name" @bind-Value="valuetijdelijk" class="form-control" placeholder="Zoeken"></InputText>
-                    </div>
-
-                </EditForm>
+                <div class="form-group search-field" >
+                    <input value="@searchString" @onkeydown="HandleKeyDown" @oninput="UpdateSearchString" id="name" class="form-control" placeholder="Zoeken">
+                </div>
             </div>
 
             <div>
@@ -108,6 +103,8 @@
     private string valuetijdelijk = "";
     private void NotifyStateChanged() => OnChange?.Invoke();
     public event Action OnChange;
+    private string searchString;
+
 
     private CustomerService _customerService;
 
@@ -131,7 +128,21 @@
     protected override async Task OnInitializedAsync()
     {
         OnChange += StateHasChanged;
-        await LoadCustomers();
+        await LoadCustomers(".");
+    }
+    
+        private void UpdateSearchString(ChangeEventArgs e)
+    {
+        searchString = e.Value.ToString();
+    }
+    
+    void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            LoadCustomers(searchString);
+            StateHasChanged();
+        }
     }
 
     private void NavigateToCustomerDetails(Guid customerId)
@@ -154,9 +165,9 @@
         currentPage += increment;
     }
 
-    private async Task LoadCustomers()
+    private async Task LoadCustomers(string searchString)
     {
-        customers = await _customerService.GetCustomers();
+        customers = await _customerService.GetCustomers(searchString);
     }
 
     private async Task LoadCustomerById(Guid customerId)
@@ -170,7 +181,7 @@
         customerToDisable.Disabled = true;
         await _customerService.UpdateCustomer(customerToDisable);
         customers.Remove(customerToDisable);
-        await LoadCustomers();
+        await LoadCustomers(".");
         NotifyStateChanged();
     }
 
