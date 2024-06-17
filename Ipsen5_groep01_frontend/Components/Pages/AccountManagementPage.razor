@@ -113,12 +113,7 @@
 
 
     private RequestMakerService _requestMakerService;
-    private CustomerService _customerService;
-    private CandidateService _candidateService;
 
-
-    private List<Candidate> _candidates = [];
-    private List<Customer> _customers = [];
 
 
     public AccountManagementPage()
@@ -137,10 +132,14 @@
 
 
         _requestMakerService = new RequestMakerService(HttpClient);
-        _customerService = new CustomerService(_requestMakerService);
-        _candidateService = new CandidateService(_requestMakerService);
+
 
         base.OnInitialized();
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers(".");
     }
     
     private void UpdateSearchString(ChangeEventArgs e)
@@ -153,7 +152,7 @@
     {
         if (searchString == "")
         {
-            GetAllUsers(".");
+            LoadUsers(".");
         }
     }
     
@@ -161,21 +160,22 @@
     {
         if (e.Key == "Enter")
         {
-            GetAllUsers(searchString);
+            LoadUsers(searchString);
         }
     }
 
-
+    private async Task LoadUsers(string searchString)
+    {
+        users = await GetAllUsers(searchString);
+        StateHasChanged();
+    }
 
 
     private Dictionary<Guid, Customer> customers = new Dictionary<Guid, Customer>();
     private Dictionary<Guid, Candidate> candidates = new Dictionary<Guid, Candidate>();
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        await GetAllUsers(".");
-    }
+
 
 
 
@@ -192,9 +192,8 @@
         if(userArray == null){
             NotificationService.Notify("Er zijn geen accounts geladen.", NotificationType.Error);
         }
-
-
-        users.Clear();
+        
+        // users.Clear();
         foreach (var jToken in userArray)
         {
 
