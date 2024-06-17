@@ -45,8 +45,8 @@
                     <div>@document.UpdatedBy</div>
                     <div class="status" style="background-color: @GetBackgroundColor(document.Status)">@document.Status</div>
                     @if(document.Status == "New" || document.Status == "Afgekeurd"){
-                        <InputFile class="eye_icon" OnChange="@(e => file = e)" @onclick:stopPropagation/>
-                        <button class="view_customer" @onclick="() => UploadFile(document.Id.ToString(), file, candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
+                        <InputFile class="eye_icon" OnChange="HandleFileSelected" @onclick:stopPropagation/>
+                        <button class="view_customer" @onclick="() => OnUploadButtonClick(document.Id.ToString(), candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
                             <img class="eye_icon" src="/icons/upload.png"/>
                         </button>
                     }
@@ -151,7 +151,7 @@
             await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
         }
         else{
-            NotificationService.Notify("No template file available.", NotificationType.Error);
+            NotificationService.Notify("Voor dit document is er geen template", NotificationType.Error);
         }
 
 
@@ -207,27 +207,54 @@
         contractId = "";
     }
 
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {       
+        file = e;
+    }
+
+    private async Task OnUploadButtonClick(string documentId, string candidateId, string contractId, string uploadTypeName, CandidateDocumentModel document)
+{
+    if (file == null)
+    {
+        NotificationService.Notify("Selecteer een bestand om te uploaden", NotificationType.Warning);
+        return;
+    }
+    else{
+        await UploadFile(documentId, file, candidateId, contractId, uploadTypeName, document);
+    }
+    
+}
+
+
     private async Task UploadFile(string documentId, InputFileChangeEventArgs e, string candidateId, string contractId, string uploadTypeName, CandidateDocumentModel document)
     {
         var file = e.File;
+        Console.WriteLine(file);
         if (file == null)
         {
-            Console.WriteLine("No file selected.");
-            return;
+            NotificationService.Notify("Selecteer een bestand om te uploaden", NotificationType.Warning);
         }
 
         using (var memoryStream = new MemoryStream())
         {
-            await file.OpenReadStream().CopyToAsync(memoryStream);
-            memoryStream.Seek(0, SeekOrigin.Begin);
-            var result = await FileUploadService.UploadFileAsync(memoryStream, file.Name, candidateId, contractId, uploadTypeName);
+            
+            try{
+                await file.OpenReadStream().CopyToAsync(memoryStream);
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                var result = await FileUploadService.UploadFileAsync(memoryStream, file.Name, candidateId, contractId, uploadTypeName);
+                NotificationService.Notify($"Het document {uploadTypeName} is geupload", NotificationType.Success);
+                document.Status = "Wachten op beoordeling";
 
-            document.Status = "Wachten op beoordeling";
+                CandidateDocumentModelRequest request = new CandidateDocumentModelRequest();
+                request.CandidateDocumentDto = document;
 
-            CandidateDocumentModelRequest request = new CandidateDocumentModelRequest();
-            request.CandidateDocumentDto = document;
+                await RequestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
 
-            await RequestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
+            }
+            catch(Exception exception){
+                NotificationService.Notify("Het document is niet geupload.", NotificationType.Error);
+            }
+           
         }
 
         

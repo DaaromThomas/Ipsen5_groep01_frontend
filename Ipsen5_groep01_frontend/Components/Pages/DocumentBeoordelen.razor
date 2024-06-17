@@ -7,6 +7,7 @@
 
 @inject ContractService ContractService
 @inject RequestMakerService RequestMakerService
+@inject NotificatieService NotificationService
 @inject HttpClient HttpClient
 @inject IJSRuntime JSRuntime
 
@@ -185,7 +186,13 @@
         }
 
         var downloadUrl = $"https://staffingnowdocuments.blob.core.windows.net/myfiles/{_contract.CustomerId}/{_contract.Id}/{UploadTypeName}/{fileName}";
-        await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
+        if(fileName != "downloaded_file"){
+            await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
+        }
+        else{
+            NotificationService.Notify("Dit document is nog niet geüpload", NotificationType.Error);
+        }
+        
 
     }
 

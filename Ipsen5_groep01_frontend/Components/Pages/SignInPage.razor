@@ -5,7 +5,9 @@
 @inject HttpClient HttpClient
 @inject LoginService LoginService
 @inject AuthService AuthService
+@inject ILocalStorageService _localstorage;
 @inject RequestMakerService RequestMakerService
+@inject NotificatieService NotificationService
 @inject IConfiguration Configuration;
 
 @using Services
@@ -20,6 +22,7 @@
 @using System.Text;
 @using static System.Runtime.InteropServices.JavaScript.JSType;
 @using System.ComponentModel.DataAnnotations;
+@using Blazored.LocalStorage
 @using Microsoft.AspNetCore.Components.Forms;
 @using Ipsen5_groep01_frontend.Models;
 
@@ -45,7 +48,19 @@
                         </div>
                         <div class="form-group">
                             <label>Password:</label>
-                            <InputText id="password" @bind-Value="SignInModel.Password" type="password" class="form-control"></InputText>
+                            <div class="password-input">
+                                <InputText id="password" @bind-Value="SignInModel.Password" type="@GetPasswordInputType()" class="form-control"></InputText>
+                                <button type="button" class="password-toggle-btn" @onclick="TogglePasswordVisibility">
+                                    @if (showPassword)
+                                    {
+                                        <i class="fas fa-eye-slash"></i> <!-- Icon when password is visible -->
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-eye"></i> <!-- Icon when password is hidden -->
+                                    }
+                                </button>
+                            </div>
                             <ValidationMessage For="() => SignInModel.Password"></ValidationMessage>
                         </div>
                     </div>
@@ -75,6 +90,18 @@
     
     private string? role { get; set; }
 
+    private bool showPassword = false;
+
+    private void TogglePasswordVisibility()
+    {
+    showPassword = !showPassword;
+    }
+
+    private string GetPasswordInputType()
+    {
+    return showPassword ? "text" : "password";
+    }
+
     public SignInPage(){
         
     }
@@ -101,14 +128,20 @@
     {
         if (!string.IsNullOrEmpty(SignInModel.Email) && !string.IsNullOrEmpty(SignInModel.Password))
         {
-            var response = await RequestMakerService.MakePostRequest("user/signIn", SignInModel);
 
+            var response = await RequestMakerService.MakePostRequest("user/signIn", SignInModel, "");
+            if (!response.IsSuccessStatusCode){
+            NotificationService.Notify("Je inloggegevens zijn incorrect!", NotificationType.Error);
+            }
+            
             if (response.IsSuccessStatusCode)
             {
                 
                 if (response.Headers.TryGetValues("Authorization", out var tokens))
                 {
                     var Token = tokens.FirstOrDefault().Substring(7);
+                    
+                    _localstorage.SetItemAsync("JWT", Token);
 
                     var handler = new JwtSecurityTokenHandler();
                     var secret = "ThisIsMySecre6546rgfg5464fddzffg546fgtKey123456778";

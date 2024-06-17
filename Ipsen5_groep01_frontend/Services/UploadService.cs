@@ -28,9 +28,9 @@ namespace Ipsen5_groep01_frontend.Services
             }).ToList();
         }
 
-        public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
+        public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync(string isRequired)
         {
-            var response = await _requestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+            var response = await _requestMakerService.MakeGetRequest($"uploadtype/alluploadtypes?required={isRequired}");
             var json = await response.Content.ReadAsStringAsync();
 
             var outerObject = JObject.Parse(json);

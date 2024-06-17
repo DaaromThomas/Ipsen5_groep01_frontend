@@ -14,6 +14,7 @@
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
 @inject RequestMakerService RequestMakerService
+@inject NotificatieService NotificationService
 
 <EditForm Model="UploadTypeModel" OnValidSubmit="CreateUploadTypesAsync" FormName="createUploadType">
     <DataAnnotationsValidator />
@@ -140,11 +141,17 @@
 
 
     public async Task CreateUploadTypesAsync()
-    {
-        foreach (var documentTypeId in selectedDocumentTypeIds)
-        {
-            var documentType = DocumentTypes.FirstOrDefault(dt => dt.Id == documentTypeId);
+    {   
 
+        if(!selectedDocumentTypeIds.Any()){
+            NotificationService.Notify("Vul alles in voor een nieuw document", NotificationType.Warning);
+        }
+        else
+        {
+            foreach (var documentTypeId in selectedDocumentTypeIds)
+            {
+            var documentType = DocumentTypes.FirstOrDefault(dt => dt.Id == documentTypeId);
+            
             if (documentType != null)
             {
                 UploadTypeModel.DocumentType = documentType.Type;
@@ -153,9 +160,12 @@
                         UploadTypeDto = UploadTypeModel
                     };
 
-                await RequestMakerService.MakePostRequest("uploadtype/adduploadtype", request);
+                await RequestMakerService.MakePostRequest("uploadtype/adduploadtype", request, "");
+                this.NavigateToUploadtypePage();
+                }
             }
         }
+    
     }
 
     private void ToggleSelection(Guid id)

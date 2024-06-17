@@ -7,6 +7,10 @@
         public Guid CandidateId { get; set; } 
 
         public Guid CustomerId { get; set; }
+        
+        public string CandidateName { get; set; } 
+
+        public string CustomerName { get; set; }
 
         public string? Status { get; set; }
 
