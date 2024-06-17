@@ -507,6 +507,7 @@
 
         if(uploadTypeArray == null){
          NotificationService.Notify("Er zijn geen documenten beschikbaar", NotificationType.Error);
+         return [];
         }
 
         foreach (var jToken in uploadTypeArray)
