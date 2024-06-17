@@ -10,6 +10,7 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
+@inject NotificatieService NotificationService
 
 
 <div class="user-container-background">
@@ -176,7 +177,12 @@
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
+        Console.WriteLine(outerObject);
         var userArray = outerObject["result"]["userDto"];
+
+        if(userArray == null){
+            NotificationService.Notify("Er zijn geen accounts geladen.", NotificationType.Error);
+        }
 
 
         users.Clear();

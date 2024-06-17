@@ -5,6 +5,7 @@
 @inject LoginService LoginService
 @inject AuthService AuthService
 @inject RequestMakerService RequestMakerService
+@inject NotificatieService NotificationService
 @inject IJSRuntime JSRuntime
 @inject IConfiguration Configuration;
 
@@ -720,6 +721,7 @@
         }
         else
         {
+            NotificationService.Notify("Account niet aangemaakt. Controleer je gegevens", NotificationType.Warning); 
             createCandidateteMessage = true;
             createCandidateteError = true;
 
