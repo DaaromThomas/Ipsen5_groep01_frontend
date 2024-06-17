@@ -2,6 +2,7 @@ using System.Text.Json;
 using Ipsen5_groep01_frontend.Models;
 using Ipsen5_groep01_frontend.Services;
 using Microsoft.AspNetCore.Components;
+using Newtonsoft.Json.Linq;
 
 namespace Ipsen5_groep01_frontend.Services
 {
@@ -86,29 +87,38 @@ namespace Ipsen5_groep01_frontend.Services
                     }
         }
 
-        public async Task getAllContracts(){
-                string endpoint = $"Contract/allcontracts";
-                HttpResponseMessage response = await _requestMakerService.MakeRequest(HttpMethod.Get, endpoint);
-                Console.WriteLine(response);
-                string jsonResponse = await response.Content.ReadAsStringAsync();
+        public async Task<List<Contract>> GetAllContracts(string searchString){
+            var response = await _requestMakerService.MakeGetRequest($"Contract/allContracts?search={searchString}");
+            var json = await response.Content.ReadAsStringAsync();
 
-                
-                if(string.IsNullOrEmpty(jsonResponse)){
-                    Console.WriteLine("Je hebt geen jsonResponse ontvangen");
-                }
+            var outerObject = JObject.Parse(json);
+            var contractArray = outerObject["result"]["contractDto"];
 
-                var options = new JsonSerializerOptions{
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    WriteIndented = true
-                };
+            return contractArray.Select(jToken => ParseContract(jToken)).ToList();
+        }
+        
+        private Contract ParseContract(JToken jToken)
+        {
+            var contract = new Contract
+            {
+                Id = Guid.Parse((string)jToken["id"]),
+                CandidateId = Guid.Parse((string)jToken["candidateId"]),
+                CustomerId = Guid.Parse((string)jToken["customerId"]),
+                CandidateName = (string)jToken["candidateName"],
+                CustomerName = (string)jToken["customerName"],
+                Status = (string)jToken["status"],
+                StartDate = (DateTime)jToken["startDate"],
+                EndDate = (DateTime)jToken["endDate"],
+                PurchaseRate = (double)jToken["purchaseRate"],
+                SellingRate = (double)jToken["sellingRate"],
+                PaymentTerm = (string)jToken["paymentTerm"],
+                FeeParty = (string)jToken["feeParty"],
+                JobDescription = (string)jToken["jobDescription"],
+                Note = (string)jToken["note"],
+                Template = (bool)jToken["template"],
+            };
 
-                var responseWrapper = JsonSerializer.Deserialize<ResponseWrapper>(jsonResponse, options);
-            
-                if (responseWrapper?.Result?.Contracts != null){
-                    Contracts = responseWrapper.Result.Contracts;
-                }
-                Console.WriteLine("Aantal contracten: " + Contracts.Count());
-                Console.WriteLine("Done Getting the contracts");
+            return contract;
         }
     }
 } 
