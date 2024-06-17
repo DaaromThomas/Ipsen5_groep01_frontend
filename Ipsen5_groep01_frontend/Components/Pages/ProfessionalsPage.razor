@@ -122,9 +122,16 @@
     private void UpdateSearchString(ChangeEventArgs e)
     {
         searchString = e.Value.ToString();
+        CheckSearchStringIsEmpty(searchString);
     }
     
-    async void HandleKeyDown(KeyboardEventArgs e)
+    private void CheckSearchStringIsEmpty(string searchString)
+    {
+        if (searchString == "")
+        {
+            LoadCandidates(".");
+        }
+    }
     {
         if (e.Key == "Enter")
         {
