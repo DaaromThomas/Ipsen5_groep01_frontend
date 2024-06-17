@@ -661,48 +661,6 @@ else
     }
     return candidateList;
   }
-  
-  // public async Task<Candidate> GetCandidateById()
-  // { 
-  //   var response = await _requestMakerService.MakeGetRequest($"Candidate/candidatebyid/{SelectedCandidate.Id}");
-  //   var json = await response.Content.ReadAsStringAsync();
-  //
-  //   var outerObject = JObject.Parse(json);
-  //   var contractArray = outerObject["result"]["contractDto"];
-  //   var contract = new Contract();
-  //   
-  //   contract.Id = Guid.Parse((string)contractArray["id"]);
-  //   contract.CandidateId = Guid.Parse((string)contractArray["candidateId"]);
-  //   contract.CustomerId = Guid.Parse((string)contractArray["customerId"]);
-  //   contract.Status = (string)contractArray["status"];
-  //   contract.StartDate = (DateTime)contractArray["startDate"];
-  //   contract.EndDate = (DateTime)contractArray["endDate"];
-  //   contract.PurchaseRate = (double)contractArray["purchaseRate"];
-  //   contract.SellingRate = (double)contractArray["sellingRate"];
-  //   contract.PaymentTerm = (string)contractArray["paymentTerm"];
-  //   contract.FeeParty = (string)contractArray["feeParty"];
-  //   contract.JobDescription = (string)contractArray["jobDescription"];
-  //   contract.Note = (string)contractArray["note"];
-  //   contract.Template = (bool)contractArray["template"];
-  //
-  //   foreach (var jToken in contractArray["candidateDocumentsDto"])
-  //   {
-  //     var candidateDocument= new CandidateDocumentModel();
-  //     candidateDocument.Id = Guid.Parse((string)jToken["id"]);
-  //     candidateDocument.UploadTypeId = Guid.Parse((string)jToken["uploadTypeId"]);
-  //     candidateDocument.ContractId = Guid.Parse((string)jToken["contractId"]);
-  //     candidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
-  //     candidateDocument.Status = (string)jToken["status"];
-  //     candidateDocument.CreatedDate = (DateTime)jToken["createdDate"];
-  //     candidateDocument.UpdatedDate = (DateTime)jToken["updatedDate"];
-  //     candidateDocument.CreatedBy = (string)jToken["createdBy"];
-  //     candidateDocument.UpdatedBy = (string)jToken["updatedBy"];
-  //     
-  //     candidateDocumentsList.Add(candidateDocument);
-  //   }
-  //   contract.CandidateDocumentsDto = candidateDocumentsList;
-  //   return contract;
-  // }
 
   private async Task HandleClick(){
     var contract = await GetContractTemplatesByCustomerId();
