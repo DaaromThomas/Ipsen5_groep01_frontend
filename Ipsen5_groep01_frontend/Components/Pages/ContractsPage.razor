@@ -27,17 +27,6 @@
                     <input value="@searchString" @onkeydown="HandleKeyDown" @oninput="UpdateSearchString" id="name" class="form-control" placeholder="Zoeken">
                 </div>
             </div>
-
-            <div class="dropdown-container">
-                <select class="dropdown-field" @onchange="OnCustomerChange">
-                    <option value="">Selecteer opdrachtgever</option>
-                    @foreach (var customer in _customersInContracts)
-                    {
-                        <option value="@customer.Id">@customer.Name</option>
-                    }
-                </select>
-            </div>
-
         </div>
 
         <div class="new-contract-button-container">
@@ -113,7 +102,6 @@
 
 
 @code {
-    public string SelectedCustomerId { get; set; }
 
     private List<Contract> contracts = new List<Contract>();
 
@@ -285,29 +273,6 @@
     }
     
     
-    public async Task<List<Customer>> GetAllCustomersInContracts()
-    {
-        var response = await RequestMakerService.MakeGetRequest("customer/customers-in-contracts");
-        var json = await response.Content.ReadAsStringAsync();
-
-        var outerObject = JObject.Parse(json);
-        var customerArray = outerObject?["result"]?["customerDto"];
-
-        if(customerArray == null){
-            return [];
-        }
-
-        foreach (var jToken in customerArray)
-        {
-            var customer = new Customer();
-            customer.Id = ParseGuid(jToken, "id");
-            customer.Name = ParseString(jToken, "name");
-
-            _customersInContracts.Add(customer);
-        }
-
-        return _customersInContracts;
-    }
 
     private string GetBackgroundColor(string status)
     {
