@@ -110,8 +110,7 @@
 
     public CustomerPage()
     {
-    	var requestMakerService = new RequestMakerService(new HttpClient());
-        _customerService = new CustomerService(requestMakerService);
+    	_customerService = new CustomerService(new RequestMakerService(new HttpClient()));
     }
 
     protected override void OnInitialized()
@@ -150,7 +149,6 @@
         if (e.Key == "Enter")
         {
             LoadCustomers(searchString);
-            StateHasChanged();
         }
     }
 
@@ -177,6 +175,7 @@
     private async Task LoadCustomers(string searchString)
     {
         customers = await _customerService.GetCustomers(searchString);
+        StateHasChanged();
     }
 
     private async Task LoadCustomerById(Guid customerId)
