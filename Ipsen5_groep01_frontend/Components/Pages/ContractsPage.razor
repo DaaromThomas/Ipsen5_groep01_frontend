@@ -109,15 +109,16 @@
     private int currentPage = 1;
     private int totalPages => (int)Math.Ceiling((double)contracts.Count() / pageSize);
     private string tijdelijk = "";
-    private string selectedCustomerId;
     private string searchString;
     
     private List<Customer> _customers = [];
+    
+    private ContractService _contractService;
 
 
     public ContractsPage()
     {
-        RequestMakerService = new RequestMakerService(new HttpClient());
+        _contractService = new ContractService(new RequestMakerService(new HttpClient()), new JsonKeyConverter());
     }
 
     protected override void OnInitialized()
@@ -135,10 +136,7 @@
     protected override async Task OnInitializedAsync()
     {
         await GetAllCustomers();
-        if (string.IsNullOrEmpty(selectedCustomerId))
-        {
-            await GetContracts(".");
-        }
+        await LoadContracts(".");
     }
     
     private void UpdateSearchString(ChangeEventArgs e)
@@ -159,10 +157,18 @@
     {
         if (e.Key == "Enter")
         {
-            GetContracts(searchString);
-            
+            LoadContracts(searchString);
         }
     }
+    
+    private async Task LoadContracts(string searchString)
+    {
+        
+        // contracts = await GetContracts(searchString);
+        contracts = await _contractService.GetAllContracts(searchString);
+        StateHasChanged();
+    }
+
 
 
     public async Task<List<Contract>> GetContracts(string searchString)
@@ -177,7 +183,7 @@
             return [];
         }
         
-        contracts.Clear();
+        // contracts.Clear();
 
         foreach (var jToken in contractArray)
         {
