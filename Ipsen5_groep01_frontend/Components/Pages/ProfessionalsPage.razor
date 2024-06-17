@@ -95,7 +95,8 @@
     private int pageSize = 9;
     private int currentPage = 1;
     private int totalPages => (int)Math.Ceiling((double)Candidates.Count() / pageSize);
-    private string valuetijdelijk = "";
+    private string searchString;
+
 
     private ProffesionalService _proffesionalService;
 
@@ -115,7 +116,21 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Candidates = await _proffesionalService.GetAllCandidatesAsync();
+        Candidates = await _proffesionalService.GetAllCandidatesAsync(".");
+    }
+    
+    private void UpdateSearchString(ChangeEventArgs e)
+    {
+        searchString = e.Value.ToString();
+    }
+    
+    async void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            Candidates = await _proffesionalService.GetAllCandidatesAsync(searchString);
+            StateHasChanged();
+        }
     }
 
 
