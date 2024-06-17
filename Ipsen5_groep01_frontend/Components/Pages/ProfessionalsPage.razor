@@ -116,7 +116,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Candidates = await _proffesionalService.GetAllCandidatesAsync(".");
+        await LoadCandidates(".");
     }
     
     private void UpdateSearchString(ChangeEventArgs e)
@@ -132,12 +132,20 @@
             LoadCandidates(".");
         }
     }
+    
+    void HandleKeyDown(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
         {
-            Candidates = await _proffesionalService.GetAllCandidatesAsync(searchString);
-            StateHasChanged();
+            LoadCandidates(searchString);
         }
+    }
+    
+    private async Task LoadCandidates(string searchString)
+    {
+        
+        Candidates = await _proffesionalService.GetAllCandidatesAsync(searchString);
+        StateHasChanged();
     }
 
 
