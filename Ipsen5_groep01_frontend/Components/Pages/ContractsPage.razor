@@ -144,6 +144,15 @@
     private void UpdateSearchString(ChangeEventArgs e)
     {
         searchString = e.Value.ToString();
+        CheckSearchStringIsEmpty(searchString);
+    }
+    
+    private void CheckSearchStringIsEmpty(string searchString)
+    {
+        if (searchString == "")
+        {
+            LoadContracts(".");
+        }
     }
     
     void HandleKeyDown(KeyboardEventArgs e)
