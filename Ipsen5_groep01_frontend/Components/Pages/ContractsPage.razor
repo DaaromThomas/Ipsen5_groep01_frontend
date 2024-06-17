@@ -165,17 +165,6 @@
         }
     }
     
-    
-    private async Task OnCustomerChange(ChangeEventArgs e)
-    {
-        if (e.Value != null)
-        {
-            selectedCustomerId = e.Value.ToString();
-            await GetContractByCustomerId(selectedCustomerId);
-            StateHasChanged();
-        }
-    } 
-    
     private void UpdateSearchString(ChangeEventArgs e)
     {
         searchString = e.Value.ToString();
@@ -219,43 +208,6 @@
             contract.CustomerId = ParseGuid(jToken, "customerId");
             contract.CandidateName = ParseString(jToken, "candidateName");
             contract.CustomerName = ParseString(jToken, "customerName");
-            contract.Status = ParseString(jToken, "status");
-            contract.StartDate = ParseDateTime(jToken, "startDate");
-            contract.EndDate = ParseDateTime(jToken, "endDate");
-            contract.PurchaseRate = ParseDouble(jToken, "purchaseRate");
-            contract.SellingRate = ParseDouble(jToken, "sellingRate");
-            contract.PaymentTerm = ParseString(jToken, "paymentTerm");
-            contract.FeeParty = ParseString(jToken, "feeParty");
-            contract.JobDescription = ParseString(jToken, "jobDescription");
-            contract.Note = ParseString(jToken, "note");
-            contract.Template = ParseBool(jToken, "template");
-
-            contracts.Add(contract);
-        }
-        return contracts;
-    }
-    
-    public async Task<List<Contract>> GetContractByCustomerId(string customerId)
-    {
-        var response = await RequestMakerService.MakeGetRequest($"contract/contract-by-customer-id/{customerId}");
-        var json = await response.Content.ReadAsStringAsync();
-
-        var outerObject = JObject.Parse(json);
-        var contractArray = outerObject?["result"]?["contracts"];
-
-        if(contractArray == null){
-            return [];
-        }
-        
-        contracts.Clear();
-
-
-        foreach (var jToken in contractArray)
-        {
-            var contract = new Contract();
-            contract.Id = ParseGuid(jToken, "id");
-            contract.CandidateId = ParseGuid(jToken, "candidateId");
-            contract.CustomerId = ParseGuid(jToken, "customerId");
             contract.Status = ParseString(jToken, "status");
             contract.StartDate = ParseDateTime(jToken, "startDate");
             contract.EndDate = ParseDateTime(jToken, "endDate");
