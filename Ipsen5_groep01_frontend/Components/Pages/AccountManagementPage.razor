@@ -52,13 +52,7 @@
                     <div>@user.Email</div>
                     <div></div>
                     <div></div>
-                    <button class="view_user" @onclick="() => NavigateToUserDetails(user.Id.ToString())">
-                        <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
-                    </button>
-                    <button class="edit_user">
-                        <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
-                    </button>
-                    @if(user.IsActive)
+                    @if(user.IsActive)  
                     {
                         <button class="delete_user" @onclick="() => DisableUser(user.Id.ToString())">
                             <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
@@ -113,16 +107,12 @@
 
 
     private RequestMakerService _requestMakerService;
-    private CustomerService _customerService;
-    private CandidateService _candidateService;
-
-
-    private List<Candidate> _candidates = [];
-    private List<Customer> _customers = [];
+    private UserService _userService;
 
 
     public AccountManagementPage()
     {
+        _userService = new UserService(new RequestMakerService(new HttpClient()));
 
     }
     
@@ -137,36 +127,50 @@
 
 
         _requestMakerService = new RequestMakerService(HttpClient);
-        _customerService = new CustomerService(_requestMakerService);
-        _candidateService = new CandidateService(_requestMakerService);
+
 
         base.OnInitialized();
+    }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers(".");
     }
     
     private void UpdateSearchString(ChangeEventArgs e)
     {
         searchString = e.Value.ToString();
+        CheckSearchStringIsEmpty(searchString);
+    }
+    
+    private void CheckSearchStringIsEmpty(string searchString)
+    {
+        if (searchString == "")
+        {
+            LoadUsers(".");
+        }
     }
     
     void HandleKeyDown(KeyboardEventArgs e)
     {
         if (e.Key == "Enter")
         {
-            GetAllUsers(searchString);
+            LoadUsers(searchString);
         }
     }
 
-
+    private async Task LoadUsers(string searchString)
+    {
+        users = await _userService.GetAllUsers(searchString);
+        StateHasChanged();
+    }
 
 
     private Dictionary<Guid, Customer> customers = new Dictionary<Guid, Customer>();
     private Dictionary<Guid, Candidate> candidates = new Dictionary<Guid, Candidate>();
 
 
-    protected override async Task OnInitializedAsync()
-    {
-        await GetAllUsers(".");
-    }
+
 
 
 
@@ -183,9 +187,8 @@
         if(userArray == null){
             NotificationService.Notify("Er zijn geen accounts geladen.", NotificationType.Error);
         }
-
-
-        users.Clear();
+        
+        // users.Clear();
         foreach (var jToken in userArray)
         {
 
@@ -206,7 +209,7 @@
         var response = await _requestMakerService.MakePutRequest($"user/disable/{id}", "");
         if (response.IsSuccessStatusCode)
         {
-            await GetAllUsers(".");
+            await LoadUsers(".");
         }
     }
 
@@ -215,7 +218,7 @@
         var response = await _requestMakerService.MakePutRequest($"user/enable/{id}", "");
         if (response.IsSuccessStatusCode)
         {
-            await GetAllUsers(".");
+            await LoadUsers(".");
         }
     }
 
