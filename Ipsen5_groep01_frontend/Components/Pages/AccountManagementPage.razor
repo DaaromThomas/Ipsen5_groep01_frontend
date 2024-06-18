@@ -52,13 +52,7 @@
                     <div>@user.Email</div>
                     <div></div>
                     <div></div>
-                    <button class="view_user" @onclick="() => NavigateToUserDetails(user.Id.ToString())">
-                        <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
-                    </button>
-                    <button class="edit_user">
-                        <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
-                    </button>
-                    @if(user.IsActive)
+                    @if(user.IsActive)  
                     {
                         <button class="delete_user" @onclick="() => DisableUser(user.Id.ToString())">
                             <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
