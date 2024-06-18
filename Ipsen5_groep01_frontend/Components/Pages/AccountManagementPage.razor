@@ -113,11 +113,12 @@
 
 
     private RequestMakerService _requestMakerService;
-
+    private UserService _userService;
 
 
     public AccountManagementPage()
     {
+        _userService = new UserService(new RequestMakerService(new HttpClient()));
 
     }
     
@@ -166,7 +167,7 @@
 
     private async Task LoadUsers(string searchString)
     {
-        users = await GetAllUsers(searchString);
+        users = await _userService.GetAllUsers(searchString);
         StateHasChanged();
     }
 
@@ -214,7 +215,7 @@
         var response = await _requestMakerService.MakePutRequest($"user/disable/{id}", "");
         if (response.IsSuccessStatusCode)
         {
-            await GetAllUsers(".");
+            await LoadUsers(".");
         }
     }
 
@@ -223,7 +224,7 @@
         var response = await _requestMakerService.MakePutRequest($"user/enable/{id}", "");
         if (response.IsSuccessStatusCode)
         {
-            await GetAllUsers(".");
+            await LoadUsers(".");
         }
     }
 
