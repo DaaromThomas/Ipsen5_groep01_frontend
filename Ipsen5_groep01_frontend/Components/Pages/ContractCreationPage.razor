@@ -493,8 +493,8 @@ else
 
   protected override async Task OnInitializedAsync()
   {
-    await GetAllCustomersAsync();
-    await GetAllCandidatesAsync();
+    await GetAllCustomersAsync(".");
+    await GetAllCandidatesAsync(".");
   }
   
   private void OnCustomerChanged(ChangeEventArgs e)
@@ -539,9 +539,9 @@ else
     }
   }
   
-  public async Task<List<Customer>> GetAllCustomersAsync()
+  public async Task<List<Customer>> GetAllCustomersAsync(string searchString)
   {
-    var response = await _requestMakerService.MakeGetRequest("customer/allcustomers");
+    var response = await _requestMakerService.MakeGetRequest($"customer/allcustomers?search={searchString}");
     var json = await response.Content.ReadAsStringAsync();
 
     var outerObject = JObject.Parse(json);
@@ -620,7 +620,7 @@ else
       candidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
       candidateDocument.Status = "New"; 
       candidateDocument.CreatedDate = ParseDateTime(jToken, "createdDate");
-      candidateDocument.UpdatedDate = ParseDateTime(jToken, "updatedDate");
+      candidateDocument.UpdatedDate = new DateTime(1, 1, 1);
       candidateDocument.CreatedBy = ParseString(jToken, "createdBy");
       candidateDocument.UpdatedBy = ParseString(jToken, "updatedBy");
        
@@ -633,9 +633,9 @@ else
     return contract;
   }
     
-  public async Task<List<Candidate>> GetAllCandidatesAsync()
+  public async Task<List<Candidate>> GetAllCandidatesAsync(string searchString)
   {
-    var response = await _requestMakerService.MakeGetRequest("Candidate/allcandidates");
+    var response = await _requestMakerService.MakeGetRequest($"Candidate/allcandidates?search={searchString}");
     var json = await response.Content.ReadAsStringAsync();
 
     var outerObject = JObject.Parse(json);

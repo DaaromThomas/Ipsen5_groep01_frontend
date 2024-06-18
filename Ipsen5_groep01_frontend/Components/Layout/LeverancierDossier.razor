@@ -47,10 +47,10 @@
             <div class="header-title">Acties</div>
         </div>
        
-        @foreach (var contract in ContractService.Contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
+        @foreach (var contract in _contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
         {
             <div class="customers" @onclick="()=>navigate(contract.CandidateId, contract.Id)">
-                <div>@contract.Id</div>
+                <div>@getContractNameById(@contract.Id)</div>
                 <div>@GetCandidateNameById(@contract.CandidateId)</div>
                 <div>@contract.JobDescription</div>
                 <div>@contract.Status</div>
@@ -94,15 +94,24 @@
     private int pageSize = 10;
     private int currentPage = 1;
     private List<Candidate> _candidates = [];
+    private List<Contract> _contracts = [];
 
     [Parameter]
     public required string candidateId {get; set;}
     
     protected override async Task OnInitializedAsync()
     {
+        await ContractService.GetAllContracts(".");
+        _contracts = ContractService.Contracts;
 
         await getContract();
         await GetAllCandidatesFromService();
+        
+    }
+
+    private string getContractNameById(Guid id){
+        var Contract = _contracts.FirstOrDefault(ut => ut.Id == id);
+        return Contract.JobDescription;
     }
 
     public async Task getContract(){
@@ -110,7 +119,7 @@
     }
 
      private async Task GetAllCandidatesFromService(){
-        _candidates = await this.CandidateService.GetAllCandidates();
+        _candidates = await this.CandidateService.GetAllCandidates(".");
     }
 
      public string GetCandidateNameById(Guid id){

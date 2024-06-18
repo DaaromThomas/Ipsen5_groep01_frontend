@@ -483,7 +483,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await GetUploadTypesAsync();
+        await GetUploadTypesAsync(true);
+        await GetUploadTypesAsync(false);
     }
 
     public async Task UploadDocument(InputFileChangeEventArgs e, string uploadTypeName){
@@ -497,9 +498,9 @@
 
     }
 
-    public async Task<List<UploadTypeModel>> GetUploadTypesAsync()
+    public async Task<List<UploadTypeModel>> GetUploadTypesAsync(bool required)
     {
-        var response = await RequestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var response = await RequestMakerService.MakeGetRequest($"uploadtype/alluploadtypes?required={required}");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);

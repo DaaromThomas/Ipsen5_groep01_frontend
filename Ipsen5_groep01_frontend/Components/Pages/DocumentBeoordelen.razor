@@ -14,23 +14,6 @@
  
 <div class="document-container-background">
     <div class="page-title">Document beoordelen</div>
-    <div class="filter-container">
-        <div class="filters">
-            <div class="search-container">
-               
-            </div>
- 
-            <div class="dropdown-container">
-                <select class="dropdown-field">
-                    <option value="">Selecteer filter</option>
-                    <option value="option1">Optie 1</option>
-                    <option value="option2">Optie 2</option>
-                    <option value="option3">Optie 3</option>
-                </select>
-            </div>
-        </div>
-    </div>
- 
  
     <div class="document-container">
         <div class="document-header">
@@ -141,11 +124,13 @@
     protected override async Task OnInitializedAsync()
     {
         await getCandidateDocumentByContractId(contractId);
-        await GetAllUploadTypesAsync();
+        await GetAllUploadTypesAsync(true);
+        await GetAllUploadTypesAsync(false);
+        Console.WriteLine(_documents.Count);
     }
  
     private async Task getCandidateDocumentByContractId(string contractId){
-        await GetContracts();
+        await GetContracts(".");
     }
  
     void ChangePage(int increment)
@@ -168,6 +153,7 @@
 
      private string GetUploadTypeName(Guid uploadTypeId)
     {
+        Console.WriteLine(uploadTypeId);
         var uploadType = _uploadTypes.FirstOrDefault(ut => ut.Id == uploadTypeId);
         return uploadType?.Type ?? "Unknown";
     }
@@ -246,11 +232,11 @@
         }
     }
 
-    public async Task<List<Contract>> GetContracts()
+    public async Task<List<Contract>> GetContracts(string searchString)
     {
         try
         {
-            var response = await RequestMakerService.MakeGetRequest("contract/allcontracts");
+            var response = await RequestMakerService.MakeGetRequest($"contract/allcontracts?search={searchString}");
             var json = await response.Content.ReadAsStringAsync();
 
             var outerObject = JObject.Parse(json);
@@ -304,9 +290,9 @@
         return _contracts;
     }
 
-    public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
+    public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync(bool required)
     {
-        var response = await RequestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var response = await RequestMakerService.MakeGetRequest($"uploadtype/alluploadtypes?required={required}");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
