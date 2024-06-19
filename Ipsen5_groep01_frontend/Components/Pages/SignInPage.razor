@@ -49,7 +49,7 @@
                         <div class="form-group">
                             <label>Password:</label>
                             <div class="password-input">
-                                <InputText id="password" @bind-Value="SignInModel.Password" type="@GetPasswordInputType()" class="form-control password"></InputText>
+                                <InputText id="input-password" @bind-Value="SignInModel.Password" type="@GetPasswordInputType()" class="form-control"></InputText>
                                 <button type="button" class="password-toggle-btn" @onclick="TogglePasswordVisibility">
                                     @if (showPassword)
                                     {
@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <div>
-                        <button type="submit" class="login-button">INLOGGEN</button>
+                        <button  id="login-submit" type="submit" class="login-button">INLOGGEN</button>
                     </div>
                 </EditForm>
             </div>
