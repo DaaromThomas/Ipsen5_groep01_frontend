@@ -1,13 +1,21 @@
-describe('Update contract note', () => {
-    it('should_navigate_to_contract_details_and_update_contract_note', () => {
+describe('Contract Details Navigation Test', () => {
+    it('should_navigate_to_contract_details_and_approve_document', () => {
       login("admin@admin.com", "Admin@123", "http://localhost:5246/signIn");
       cy.get('[data-testid="contract-item"]').first().within(() => {
         cy.get('[data-testid="view-contract-button"]').click();
       });
 
-      cy.get('#contractNote').clear().type('Dit is een testopmerking.');
-      cy.get('.save-note-button').click();
-      cy.get('#contractNote').should('have.value', 'Dit is een testopmerking.');
+      cy.get('.button.ok-button').should('be.visible').click();
+
+    });
+
+    it('should_navigate_to_contract_details_and_disapprove_document', () => {
+      login("admin@admin.com", "Admin@123", "http://localhost:5246/signIn");
+      cy.get('[data-testid="contract-item"]').first().within(() => {
+        cy.get('[data-testid="view-contract-button"]').click();
+      });
+
+      cy.get('.button.no-button').should('be.visible').click();
 
     });
   });

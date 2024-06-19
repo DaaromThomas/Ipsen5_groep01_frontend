@@ -9,14 +9,14 @@ describe('Sign In And Register Test', () => {
   it('should_register_and_login_correct', () => {
     const expectedUrlPattern = /http:\/\/localhost:5246\/LeverancierDossierScherm\/[a-f0-9\-]+/;
 
-    var email = "thomas.pijper@gmail.com";
+    var email = "thomas.pijper2@gmail.com";
     var password = "Admin@123";
     var User =
     {
         "User": {
             "FirstName": "Thomas",
             "LastName": "Pijper",
-            "Email": "thomas.pijper2@gmail.com",
+            "Email": email,
             "Password": password,
             "ConfirmPassword": password,
             "Kvk": "9823749987",
