@@ -63,7 +63,7 @@
                         <div>
                             <div class="input-title">Bedrijfsnaam</div>
                             <div>
-                                <input class="input-field" placeholder="StaffingNow" @bind="@CustomerModel.Name" />
+                                <input id="name" class="input-field" placeholder="StaffingNow" @bind="@CustomerModel.Name" />
                                 <ValidationMessage For="() => CustomerModel.Name"></ValidationMessage>
                             </div>
                         </div>
@@ -184,7 +184,7 @@
                         <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
                             Vorige
                         </button>
-                        <button type="submit" class="next-button" @onclick="GoToNextStep">
+                        <button type="submit" id="next" class="next-button" @onclick="GoToNextStep">
                             Volgende
                         </button>
                     </div>
@@ -238,7 +238,7 @@
                 <button class="previous-button" @onclick="GoToPreviousStep">
                     Vorige
                 </button>
-                <button class="next-button" @onclick="GoToNextStep">
+                <button class="next-button" id="next" @onclick="GoToNextStep">
                     Volgende
                 </button>
             </div>
@@ -356,7 +356,7 @@
                 <button class="previous-button" @onclick="GoToPreviousStep">
                     Vorige
                 </button>
-                <button class="next-button" @onclick="SubmitForms">
+                <button class="next-button" id="next" @onclick="SubmitForms">
                     Opslaan
                 </button>
             </div>
