@@ -1,5 +1,5 @@
 describe('template spec', () => {
-    it('view customer config', () => {
+    it('Should_edit_customerconfig', () => {
         cy.visit('https://localhost:7021/signIn')
 
         cy.url().should('include', '/signIn')
