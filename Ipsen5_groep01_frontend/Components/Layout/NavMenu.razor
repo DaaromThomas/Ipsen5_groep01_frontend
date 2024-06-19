@@ -108,7 +108,7 @@
 
     protected override async void OnInitialized()
     {
-        if (!isPageInitialized)
+        @* if (!isPageInitialized)
         {
             isPageInitialized = true;
             await Task.Delay(100);
@@ -117,7 +117,7 @@
             {
                 NavigationManager.NavigateTo("/");
             }
-        }
+        } *@
     }
 
     protected override void OnAfterRender(bool firstRender)
