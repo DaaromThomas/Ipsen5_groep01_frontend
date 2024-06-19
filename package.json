@@ -1,4 +1,7 @@
 {
+
+ 
+
   "name": "ipsen5_groep01_frontend",
   "version": "1.0.0",
   "description": "",
@@ -10,5 +13,6 @@
   "license": "ISC",
   "devDependencies": {
     "cypress": "^13.12.0"
+
   }
 }
