@@ -9,7 +9,6 @@ namespace Ipsen5_groep01_frontend.Services
     public class UserService
     {
         private readonly RequestMakerService _requestMakerService;
-
         public List<Contract> Contracts { get; private set; }
   
         public UserService(RequestMakerService requestMakerService)
@@ -23,10 +22,29 @@ namespace Ipsen5_groep01_frontend.Services
             var json = await response.Content.ReadAsStringAsync();
 
             var outerObject = JObject.Parse(json);
-            var userArray = outerObject["result"]["userDto"];
+            var userArray = outerObject?["result"]?["userDto"];
+
+            if(userArray == null){
+                return [];
+            }
 
             return userArray.Select(jToken => ParseUser(jToken)).ToList();
         }
+
+        public async Task<List<User>> GetAllAdmins(string searchString){
+            var response = await _requestMakerService.MakeGetRequest($"user/getalladmins?search={searchString}");
+            var json = await response.Content.ReadAsStringAsync();
+
+            var outerObject = JObject.Parse(json);
+            var userArray = outerObject?["result"]?["userDto"];
+
+            if(userArray == null){
+                return [];
+            }
+
+            return userArray.Select(jToken => ParseUser(jToken)).ToList();
+        }
+        
         
         private User ParseUser(JToken jToken)
         {

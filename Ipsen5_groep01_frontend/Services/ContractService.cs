@@ -93,7 +93,7 @@ namespace Ipsen5_groep01_frontend.Services
 
             var outerObject = JObject.Parse(json);
             var contractArray = outerObject["result"]["contractDto"];
-
+            Contracts = [];
             return contractArray.Select(jToken => ParseContract(jToken)).ToList();
         }
         
@@ -117,7 +117,7 @@ namespace Ipsen5_groep01_frontend.Services
                 Note = (string)jToken["note"],
                 Template = (bool)jToken["template"],
             };
-
+            Contracts.Add(contract);
             return contract;
         }
     }

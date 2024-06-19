@@ -161,48 +161,13 @@
 
     private async Task LoadUsers(string searchString)
     {
-        users = await _userService.GetAllUsers(searchString);
+        users = await _userService.GetAllAdmins(searchString);
         StateHasChanged();
     }
 
 
     private Dictionary<Guid, Customer> customers = new Dictionary<Guid, Customer>();
     private Dictionary<Guid, Candidate> candidates = new Dictionary<Guid, Candidate>();
-
-
-
-
-
-
-
-    public async Task<List<User>> GetAllUsers(string searchString)
-    {
-        var response = await _requestMakerService.MakeGetRequest($"user/getallusers?search={searchString}");
-        var json = await response.Content.ReadAsStringAsync();
-
-        var outerObject = JObject.Parse(json);
-        Console.WriteLine(outerObject);
-        var userArray = outerObject["result"]["userDto"];
-
-        if(userArray == null){
-            NotificationService.Notify("Er zijn geen accounts geladen.", NotificationType.Error);
-        }
-        
-        // users.Clear();
-        foreach (var jToken in userArray)
-        {
-
-            var user = new User();
-            user.Id = Guid.Parse((string)jToken["id"]);
-            user.FirstName = (string)jToken["firstName"];
-            user.LastName = (string)jToken["lastName"];
-            user.Email = (string)jToken["email"];
-            user.IsActive = (bool)jToken["isActive"];
-            
-            users.Add(user);
-        }
-        return users;
-    }
     
     private async Task DisableUser(string id)
     {

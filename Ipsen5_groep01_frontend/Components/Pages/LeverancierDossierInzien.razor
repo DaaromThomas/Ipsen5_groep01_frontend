@@ -23,15 +23,14 @@
 <div class="button-container">
         <button class="navigate-button" @onclick="()=>navigate()">Terug</button>
     </div>
-    <div class="page-title">@contractId</div>
+    <div class="page-title">@_contract.JobDescription</div>
     <div class="customer-container">
         <div class="customer-header">
             <div class="header-title">Naam</div>
             <div class="header-title"></div>
             <div class="header-title">Geupload op</div>
             <div class="header-title">Status</div>
-            <div class="header-title">Kies Bestand</div>
-            <div class="header-title">Uploaden</div>
+            <div class="header-title">Upload Bestand</div>
             <div class="header-title">Template</div>
         </div>
 
@@ -42,14 +41,19 @@
                 <div class="customers">
                     <div>@GetUploadTypeName(@document.UploadTypeId)</div>
                     <div></div>
-                    <div>@document.UpdatedBy</div>
+                    <div>@if(document.UpdatedDate.ToString() == "1-1-0001 00:00:00"){
+                        <p>--</p>
+                        } else {
+                            @document.UpdatedDate
+                        }
+                    </div>
                     <div class="status" style="background-color: @GetBackgroundColor(document.Status)">@document.Status</div>
-                    @if(document.Status == "New" || document.Status == "Afgekeurd"){
+                    <div class="uploadclass">@if(document.Status == "New" || document.Status == "Afgekeurd"){
                         <InputFile class="eye_icon" OnChange="HandleFileSelected" @onclick:stopPropagation/>
                         <button class="view_customer" @onclick="() => OnUploadButtonClick(document.Id.ToString(), candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
                             <img class="eye_icon" src="/icons/upload.png"/>
                         </button>
-                    }
+                    }</div>
                     <img class="edit_icon" src="/icons/download.png" alt="Bewerk" @onclick="() => DownloadDocument(GetUploadTypeName(document.UploadTypeId))"/>
                 </div>
 
@@ -106,8 +110,9 @@
     {
         await LoadContracts();
         await LoadDocuments();
-        await GetAllUploadTypesAsync();
-        
+        await GetAllUploadTypesAsync(true);
+        await GetAllUploadTypesAsync(false);
+
     }
 
     private string GetUploadTypeName(Guid uploadTypeId)
@@ -117,6 +122,18 @@
     }
 
     private async Task LoadContracts(){
+    }
+
+    private async Task UpdateDocumentStatus(CandidateDocumentModel document){
+        CandidateDocumentModelRequest request = new CandidateDocumentModelRequest();
+        request.CandidateDocumentDto = document;
+
+        request.CandidateDocumentDto.UpdatedDate = DateTime.Now;
+
+        if (RequestMakerService != null)
+        {
+            await RequestMakerService.MakePatchRequest("CandidateDocument/updateDocumentUpdatedTime", request);
+        }
     }
 
     private async Task LoadDocuments()
@@ -249,7 +266,7 @@
                 request.CandidateDocumentDto = document;
 
                 await RequestMakerService.MakePatchRequest("CandidateDocument/updateDocumentStatus", request);
-
+                await UpdateDocumentStatus(document);
             }
             catch(Exception exception){
                 NotificationService.Notify("Het document is niet geupload.", NotificationType.Error);
@@ -262,9 +279,9 @@
 
 
 
-    public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync()
+    public async Task<List<UploadTypeModel>> GetAllUploadTypesAsync(bool required)
     {
-        var response = await RequestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var response = await RequestMakerService.MakeGetRequest($"uploadtype/alluploadtypes?required={required}");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
