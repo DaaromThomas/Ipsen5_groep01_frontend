@@ -106,19 +106,6 @@
     private bool loggedIn = false;
     private string role = "";
 
-    protected override async void OnInitialized()
-    {
-        @* if (!isPageInitialized)
-        {
-            isPageInitialized = true;
-            await Task.Delay(100);
-
-            if (!AuthService.IsLoggedIn || AuthService.Role != "Admin" || AuthService.Role == null || AuthService.Role == "")
-            {
-                NavigationManager.NavigateTo("/");
-            }
-        } *@
-    }
 
     protected override void OnAfterRender(bool firstRender)
     {
