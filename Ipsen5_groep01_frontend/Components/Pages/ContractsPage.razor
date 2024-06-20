@@ -163,8 +163,7 @@
     
     private async Task LoadContracts(string searchString)
     {
-        
-        // contracts = await GetContracts(searchString);
+       
         contracts = await _contractService.GetAllContracts(searchString);
         StateHasChanged();
     }
@@ -183,7 +182,7 @@
             return [];
         }
         
-        // contracts.Clear();
+     
 
         foreach (var jToken in contractArray)
         {

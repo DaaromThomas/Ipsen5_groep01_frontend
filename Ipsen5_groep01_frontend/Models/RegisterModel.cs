@@ -8,19 +8,13 @@ namespace Ipsen5_groep01_frontend.Models
         public Guid Id { get; set; }
         public int CurrentStep { get; set; }
 
-
-        //[StepRequired(2, ErrorMessage = "Voornaam is verplicht")]
         public string FirstName { get; set; }
 
-        //[StepRequired(2, ErrorMessage = "Achternaam is verplicht")]
         public string LastName { get; set; }
 
-
-        //[StepRequired(1, ErrorMessage = "Bevestig wachtwoord is verplicht")]
         [Compare("Password", ErrorMessage = "Wachtwoorden komen niet overeen")]
         public string ConfirmPassword { get; set; }
 
-        //[StepRequired(1, ErrorMessage = "Wachtwoord is verplicht")]
         [RegularExpression(@"^(?=.*[A-Z])(?=.*\d{3,})(?=.*[^a-zA-Z\d]).{9,}$",
         ErrorMessage = "Wachtwoord moet minimaal 5 letters waarvan 1 hoofdletter, 1 teken en 3 cijfers bevatten.")]
         public string Password { get; set; }

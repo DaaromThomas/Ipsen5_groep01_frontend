@@ -511,15 +511,11 @@ else if (currentStep == 3)
     var selectedCustomer = customerList.FirstOrDefault(c => c.Id == customerId);
     if (selectedCustomer != null)
     {
-      // Handle the selected customer
       SelectedCustomer = selectedCustomer;
     }
   }
   
-  // private List<string> FilteredItems => 
-  // string.IsNullOrEmpty(searchTerm) 
-  // ? customerList 
-  // : customerList.FindAll(item => item.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+ 
   
   private void OnCandidateChanged(ChangeEventArgs e)
   {

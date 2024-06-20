@@ -591,7 +591,7 @@
 
     private async Task SubmitForms()
     {
-        // await CreateCustomerAsync();
+
         await UpdateCustomerTemplateAsync();
         NavigationManager.NavigateTo("/customer");
     }
@@ -644,7 +644,7 @@
                         await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
                     }
                     await JSRuntime.InvokeVoidAsync("scrollToTop");
-                    // FadeToRight.Run();
+                    
                 }
 
             }

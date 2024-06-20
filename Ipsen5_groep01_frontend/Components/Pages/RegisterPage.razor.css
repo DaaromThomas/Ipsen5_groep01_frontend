@@ -30,8 +30,7 @@
 .wizard-container {
     display: flex;
     height: 17vmin;
-    align-items: center;/*
-    justify-content: center;*/
+    align-items: center;
     border: solid;
     border: 0vmin;
     border: none;

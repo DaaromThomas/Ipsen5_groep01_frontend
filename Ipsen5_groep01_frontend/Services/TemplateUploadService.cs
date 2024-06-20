@@ -21,7 +21,7 @@ namespace Ipsen5_groep01_frontend.Services{
             {
                 try
                 {
-                    // await _uploadDocument(document);
+                    
                 }
                 finally
                 {

@@ -768,8 +768,7 @@
 
     private async Task GoToNextStep()
     {
-        var isValid = ValidatePasswordFields(); // Validatie van de wachtwoordvelden
-        if (isValid)
+        var isValid = ValidatePasswordFields(); 
         {
             currentStep++;
             registerModel.CurrentStep = currentStep;
