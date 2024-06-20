@@ -10,6 +10,7 @@
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject AuthService AuthService
+@inject GetColorService GetColorService;
 @inject NotificatieService NotificationService
 
 
@@ -186,8 +187,6 @@
             await LoadUsers(".");
         }
     }
-
-
 
     private void NavigateToUserDetails(string userId)
     {

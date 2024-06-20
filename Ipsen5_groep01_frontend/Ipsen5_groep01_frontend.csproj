@@ -36,6 +36,8 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.4" />
+      <PackageReference Include="NUnit" Version="4.1.0" />
+      <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
     </ItemGroup>
 
 </Project>

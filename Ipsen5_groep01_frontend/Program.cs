@@ -31,6 +31,7 @@ builder.Services.AddSingleton<FileUploadService>();
 builder.Services.AddSingleton<CandidateService>();
 builder.Services.AddSingleton<TemplateUploadService>();
 builder.Services.AddSingleton<NotificatieService>();
+builder.Services.AddSingleton<GetColorService>();
  
  
 var app = builder.Build();
