@@ -26,13 +26,11 @@ namespace Ipsen5_groep01_frontend.Services
         {
             string endpoint = $"Contract/contractbycandidateid/{candidateId}";
             HttpResponseMessage response = await _requestMakerService.MakeRequest(HttpMethod.Get, endpoint);
-            Console.WriteLine(response);
+
             string jsonResponse = await response.Content.ReadAsStringAsync();
-            Console.WriteLine(jsonResponse);
+        
             
-            if(string.IsNullOrEmpty(jsonResponse)){
-                Console.WriteLine("Je hebt geen jsonResponse ontvangen");
-            }
+          
 
             var options = new JsonSerializerOptions{
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -65,25 +63,13 @@ namespace Ipsen5_groep01_frontend.Services
                         }
 
                         if (Contracts.Count == 0){
-                            Console.WriteLine("Je hebt geen contracten ontvangen");
+                            
                         }
-                        else
-                        {
-                            foreach(var contract in Contracts){
-                                Console.WriteLine($"Contract id: {contract.Id}");
-                                if (contract.CandidateDocumentsDto != null){
-                                    foreach(var candidateDocument in contract.CandidateDocumentsDto){
-                                        Console.WriteLine($"    Candidate Document Id: {candidateDocument.Id}");
-                                        Console.WriteLine($"    Upload Type Id: {candidateDocument.UploadTypeId}");
-                                        Console.WriteLine($"    Status: {candidateDocument.Status}");
-                                    }
-                                }
-                            }
-                        }
+                        
                     }
                     else
                     {
-                        Console.WriteLine("De json response bevat geen geldige content");
+                      
                     }
         }
 

@@ -163,7 +163,7 @@
         }
 
         var downloadUrl = $"https://staffingnowdocuments.blob.core.windows.net/myfiles/{_contract.CustomerId}/Templates/{UploadTypeName}/{fileName}";
-        Console.WriteLine(fileName);
+
         if(fileName != "downloaded_file"){
             await JSRuntime.InvokeVoidAsync("downloadFile", downloadUrl, fileName);
         }
@@ -246,7 +246,7 @@
     private async Task UploadFile(string documentId, InputFileChangeEventArgs e, string candidateId, string contractId, string uploadTypeName, CandidateDocumentModel document)
     {
         var file = e.File;
-        Console.WriteLine(file);
+   
         if (file == null)
         {
             NotificationService.Notify("Selecteer een bestand om te uploaden", NotificationType.Warning);

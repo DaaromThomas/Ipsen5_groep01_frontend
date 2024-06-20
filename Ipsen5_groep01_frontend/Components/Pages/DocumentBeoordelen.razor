@@ -126,7 +126,7 @@
         await getCandidateDocumentByContractId(contractId);
         await GetAllUploadTypesAsync(true);
         await GetAllUploadTypesAsync(false);
-        Console.WriteLine(_documents.Count);
+
     }
  
     private async Task getCandidateDocumentByContractId(string contractId){
@@ -153,7 +153,6 @@
 
      private string GetUploadTypeName(Guid uploadTypeId)
     {
-        Console.WriteLine(uploadTypeId);
         var uploadType = _uploadTypes.FirstOrDefault(ut => ut.Id == uploadTypeId);
         return uploadType?.Type ?? "Unknown";
     }
@@ -222,7 +221,7 @@
             ContractRequest request = new();
             {
                 request.ContractDto = _contract;
-                Console.WriteLine(_contract);
+
             };
 
             if(RequestMakerService != null){
@@ -269,7 +268,7 @@
             }
 
             _contract = _contracts.FirstOrDefault(c => c.Id.ToString() == contractId);
-            Console.WriteLine(_contract);
+
 
             if (_contract != null)
             {
@@ -277,7 +276,7 @@
             }
             else
             {
-                Console.WriteLine($"No contract found with ID {contractId}");
+
                 _documents = new List<CandidateDocumentModel>();
             }
 
@@ -285,7 +284,7 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
+
         }
 
         return _contracts;

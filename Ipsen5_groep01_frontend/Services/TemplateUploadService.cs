@@ -36,7 +36,6 @@ namespace Ipsen5_groep01_frontend.Services{
             var file = e.File;
             if (file == null)
             {
-                Console.WriteLine("No file selected.");
                 return "";
             }
             using (var memoryStream = new MemoryStream())
@@ -62,7 +61,6 @@ namespace Ipsen5_groep01_frontend.Services{
             var file = e.File;
             if (file == null)
             {
-                Console.WriteLine("No file selected.");
                 return;
             }
 

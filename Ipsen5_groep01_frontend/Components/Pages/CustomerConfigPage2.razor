@@ -554,9 +554,7 @@
             return;
         }
 
-        if(customerId != null){
-            Console.WriteLine("Customer ID" + customerId);
-        }
+        
 
         await CreateCustomerTemplateAsync();
     }
@@ -855,7 +853,6 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.GetBaseException());
             return false;
         }
 
