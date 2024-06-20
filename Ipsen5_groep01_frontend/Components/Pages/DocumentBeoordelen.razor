@@ -228,6 +228,7 @@
             if(RequestMakerService != null){
                 await RequestMakerService.MakePatchRequest("Contract/updatecontract", request);
             }
+            NotificationService.Notify("Contract notitie correct aangepast", NotificationType.Success);
             StateHasChanged();
         }
     }

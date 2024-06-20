@@ -35,6 +35,24 @@
     align-items: center;
 }
 
+.button-container {
+    display: flex;
+    justify-content: end;
+    width: 90vmin;
+    padding-top: 7vmin;
+    gap: 3vmin;
+}
+
+.previous-button {
+    background-color: transparent;
+    border: none;
+    font-family: inter;
+    font-weight: 600;
+    color: #1f262f;
+    border-radius: 1vmin;
+    transition: background-color 0.3s ease;
+}
+
 .circle {
     transition: background-color 1s ease;
     width: 5vmin;

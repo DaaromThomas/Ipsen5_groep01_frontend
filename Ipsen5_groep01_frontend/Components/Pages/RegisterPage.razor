@@ -257,8 +257,7 @@
                                     <div>
                                         <div class="input-title">GeboorteDatum</div>
                                         <div>
-                                            <input id="geboortedatum" class="input-field-pair" placeholder="Vb. 12-04-1995" @bind="@candidateModel.DateOfBirth" />
-
+                                            <input type="date" id="geboortedatum" class="input-field-pair" placeholder="Vb. 12-04-1995" @bind="@candidateModel.DateOfBirth" />
                                         </div>
                                         <ValidationMessage For="() => candidateModel.DateOfBirth"></ValidationMessage>
                                     </div>

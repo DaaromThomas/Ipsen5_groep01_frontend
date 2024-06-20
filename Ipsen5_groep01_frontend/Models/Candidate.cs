@@ -10,8 +10,8 @@ namespace Ipsen5_groep01_frontend.Models
 
         public string? LastName { get; set; }
 
-
-        public DateTime DateOfBirth { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime DateOfBirth { get; set; } = DateTime.Today;
 
         [RegularExpression("^[0-9]*$", ErrorMessage = "BSN mag alleen cijfers bevatten")]
         public string? BSN { get; set; }

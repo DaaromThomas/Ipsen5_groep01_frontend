@@ -250,14 +250,14 @@ else if (currentStep == 3)
             <div>
               <div class="input-title">Startdatum</div>
               <div>
-                <input class="input-field-pair" placeholder="" @bind="@ContractModel.StartDate" />
+                <input type="date" class="input-field-pair" placeholder="" @bind="@ContractModel.StartDate" />
               </div>
               @* <ValidationMessage For="() => ContractModel.StartDate"></ValidationMessage> *@
             </div>
             <div>
               <div class="input-title">Einddatum</div>
               <div>
-                <input class="input-field-pair" placeholder="" @bind="@ContractModel.EndDate" />
+                <input type="date" class="input-field-pair" placeholder="" @bind="@ContractModel.EndDate" />
               </div>
               @* <ValidationMessage For="() => ContractModel.EndDate"></ValidationMessage> *@
             </div>
@@ -336,7 +336,7 @@ else if (currentStep == 3)
   </div>
 }
 
-else
+    @if (currentStep == 4)
 {
   @* <Animate Animation="Animations.SlideRight" Duration="TimeSpan.FromSeconds(1)"> *@
   <div class="input-container">
@@ -668,8 +668,8 @@ else
     
     contract.CandidateId = SelectedCandidate.Id;
     contract.Status = ContractModel.Status;
-    contract.StartDate = new DateTime();
-    contract.EndDate = new DateTime();
+    contract.StartDate = ContractModel.StartDate;
+    contract.EndDate = ContractModel.EndDate;
     contract.PurchaseRate = ContractModel.PurchaseRate;
     contract.SellingRate = ContractModel.SellingRate;
     contract.PaymentTerm = ContractModel.PaymentTerm;
@@ -823,7 +823,7 @@ else
   {
     if (currentStep == 1)
     {
-      NavigationManager.NavigateTo("/customer");
+            NavigationManager.NavigateTo("/contract");
     }
     else
     {
