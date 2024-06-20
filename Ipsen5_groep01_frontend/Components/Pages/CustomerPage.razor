@@ -17,23 +17,12 @@
     <div class="filter-container">
         <div class="filters">
             <div class="search-container">
-                <EditForm Model="customers" FormName="createCustomerAddressForm">
-                    <DataAnnotationsValidator />
-
-                    <div class="form-group search-field">
-                        <InputText id="name" @bind-Value="valuetijdelijk" class="form-control" placeholder="Zoeken"></InputText>
-                    </div>
-
-                </EditForm>
+                <div class="form-group search-field" >
+                    <input value="@searchString" @onkeydown="HandleKeyDown" @oninput="UpdateSearchString" id="name" class="form-control" placeholder="Zoeken">
+                </div>
             </div>
 
-            <div class="dropdown-container">
-                <select class="dropdown-field">
-                    <option value="">Selecteer filter</option>
-                    <option value="option1">Optie 1</option>
-                    <option value="option2">Optie 2</option>
-                    <option value="option3">Optie 3</option>
-                </select>
+            <div>
             </div>
 
         </div>
@@ -69,7 +58,7 @@
                 <button class="edit_customer" @onclick="() => NavigateToEditCustomerDetails(customer.Id)">
                     <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
                 </button>
-                <button class="delete_customer" @onclick="() => UpdateCustomer(customer.Id)">
+                <button id="delete" class="delete_customer" @onclick="() => UpdateCustomer(customer.Id)">
                     <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
                 </button>
             </div>
@@ -114,13 +103,14 @@
     private string valuetijdelijk = "";
     private void NotifyStateChanged() => OnChange?.Invoke();
     public event Action OnChange;
+    private string searchString;
+
 
     private CustomerService _customerService;
 
     public CustomerPage()
     {
-    	var requestMakerService = new RequestMakerService(new HttpClient());
-        _customerService = new CustomerService(requestMakerService);
+    	_customerService = new CustomerService(new RequestMakerService(new HttpClient()));
     }
 
     protected override void OnInitialized()
@@ -137,7 +127,29 @@
     protected override async Task OnInitializedAsync()
     {
         OnChange += StateHasChanged;
-        await LoadCustomers();
+        await LoadCustomers(".");
+    }
+    
+    private void UpdateSearchString(ChangeEventArgs e)
+    {
+        searchString = e.Value.ToString();
+        CheckSearchStringIsEmpty(searchString);
+    }
+    
+    private void CheckSearchStringIsEmpty(string searchString)
+    {
+        if (searchString == "")
+        {
+            LoadCustomers(".");
+        }
+    }
+    
+    void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            LoadCustomers(searchString);
+        }
     }
 
     private void NavigateToCustomerDetails(Guid customerId)
@@ -160,9 +172,10 @@
         currentPage += increment;
     }
 
-    private async Task LoadCustomers()
+    private async Task LoadCustomers(string searchString)
     {
-        customers = await _customerService.GetCustomers();
+        customers = await _customerService.GetCustomers(searchString);
+        StateHasChanged();
     }
 
     private async Task LoadCustomerById(Guid customerId)
@@ -176,7 +189,7 @@
         customerToDisable.Disabled = true;
         await _customerService.UpdateCustomer(customerToDisable);
         customers.Remove(customerToDisable);
-        await LoadCustomers();
+        await LoadCustomers(".");
         NotifyStateChanged();
     }
 

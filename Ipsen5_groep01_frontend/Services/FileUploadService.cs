@@ -23,7 +23,6 @@ namespace Ipsen5_groep01_frontend.Services
             formData.Add(new StringContent(candidateId), "candidateId");
             formData.Add(new StringContent(contractId), "contractId");
 
-            Console.WriteLine(formData);
             var response = await _httpClient.PostAsync($"BlobStorage/upload/{candidateId}/{contractId}/{uploadTypeName}", formData);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync();

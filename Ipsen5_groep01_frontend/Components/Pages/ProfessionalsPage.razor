@@ -19,27 +19,11 @@
 
     <div class="filter-container">
         <div class="filters">
-
             <div class="search-container">
-                <EditForm Model="Candidates" FormName="createCustomerAddressForm">
-                    <DataAnnotationsValidator />
-
-                    <div class="form-group search-field">
-                        <InputText id="name" @bind-Value="valuetijdelijk" class="form-control" placeholder="Zoeken"></InputText>
-                    </div>
-
-                </EditForm>
+                <div class="form-group search-field" >
+                    <input value="@searchString" @onkeydown="HandleKeyDown" @oninput="UpdateSearchString" id="name" class="form-control" placeholder="Zoeken">
+                </div>
             </div>
-
-            <div class="dropdown-container">
-                <select class="dropdown-field">
-                    <option value="">Selecteer filter</option>
-                    <option value="option1">Optie 1</option>
-                    <option value="option2">Optie 2</option>
-                    <option value="option3">Optie 3</option>
-                </select>
-            </div>
-
         </div>
 
 
@@ -111,7 +95,8 @@
     private int pageSize = 9;
     private int currentPage = 1;
     private int totalPages => (int)Math.Ceiling((double)Candidates.Count() / pageSize);
-    private string valuetijdelijk = "";
+    private string searchString;
+
 
     private ProffesionalService _proffesionalService;
 
@@ -122,16 +107,42 @@
 
     protected override void OnInitialized()
     {
-        // if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
-        // {
-        //     NavigationManager.NavigateTo("/signin");
-        // }
+      
         base.OnInitialized();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        Candidates = await _proffesionalService.GetAllCandidatesAsync();
+        await LoadCandidates(".");
+    }
+    
+    private void UpdateSearchString(ChangeEventArgs e)
+    {
+        searchString = e.Value.ToString();
+        CheckSearchStringIsEmpty(searchString);
+    }
+    
+    private void CheckSearchStringIsEmpty(string searchString)
+    {
+        if (searchString == "")
+        {
+            LoadCandidates(".");
+        }
+    }
+    
+    void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            LoadCandidates(searchString);
+        }
+    }
+    
+    private async Task LoadCandidates(string searchString)
+    {
+        
+        Candidates = await _proffesionalService.GetAllCandidatesAsync(searchString);
+        StateHasChanged();
     }
 
 

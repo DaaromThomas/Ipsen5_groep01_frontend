@@ -20,6 +20,7 @@
 @inject AuthService AuthService
 @inject RequestMakerService RequestMakerService
 @inject TemplateUploadService TemplateUploadService
+@inject NotificatieService NotificationService
 
 <style>
     @@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
@@ -120,7 +121,7 @@
                         <div>
                             <div class="input-title">Bedrijfsnaam</div>
                             <div>
-                                <input class="input-field" placeholder="StaffingNow" @bind="@Customer.Name" />
+                                <input id="name" class="input-field" placeholder="StaffingNow" @bind="@Customer.Name" />
                                 <ValidationMessage For="() => Customer.Name"></ValidationMessage>
                             </div>
                         </div>
@@ -129,7 +130,7 @@
                             <div>
                                 <div class="input-title">Kvk</div>
                                 <div>
-                                    <input type="number" class="input-field-pair" placeholder="12345678" @bind="@Customer.KVK" />
+                                    <input id="kvk" type="number" class="input-field-pair" placeholder="12345678" @bind="@Customer.KVK" />
                                 </div>
                                 <ValidationMessage For="() => Customer.KVK"></ValidationMessage>
                             </div>
@@ -137,7 +138,7 @@
                             <div>
                                 <div class="input-title">Btw-Nummer</div>
                                 <div>
-                                    <input class="input-field-pair" placeholder="NL123456789B01" @bind="@Customer.VAT" />
+                                    <input id="btw" class="input-field-pair" placeholder="NL123456789B01" @bind="@Customer.VAT" />
 
                                 </div>
                                 <ValidationMessage For="() => Customer.VAT"></ValidationMessage>
@@ -147,7 +148,7 @@
                         <div>
                             <div class="input-title">Rekeningnummer</div>
                             <div>
-                                <input class="input-field" placeholder="NL20INGB0001234567" @bind="@Customer.BankAccountNumber" />
+                                <input id="accountnumber" class="input-field" placeholder="NL20INGB0001234567" @bind="@Customer.BankAccountNumber" />
 
                             </div>
                             <ValidationMessage For="() => Customer.BankAccountNumber"></ValidationMessage>
@@ -161,14 +162,14 @@
                             <div>
                                 <div class="input-title">Voornaam</div>
                                 <div>
-                                    <input class="input-field-pair" placeholder="Holees" @bind="@Customer.FirstName" />
+                                    <input id="firstname" class="input-field-pair" placeholder="Holees" @bind="@Customer.FirstName" />
                                 </div>
                                 <ValidationMessage For="() => Customer.FirstName"></ValidationMessage>
                             </div>
                             <div>
                                 <div class="input-title">Achternaam</div>
                                 <div>
-                                    <input class="input-field-pair" placeholder="Vliet" @bind="@Customer.LastName" />
+                                    <input id="lastname" class="input-field-pair" placeholder="Vliet" @bind="@Customer.LastName" />
                                 </div>
                                 <ValidationMessage For="() => Customer.LastName"></ValidationMessage>
                             </div>
@@ -179,14 +180,14 @@
                             <div>
                                 <div class="input-title">Email</div>
                                 <div>
-                                    <input class="input-field-pair" placeholder="Voorbeeld@email.com" @bind="@Customer.Email" />
+                                    <input id="email" class="input-field-pair" placeholder="Voorbeeld@email.com" @bind="@Customer.Email" />
                                 </div>
                                 <ValidationMessage For="() => Customer.Email"></ValidationMessage>
                             </div>
                             <div>
                                 <div class="input-title">Telefoonnummer</div>
                                 <div>
-                                    <input type="number" class="input-field-pair" placeholder="0612345678" @bind="@Customer.PhoneNumber" />
+                                    <input id="phonenumber" type="number" class="input-field-pair" placeholder="0612345678" @bind="@Customer.PhoneNumber" />
                                 </div>
                                 <ValidationMessage For="() => Customer.PhoneNumber"></ValidationMessage>
                             </div>
@@ -201,14 +202,14 @@
                             <div>
                                 <div class="input-title">Postcode</div>
                                 <div>
-                                    <input class="input-field-pair" placeholder="1234 AB" @bind="@Customer.CustomerAddressDto.PostalCode" />
+                                    <input id="postalcode" class="input-field-pair" placeholder="1234 AB" @bind="@Customer.CustomerAddressDto.PostalCode" />
                                 </div>
                                 <div style="color: #e50000">@postalCodeValidationMessage</div>
                             </div>
                             <div>
                                 <div class="input-title">Huisnummer</div>
                                 <div>
-                                    <input class="input-field-pair" placeholder="12" @bind="@Customer.CustomerAddressDto.HouseNumber" />
+                                    <input id="housenumber" class="input-field-pair" placeholder="12" @bind="@Customer.CustomerAddressDto.HouseNumber" />
                                 </div>
                                 <div style="color: #e50000">@houseNumberValidationMessage</div>
                             </div>
@@ -241,7 +242,7 @@
                         <button type="submit" class="previous-button" @onclick="GoToPreviousStep">
                             Vorige
                         </button>
-                        <button type="submit" class="next-button" @onclick="GoToNextStep">
+                        <button type="submit" id="next" class="next-button" @onclick="GoToNextStep">
                             Volgende
                         </button>
                     </div>
@@ -297,7 +298,7 @@
 
                         </div>
 
-                        <div class="section-title-selected">Geselecteerde documenten</div>
+                        <div class="section-title-selected">Aanvullende documenten</div>
 
                         <div class="uploadtype-container">
                             @foreach (var uploadType in UploadTypes.Where(u => selectedItems.Contains(u.Id) && !u.Required))
@@ -318,7 +319,7 @@
                 <button class="previous-button" @onclick="GoToPreviousStep">
                     Vorige
                 </button>
-                <button class="next-button" @onclick="GoToNextStep">
+                <button class="next-button" id="next" @onclick="GoToNextStep">
                     Volgende
                 </button>
             </div>
@@ -436,7 +437,7 @@
                 <button class="previous-button" @onclick="GoToPreviousStep">
                     Vorige
                 </button>
-                <button class="next-button" @onclick="CreateCustomerAsync">
+                <button class="next-button" id="next" @onclick="CreateCustomerAsync">
                     Opslaan
                 </button>
             </div>
@@ -482,23 +483,32 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await GetUploadTypesAsync();
+        await GetUploadTypesAsync(true);
+        await GetUploadTypesAsync(false);
     }
 
     public async Task UploadDocument(InputFileChangeEventArgs e, string uploadTypeName){
-        TemplateUploadService._uploadDocument(e, uploadTypeName);
+        try{
+           await TemplateUploadService._uploadDocument(e, uploadTypeName);
+           NotificationService.Notify($"De template voor het document {uploadTypeName} is toegevoegd", NotificationType.Success);
+        }
+        catch(Exception exception){
+            NotificationService.Notify("Het template is niet toegevoegd", NotificationType.Error);
+        }
+
     }
 
-    public async Task<List<UploadTypeModel>> GetUploadTypesAsync()
+    public async Task<List<UploadTypeModel>> GetUploadTypesAsync(bool required)
     {
-        var response = await RequestMakerService.MakeGetRequest("uploadtype/alluploadtypes");
+        var response = await RequestMakerService.MakeGetRequest($"uploadtype/alluploadtypes?required={required}");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
         var uploadTypeArray = outerObject?["result"]?["uploadTypeDto"];
 
         if(uploadTypeArray == null){
-            return [];
+         NotificationService.Notify("Er zijn geen documenten beschikbaar", NotificationType.Error);
+         return [];
         }
 
         foreach (var jToken in uploadTypeArray)
@@ -544,9 +554,7 @@
             return;
         }
 
-        if(customerId != null){
-            Console.WriteLine("Customer ID" + customerId);
-        }
+        
 
         await CreateCustomerTemplateAsync();
     }
@@ -764,7 +772,7 @@
                         await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
                     }
                     await JSRuntime.InvokeVoidAsync("scrollToTop");
-                    // FadeToRight.Run();
+                 
                 }
 
             }
@@ -845,7 +853,6 @@
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.GetBaseException());
             return false;
         }
 

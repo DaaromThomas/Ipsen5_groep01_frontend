@@ -19,24 +19,17 @@
     <div class="filter-container">
         <div class="filters">
 
-            <div class="search-container">
-                <EditForm Model="UploadTypes" FormName="createCustomerAddressForm">
-                    <DataAnnotationsValidator />
-
-                    <div class="form-group search-field">
-                        <InputText id="name" @bind-Value="valuetijdelijk" class="form-control" placeholder="Zoeken"></InputText>
-                    </div>
-
-                </EditForm>
-            </div>
 
             <div class="dropdown-container">
-                <select class="dropdown-field">
-                    <option value="">Selecteer filter</option>
-                    <option value="option1">Optie 1</option>
-                    <option value="option2">Optie 2</option>
-                    <option value="option3">Optie 3</option>
-                </select>
+                <span>Standaard: </span>
+                <label>
+                    <input type="radio" name="standaard" value="ja" @onchange="OnRadioChange">
+                    Ja
+                </label>
+                <label>
+                    <input type="radio" name="standaard" value="nee" @onchange="OnRadioChange">
+                    Nee
+                </label>
             </div>
 
         </div>
@@ -78,15 +71,9 @@
                 </div>
 
                 <div>@uploadtype.DocumentType</div>
-                <button class="view_upload-type" @onclick="() => NavigateTouploadtypeDetails(uploadtype.Id)">
-                    <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
-                </button>
-                <button class="edit_upload-type">
-                    <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
-                </button>
-                <button class="delete_upload-type">
-                    <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
-                </button>
+                <div></div>
+                <div></div>
+                <div></div>
             </div>
         }
 
@@ -139,16 +126,28 @@
 
     protected override void OnInitialized()
     {
-        // if (!AuthService.IsLoggedIn || AuthService.Role != "Admin")
-        // {
-        //     NavigationManager.NavigateTo("/signin");
-        // }
         base.OnInitialized();
     }
 
+    private async Task OnRadioChange(ChangeEventArgs e)
+    {
+        if (e.Value != null)
+        {
+            string selectedValue = e.Value.ToString();
+            string isRequired = ConvertToStandardString(selectedValue);
+            await GetAllUploadTypesAsync(isRequired);
+        }
+    }
+    
+    private string ConvertToStandardString(string value)
+    {
+        return value.Equals("ja", StringComparison.OrdinalIgnoreCase) ? "true" : "false";
+    }
+
+    
     protected override async Task OnInitializedAsync()
     {
-        await GetAllUploadTypesAsync();
+        await GetAllUploadTypesAsync("true");
     }
 
     private void NavigateTouploadtypeDetails(Guid uploadtypeId)
@@ -166,9 +165,9 @@
         currentPage += increment;
     }
 
-    private async Task GetAllUploadTypesAsync()
+    private async Task GetAllUploadTypesAsync(string isRequired)
     {
-        var allUploadTypes = await _uploadService.GetAllUploadTypesAsync();
+        var allUploadTypes = await _uploadService.GetAllUploadTypesAsync(isRequired);
 
 
         UploadTypes = allUploadTypes

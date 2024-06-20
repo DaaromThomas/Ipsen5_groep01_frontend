@@ -250,14 +250,14 @@ else if (currentStep == 3)
             <div>
               <div class="input-title">Startdatum</div>
               <div>
-                <input class="input-field-pair" placeholder="" @bind="@ContractModel.StartDate" />
+                <input type="date" class="input-field-pair" placeholder="" @bind="@ContractModel.StartDate" />
               </div>
               @* <ValidationMessage For="() => ContractModel.StartDate"></ValidationMessage> *@
             </div>
             <div>
               <div class="input-title">Einddatum</div>
               <div>
-                <input class="input-field-pair" placeholder="" @bind="@ContractModel.EndDate" />
+                <input type="date" class="input-field-pair" placeholder="" @bind="@ContractModel.EndDate" />
               </div>
               @* <ValidationMessage For="() => ContractModel.EndDate"></ValidationMessage> *@
             </div>
@@ -336,7 +336,7 @@ else if (currentStep == 3)
   </div>
 }
 
-else
+    @if (currentStep == 4)
 {
   @* <Animate Animation="Animations.SlideRight" Duration="TimeSpan.FromSeconds(1)"> *@
   <div class="input-container">
@@ -493,8 +493,8 @@ else
 
   protected override async Task OnInitializedAsync()
   {
-    await GetAllCustomersAsync();
-    await GetAllCandidatesAsync();
+    await GetAllCustomersAsync(".");
+    await GetAllCandidatesAsync(".");
   }
   
   private void OnCustomerChanged(ChangeEventArgs e)
@@ -511,15 +511,11 @@ else
     var selectedCustomer = customerList.FirstOrDefault(c => c.Id == customerId);
     if (selectedCustomer != null)
     {
-      // Handle the selected customer
       SelectedCustomer = selectedCustomer;
     }
   }
   
-  // private List<string> FilteredItems => 
-  // string.IsNullOrEmpty(searchTerm) 
-  // ? customerList 
-  // : customerList.FindAll(item => item.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+ 
   
   private void OnCandidateChanged(ChangeEventArgs e)
   {
@@ -539,9 +535,9 @@ else
     }
   }
   
-  public async Task<List<Customer>> GetAllCustomersAsync()
+  public async Task<List<Customer>> GetAllCustomersAsync(string searchString)
   {
-    var response = await _requestMakerService.MakeGetRequest("customer/allcustomers");
+    var response = await _requestMakerService.MakeGetRequest($"customer/allcustomers?search={searchString}");
     var json = await response.Content.ReadAsStringAsync();
 
     var outerObject = JObject.Parse(json);
@@ -620,7 +616,7 @@ else
       candidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
       candidateDocument.Status = "New"; 
       candidateDocument.CreatedDate = ParseDateTime(jToken, "createdDate");
-      candidateDocument.UpdatedDate = ParseDateTime(jToken, "updatedDate");
+      candidateDocument.UpdatedDate = new DateTime(1, 1, 1);
       candidateDocument.CreatedBy = ParseString(jToken, "createdBy");
       candidateDocument.UpdatedBy = ParseString(jToken, "updatedBy");
        
@@ -633,9 +629,9 @@ else
     return contract;
   }
     
-  public async Task<List<Candidate>> GetAllCandidatesAsync()
+  public async Task<List<Candidate>> GetAllCandidatesAsync(string searchString)
   {
-    var response = await _requestMakerService.MakeGetRequest("Candidate/allcandidates");
+    var response = await _requestMakerService.MakeGetRequest($"Candidate/allcandidates?search={searchString}");
     var json = await response.Content.ReadAsStringAsync();
 
     var outerObject = JObject.Parse(json);
@@ -661,48 +657,6 @@ else
     }
     return candidateList;
   }
-  
-  // public async Task<Candidate> GetCandidateById()
-  // { 
-  //   var response = await _requestMakerService.MakeGetRequest($"Candidate/candidatebyid/{SelectedCandidate.Id}");
-  //   var json = await response.Content.ReadAsStringAsync();
-  //
-  //   var outerObject = JObject.Parse(json);
-  //   var contractArray = outerObject["result"]["contractDto"];
-  //   var contract = new Contract();
-  //   
-  //   contract.Id = Guid.Parse((string)contractArray["id"]);
-  //   contract.CandidateId = Guid.Parse((string)contractArray["candidateId"]);
-  //   contract.CustomerId = Guid.Parse((string)contractArray["customerId"]);
-  //   contract.Status = (string)contractArray["status"];
-  //   contract.StartDate = (DateTime)contractArray["startDate"];
-  //   contract.EndDate = (DateTime)contractArray["endDate"];
-  //   contract.PurchaseRate = (double)contractArray["purchaseRate"];
-  //   contract.SellingRate = (double)contractArray["sellingRate"];
-  //   contract.PaymentTerm = (string)contractArray["paymentTerm"];
-  //   contract.FeeParty = (string)contractArray["feeParty"];
-  //   contract.JobDescription = (string)contractArray["jobDescription"];
-  //   contract.Note = (string)contractArray["note"];
-  //   contract.Template = (bool)contractArray["template"];
-  //
-  //   foreach (var jToken in contractArray["candidateDocumentsDto"])
-  //   {
-  //     var candidateDocument= new CandidateDocumentModel();
-  //     candidateDocument.Id = Guid.Parse((string)jToken["id"]);
-  //     candidateDocument.UploadTypeId = Guid.Parse((string)jToken["uploadTypeId"]);
-  //     candidateDocument.ContractId = Guid.Parse((string)jToken["contractId"]);
-  //     candidateDocument.DocumentBlob = (byte[])jToken["documentBlob"];
-  //     candidateDocument.Status = (string)jToken["status"];
-  //     candidateDocument.CreatedDate = (DateTime)jToken["createdDate"];
-  //     candidateDocument.UpdatedDate = (DateTime)jToken["updatedDate"];
-  //     candidateDocument.CreatedBy = (string)jToken["createdBy"];
-  //     candidateDocument.UpdatedBy = (string)jToken["updatedBy"];
-  //     
-  //     candidateDocumentsList.Add(candidateDocument);
-  //   }
-  //   contract.CandidateDocumentsDto = candidateDocumentsList;
-  //   return contract;
-  // }
 
   private async Task HandleClick(){
     var contract = await GetContractTemplatesByCustomerId();
@@ -710,8 +664,8 @@ else
     
     contract.CandidateId = SelectedCandidate.Id;
     contract.Status = ContractModel.Status;
-    contract.StartDate = new DateTime();
-    contract.EndDate = new DateTime();
+    contract.StartDate = ContractModel.StartDate;
+    contract.EndDate = ContractModel.EndDate;
     contract.PurchaseRate = ContractModel.PurchaseRate;
     contract.SellingRate = ContractModel.SellingRate;
     contract.PaymentTerm = ContractModel.PaymentTerm;
@@ -865,7 +819,7 @@ else
   {
     if (currentStep == 1)
     {
-      NavigationManager.NavigateTo("/customer");
+            NavigationManager.NavigateTo("/contract");
     }
     else
     {

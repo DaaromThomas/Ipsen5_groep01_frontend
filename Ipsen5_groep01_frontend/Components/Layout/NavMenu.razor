@@ -27,7 +27,7 @@
                          style="color: #1A222D; font-weight: bold; text-decoration: none; font-size: 1.7vmin; font-family: 'Inter', sans-serif; letter-spacing: 0.16px;"
                          ActiveClass="active-link"
                          onmouseover="this.style.color='#FF6700';" onmouseout="this.style.color='#1A222D';">
-                    <span class="" aria-hidden="true"></span> Proffesionals
+                    <span class="" aria-hidden="true"></span> Leveranciers
                     <div class="active-indicator"></div>
                 </NavLink>
             </div>
@@ -106,19 +106,6 @@
     private bool loggedIn = false;
     private string role = "";
 
-    protected override async void OnInitialized()
-    {
-        if (!isPageInitialized)
-        {
-            isPageInitialized = true;
-            await Task.Delay(100);
-
-            if (!AuthService.IsLoggedIn || AuthService.Role != "Admin" || AuthService.Role == null || AuthService.Role == "")
-            {
-                NavigationManager.NavigateTo("/");
-            }
-        }
-    }
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -128,11 +115,8 @@
     }
 
     public void update(){
-        Console.WriteLine("Update()");
         this.loggedIn = AuthService.IsLoggedIn;
         this.role = AuthService.Role;
-        Console.WriteLine("Navbar loggedIn: " + loggedIn);
-        Console.WriteLine("Navbar Role: " + role);
         InvokeAsync(() => StateHasChanged());
     }
 

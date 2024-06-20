@@ -13,9 +13,9 @@ namespace Ipsen5_groep01_frontend.Services
             _requestMakerService = requestMakerService;
         }
 
-        public async Task<List<Customer>> GetCustomers()
+        public async Task<List<Customer>> GetCustomers(string searchString)
         {
-            var response = await _requestMakerService.MakeGetRequest("customer/allcustomers");
+            var response = await _requestMakerService.MakeGetRequest($"customer/allcustomers?search={searchString}");
             var json = await response.Content.ReadAsStringAsync();
 
             var outerObject = JObject.Parse(json);

@@ -23,25 +23,10 @@
     <div class="filter-container">
         <div class="filters">
             <div class="search-container">
-                <EditForm Model="contracts" FormName="createCustomerAddressForm">
-                    <DataAnnotationsValidator />
-
-                    <div class="form-group search-field">
-                        <InputText id="name" @bind-Value="tijdelijk" class="form-control" placeholder="Zoeken"></InputText>
-                    </div>
-
-                </EditForm>
+                <div class="form-group search-field" >
+                    <input value="@searchString" @onkeydown="HandleKeyDown" @oninput="UpdateSearchString" id="name" class="form-control" placeholder="Zoeken">
+                </div>
             </div>
-
-            <div class="dropdown-container">
-                <select class="dropdown-field">
-                    <option value="">Selecteer filter</option>
-                    <option value="option1">Optie 1</option>
-                    <option value="option2">Optie 2</option>
-                    <option value="option3">Optie 3</option>
-                </select>
-            </div>
-
         </div>
 
         <div class="new-contract-button-container">
@@ -62,9 +47,9 @@
         @foreach (var contract in contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
         {
 
-                <div class="contracts" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
-                    <div>@getCustomerNameById(@contract.CustomerId)</div>
-                    <div>@getCandidateNameById(@contract.CandidateId)</div>
+                <div class="contracts" data-testid="contract-item" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
+                    <div data-testid="customer-name">@contract.CustomerName</div>
+                    <div>@contract.CandidateName</div>
                     <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
 
                     <div class="status-container-color">
@@ -74,7 +59,7 @@
                     </div>
 
                     <div>@contract.JobDescription</div>
-                    <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
+                    <button class="view_contract" data-testid="view-contract-button" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
                         <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
                     </button>
                     <button class="edit_contract">
@@ -117,33 +102,24 @@
 
 
 @code {
+
     private List<Contract> contracts = new List<Contract>();
 
     private int pageSize = 10;
     private int currentPage = 1;
     private int totalPages => (int)Math.Ceiling((double)contracts.Count() / pageSize);
     private string tijdelijk = "";
-    private CustomerService _customerService;
-    private CandidateService _candidateService;
-
-
-    private List<Candidate> _candidates = [];
+    private string searchString;
+    
     private List<Customer> _customers = [];
+    
+    private ContractService _contractService;
 
 
     public ContractsPage()
     {
-        RequestMakerService = new RequestMakerService(new HttpClient());
-        _customerService = new CustomerService(RequestMakerService);
-        _candidateService = new CandidateService(RequestMakerService);
+        _contractService = new ContractService(new RequestMakerService(new HttpClient()), new JsonKeyConverter());
     }
-
-
-    private async Task GetAllCandidates(){
-        await _candidateService.GetAllCandidates();
-    }
-
-
 
     protected override void OnInitialized()
     {
@@ -154,45 +130,49 @@
 
         base.OnInitialized();
     }
-
-
-    private async Task<Customer> GetCustomerById(Guid customerId)
-    {
-        var customer = await _customerService.GetCustomerById(customerId);
-        return customer;
-    }
-
-    private Dictionary<Guid, Customer> customers = new Dictionary<Guid, Customer>();
-    private Dictionary<Guid, Candidate> candidates = new Dictionary<Guid, Candidate>();
+    
 
 
     protected override async Task OnInitializedAsync()
     {
-        await GetContracts();
-        await GetAllCandidatesFromService();
         await GetAllCustomers();
+        await LoadContracts(".");
     }
-
-    private string getCandidateNameById(Guid id){
-        var Candidate = _candidates.FirstOrDefault(ut => ut.Id == id);
-        return Candidate?.FirstName + " " + Candidate?.LastName ?? "Unknown";
-    }
-
-    private async Task GetAllCandidatesFromService(){
-        _candidates = await this.CandidateService.GetAllCandidates();
-    }
-
-    private string getCustomerNameById(Guid id)
+    
+    private void UpdateSearchString(ChangeEventArgs e)
     {
-        var customer = _customers.FirstOrDefault(ut => ut.Id == id);
-
-        return customer?.Name ?? "Unknown";
+        searchString = e.Value.ToString();
+        CheckSearchStringIsEmpty(searchString);
+    }
+    
+    private void CheckSearchStringIsEmpty(string searchString)
+    {
+        if (searchString == "")
+        {
+            LoadContracts(".");
+        }
+    }
+    
+    void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            LoadContracts(searchString);
+        }
+    }
+    
+    private async Task LoadContracts(string searchString)
+    {
+       
+        contracts = await _contractService.GetAllContracts(searchString);
+        StateHasChanged();
     }
 
 
-    public async Task<List<Contract>> GetContracts()
+
+    public async Task<List<Contract>> GetContracts(string searchString)
     {
-        var response = await RequestMakerService.MakeGetRequest("contract/allcontracts");
+        var response = await RequestMakerService.MakeGetRequest($"contract/allcontracts?search={searchString}");
         var json = await response.Content.ReadAsStringAsync();
 
         var outerObject = JObject.Parse(json);
@@ -201,6 +181,8 @@
         if(contractArray == null){
             return [];
         }
+        
+     
 
         foreach (var jToken in contractArray)
         {
@@ -209,6 +191,8 @@
             contract.Id = ParseGuid(jToken, "id");
             contract.CandidateId = ParseGuid(jToken, "candidateId");
             contract.CustomerId = ParseGuid(jToken, "customerId");
+            contract.CandidateName = ParseString(jToken, "candidateName");
+            contract.CustomerName = ParseString(jToken, "customerName");
             contract.Status = ParseString(jToken, "status");
             contract.StartDate = ParseDateTime(jToken, "startDate");
             contract.EndDate = ParseDateTime(jToken, "endDate");
@@ -224,6 +208,8 @@
         }
         return contracts;
     }
+    
+    
 
     private void NavigateToContractDetails(string contractId)
     {
@@ -303,4 +289,6 @@
         var valueToken = token[key];
         return valueToken != null && double.TryParse(valueToken.ToString(), out double parsedDouble) ? parsedDouble : 0.0;
     }
+
+
 }

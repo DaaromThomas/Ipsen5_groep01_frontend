@@ -430,3 +430,8 @@
 .contract-note-container .save-note-button:hover {
     background-color: #0056b3;
 }
+
+.uploadclass{
+    display: flex;
+    flex-direction: row;
+}

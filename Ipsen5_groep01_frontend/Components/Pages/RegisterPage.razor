@@ -5,6 +5,7 @@
 @inject LoginService LoginService
 @inject AuthService AuthService
 @inject RequestMakerService RequestMakerService
+@inject NotificatieService NotificationService
 @inject IJSRuntime JSRuntime
 @inject IConfiguration Configuration;
 
@@ -151,7 +152,7 @@
                                 <div>
                                     <div class="input-title">Email</div>
                                     <div>
-                                        <input class="input-field" placeholder="voorbeeld@email.com" @bind="@registerModel.Email" />
+                                        <input id="email" class="input-field" placeholder="voorbeeld@email.com" @bind="@registerModel.Email" />
 
                                     </div>
                                     <ValidationMessage For="() => registerModel.Email"></ValidationMessage>
@@ -161,7 +162,7 @@
                                     <div>
                                         <div class="input-title">Wachtwoord</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="Wachtwoord" @bind="@registerModel.Password" />
+                                            <input id="mainpassword" class="input-field-pair" placeholder="Wachtwoord" @bind="@registerModel.Password" />
 
                                         </div>
                                         <ValidationMessage For="() => registerModel.Password" />
@@ -176,7 +177,7 @@
                                     <div>
                                         <div class="input-title">Herhaal Wachtwoord</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="Wachtwoord" @bind="@registerModel.ConfirmPassword" />
+                                            <input id="repassword" class="input-field-pair" placeholder="Wachtwoord" @bind="@registerModel.ConfirmPassword" />
 
                                         </div>
                                         <ValidationMessage For="() => registerModel.ConfirmPassword"></ValidationMessage>
@@ -227,7 +228,7 @@
                                     <div>
                                         <div class="input-title">Voornaam</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="Voornaam" @bind="@registerModel.FirstName" />
+                                            <input id="input-voornaam" class="input-field-pair" placeholder="Voornaam" @bind="@registerModel.FirstName" />
                                             <ValidationMessage For="() => registerModel.FirstName"></ValidationMessage>
                                             @if (showFirstNameError)
                                             {
@@ -239,7 +240,7 @@
                                     <div>
                                         <div class="input-title">Achternaam</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="Achternaam" @bind="@registerModel.LastName" />
+                                            <input id="input-achternaam" class="input-field-pair" placeholder="Achternaam" @bind="@registerModel.LastName" />
                                         </div>
                                         <ValidationMessage For="() => registerModel.LastName"></ValidationMessage>
                                         @if (showLastNameError)
@@ -256,8 +257,7 @@
                                     <div>
                                         <div class="input-title">GeboorteDatum</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="Vb. 12-04-1995" @bind="@candidateModel.DateOfBirth" />
-
+                                            <input type="date" id="geboortedatum" class="input-field-pair" placeholder="Vb. 12-04-1995" @bind="@candidateModel.DateOfBirth" />
                                         </div>
                                         <ValidationMessage For="() => candidateModel.DateOfBirth"></ValidationMessage>
                                     </div>
@@ -267,7 +267,7 @@
                                     <div>
                                         <div class="input-title">Burger Service Nummer (BSN)</div>
                                         <div>
-                                            <input type="number" class="input-field-pair" placeholder="123456789" @bind="@candidateModel.BSN" />
+                                            <input id="servicenummer" type="number" class="input-field-pair" placeholder="123456789" @bind="@candidateModel.BSN" />
 
                                         </div>
                                         @if (showBSNError)
@@ -319,7 +319,7 @@
                                     <div>
                                         <div class="input-title">KVK nummer</div>
                                         <div>
-                                            <input type="number" class="input-field-pair" placeholder="12345678" @bind="@kvkNumberModel.KVKNumber" />
+                                            <input id="kvk" type="number" class="input-field-pair" placeholder="12345678" @bind="@kvkNumberModel.KVKNumber" />
                                             <ValidationMessage For="() => kvkNumberModel.KVKNumber"></ValidationMessage>
                                             @if (showKVKError)
                                             {
@@ -331,7 +331,7 @@
                                     <div>
                                         <div class="input-title">BTW nummer</div>
                                         <div>
-                                            <input type="number" class="input-field-pair" placeholder="NL123456789B01" @bind="@vatNumberModel.VATNumber" />
+                                            <input id="btwnummer" type="number" class="input-field-pair" placeholder="NL123456789B01" @bind="@vatNumberModel.VATNumber" />
                                         </div>
                                         <ValidationMessage For="() => vatNumberModel.VATNumber"></ValidationMessage>
                                         @if (showVATError)
@@ -348,7 +348,7 @@
                                     <div>
                                         <div class="input-title">Rekeningnummer</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="NL12ABCD3456789123" @bind="@bankAccountNumberModel.AccountNumber" />
+                                            <input id="rekeningnummer" class="input-field-pair" placeholder="NL12ABCD3456789123" @bind="@bankAccountNumberModel.AccountNumber" />
 
                                         </div>
                                         <ValidationMessage For="() => bankAccountNumberModel.AccountNumber"></ValidationMessage>
@@ -363,7 +363,7 @@
                                     <div>
                                         <div class="input-title">Telefoonnummer</div>
                                         <div>
-                                            <input type="number" class="input-field-pair" placeholder="31612345678" @bind="@phoneNumberModel.Phonenumber" />
+                                            <input id="telefoonnummer" type="number" class="input-field-pair" placeholder="31612345678" @bind="@phoneNumberModel.Phonenumber" />
 
                                         </div>
                                         <ValidationMessage For="() => phoneNumberModel.Phonenumber"></ValidationMessage>
@@ -383,7 +383,7 @@
                                     <div>
                                         <div class="input-title">Postcode</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.PostalCode" />
+                                            <input id="postcode" class="input-field-pair" placeholder="1234AB" @bind="@candidateAddressModel.PostalCode" />
                                             <ValidationMessage For="() => candidateAddressModel.PostalCode"></ValidationMessage>
                                             @if (showpostalCodeError)
                                             {
@@ -395,7 +395,7 @@
                                     <div>
                                         <div class="input-title">Huisnummer</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.HouseNumber" />
+                                            <input id="huisnummer" class="input-field-pair" placeholder="12" @bind="@candidateAddressModel.HouseNumber" />
                                         </div>
                                         <ValidationMessage For="() => candidateAddressModel.HouseNumber"></ValidationMessage>
                                         @if (showHousnumberError)
@@ -409,7 +409,7 @@
                                     <div>
                                         <div class="input-title">Straat</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="Kersenstraat" @bind="@candidateAddressModel.StreetName" />
+                                            <input id="straat" class="input-field-pair" placeholder="Kersenstraat" @bind="@candidateAddressModel.StreetName" />
                                             <ValidationMessage For="() => candidateAddressModel.StreetName"></ValidationMessage>
                                             @if (showStreetError)
                                             {
@@ -421,7 +421,7 @@
                                     <div>
                                         <div class="input-title">Provincie</div>
                                         <div>
-                                            <input class="input-field-pair" placeholder="Zuid-Holland" @bind="@candidateAddressModel.Province" />
+                                            <input id="provincie" class="input-field-pair" placeholder="Zuid-Holland" @bind="@candidateAddressModel.Province" />
                                         </div>
                                         <ValidationMessage For="() => candidateAddressModel.Province"></ValidationMessage>
                                         @if (showProvinceError)
@@ -720,6 +720,7 @@
         }
         else
         {
+            NotificationService.Notify("Account niet aangemaakt. Controleer je gegevens", NotificationType.Warning); 
             createCandidateteMessage = true;
             createCandidateteError = true;
 
@@ -767,8 +768,7 @@
 
     private async Task GoToNextStep()
     {
-        var isValid = ValidatePasswordFields(); // Validatie van de wachtwoordvelden
-        if (isValid)
+        var isValid = ValidatePasswordFields(); 
         {
             currentStep++;
             registerModel.CurrentStep = currentStep;

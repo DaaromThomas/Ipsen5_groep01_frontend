@@ -13,7 +13,7 @@ namespace Ipsen5_groep01_frontend.Services
 
         public void LogIn(string role)
         {
-            Console.WriteLine("Login();");
+          
             _isLoggedIn = true;
             _role = role;
             this.notifyObservers();
@@ -21,7 +21,7 @@ namespace Ipsen5_groep01_frontend.Services
 
         public void LogOut()
         {
-            Console.WriteLine("LogOut();");
+    
             _isLoggedIn = false;
             _role = string.Empty;
             this.notifyObservers();

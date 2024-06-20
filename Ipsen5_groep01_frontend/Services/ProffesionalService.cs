@@ -12,14 +12,15 @@ namespace Ipsen5_groep01_frontend.Services
             _requestMakerService = requestMakerService;
         }
 
-        public async Task<List<Candidate>> GetAllCandidatesAsync()
+        public async Task<List<Candidate>> GetAllCandidatesAsync(string searchString)
         {
-            var response = await _requestMakerService.MakeGetRequest("Candidate/allcandidates");
+            var response = await _requestMakerService.MakeGetRequest($"Candidate/allcandidates?search={searchString}");
             var json = await response.Content.ReadAsStringAsync();
 
             var outerObject = JObject.Parse(json);
             var contractArray = outerObject["result"]["candidateDto"];
 
+            
             var candidatesList = new List<Candidate>();
             foreach (var jToken in contractArray)
             {
