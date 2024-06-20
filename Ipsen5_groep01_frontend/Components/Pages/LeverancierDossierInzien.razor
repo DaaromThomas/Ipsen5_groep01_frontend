@@ -48,7 +48,7 @@
                             @document.UpdatedDate
                         }
                     </div>
-                    <div class="status" style="background-color: @GetBackgroundColor(document.Status)">@document.Status</div>
+                    <div class="status" style="background-color: @GetColorService.GetBackgroundColor(document.Status)">@document.Status</div>
                     <div class="uploadclass">@if(document.Status == "New" || document.Status == "Afgekeurd"){
                         <InputFile class="eye_icon" OnChange="HandleFileSelected" @onclick:stopPropagation/>
                         <button class="view_customer" @onclick="() => OnUploadButtonClick(document.Id.ToString(), candidateId, document.ContractId.ToString(), GetUploadTypeName(document.UploadTypeId), document)">
