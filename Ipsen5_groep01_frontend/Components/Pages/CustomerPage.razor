@@ -58,7 +58,7 @@
                 <button class="edit_customer" @onclick="() => NavigateToEditCustomerDetails(customer.Id)">
                     <img class="edit_icon" src="/icons/edit-3.png" alt="Bewerk" />
                 </button>
-                <button class="delete_customer" @onclick="() => UpdateCustomer(customer.Id)">
+                <button id="delete" class="delete_customer" @onclick="() => UpdateCustomer(customer.Id)">
                     <img class="delete_icon" src="/icons/trash-2.png" alt="Verwijder" />
                 </button>
             </div>

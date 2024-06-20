@@ -47,8 +47,8 @@
         @foreach (var contract in contracts.Skip((currentPage - 1) * pageSize).Take(pageSize))
         {
 
-                <div class="contracts" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
-                    <div>@contract.CustomerName</div>
+                <div class="contracts" data-testid="contract-item" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
+                    <div data-testid="customer-name">@contract.CustomerName</div>
                     <div>@contract.CandidateName</div>
                     <div>@contract.StartDate.ToString("dd-MM-yyyy") - @contract.EndDate.ToString("dd-MM-yyyy")</div>
 
@@ -59,7 +59,7 @@
                     </div>
 
                     <div>@contract.JobDescription</div>
-                    <button class="view_contract" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
+                    <button class="view_contract" data-testid="view-contract-button" @onclick="() => NavigateToContractDetails(contract.Id.ToString())">
                         <img class="eye_icon" src="/icons/eye-5.png" alt="Bekijk" />
                     </button>
                     <button class="edit_contract">
@@ -163,8 +163,7 @@
     
     private async Task LoadContracts(string searchString)
     {
-        
-        // contracts = await GetContracts(searchString);
+       
         contracts = await _contractService.GetAllContracts(searchString);
         StateHasChanged();
     }
@@ -183,7 +182,7 @@
             return [];
         }
         
-        // contracts.Clear();
+     
 
         foreach (var jToken in contractArray)
         {

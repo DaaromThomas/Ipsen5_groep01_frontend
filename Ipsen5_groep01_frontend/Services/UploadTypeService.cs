@@ -38,19 +38,10 @@ namespace Ipsen5_groep01_frontend.Services
         {
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(uploadType);
 
-            Console.WriteLine("Verzonden JSON-gegevens naar backend:");
-            Console.WriteLine(json);
+         
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync("uploadtype/adduploadtype", content);
-            if (response.IsSuccessStatusCode)
-            {
-                Console.WriteLine("Document succesvol toegevoegd!");
-            }
-            else
-            {
-                Console.WriteLine("Er is een fout opgetreden bij het toevoegen van het document.");
-                Console.WriteLine(response);
-            }
+         
         }
     }
 }

@@ -289,12 +289,6 @@
   
     var response = await _requestMakerService.MakePostRequest("user/createemployee", userRequest, jwtToken);
   
-//    var json = await response.Content.ReadAsStringAsync();
-  
-//    var outerObject = JObject.Parse(json);
-//    var resultObject = outerObject["result"];
-  
-    // customerId = Guid.Parse((string)resultObject["id"]);
     
   }
 
@@ -383,7 +377,6 @@
 
   private async Task SubmitForms()
   {
-    // await CreateUserAsync();
     await CreateUserTemplateAsync();
     NavigationManager.NavigateTo("/customer");
   }
@@ -491,7 +484,6 @@
           await JSRuntime.InvokeVoidAsync("scrollToTopStep2");
         }
         await JSRuntime.InvokeVoidAsync("scrollToTop");
-        // FadeToRight.Run();
       }
     }
   }

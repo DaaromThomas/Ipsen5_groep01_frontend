@@ -1,4 +1,6 @@
-﻿namespace Ipsen5_groep01_frontend.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Ipsen5_groep01_frontend.Models
 {
     public class Contract
     {
@@ -14,9 +16,11 @@
 
         public string? Status { get; set; }
 
-        public DateTime StartDate { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime StartDate { get; set; } = DateTime.Today;
 
-        public DateTime EndDate { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime EndDate { get; set; } = DateTime.Today;
 
         public double PurchaseRate { get; set; }
 
